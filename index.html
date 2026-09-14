@@ -1,452 +1,1498 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NIPAS | Field Telemetry & Control Center</title>
-    <!-- Google Fonts & Font Awesome Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Chart.js for real-time graphs -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        :root {
-            --bg-dark: #0b1319;
-            --card-bg: rgba(18, 30, 39, 0.65);
-            --border-color: rgba(0, 230, 153, 0.15);
-            --accent-green: #00e699;
-            --accent-blue: #00b4d8;
-            --accent-amber: #ffb703;
-            --accent-red: #ff4d6d;
-            --text-main: #f1f5f9;
-            --text-muted: #94a3b8;
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NIPAS · Precision Agriculture Control Center</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+    :root {
+        --green-900: #0f2e1f;
+        --green-800: #1b4332;
+        --green-700: #2d6a4f;
+        --green-600: #40916c;
+        --green-500: #52b788;
+        --green-400: #74c69d;
+        --green-300: #95d5b2;
+        --green-100: #d8f3dc;
+        --green-50:  #edf7ef;
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
+        --blue-600: #1e88e5;
+        --blue-400: #64b5f6;
+        --orange-600: #e8590c;
+        --orange-400: #ff8a4c;
+        --purple-600: #7048e8;
+        --purple-400: #b197fc;
+        --red-600: #d00000;
+        --amber-500: #f59f00;
 
-        body {
-            background-color: var(--bg-dark);
-            background-image: 
-                radial-gradient(at 10% 10%, rgba(0, 230, 153, 0.08) 0px, transparent 50%),
-                radial-gradient(at 90% 90%, rgba(0, 180, 216, 0.08) 0px, transparent 50%);
-            background-attachment: fixed;
-            color: var(--text-main);
-            min-height: 100vh;
-            padding: 1.5rem;
-        }
+        --bg-1: #eaf4ec;
+        --bg-2: #d7ead9;
+        --card-bg: rgba(255, 255, 255, 0.78);
+        --card-border: rgba(150, 190, 160, 0.4);
+        --shadow-sm: 0 2px 6px rgba(20, 50, 30, 0.06);
+        --shadow-md: 0 10px 30px -10px rgba(20, 60, 30, 0.25);
+        --shadow-lg: 0 25px 50px -20px rgba(15, 40, 20, 0.35);
 
-        /* Top Bar Navigation */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--border-color);
-            padding: 1rem 1.5rem;
-            border-radius: 16px;
-            margin-bottom: 1.5rem;
-        }
+        --radius-sm: 10px;
+        --radius-md: 16px;
+        --radius-lg: 24px;
+        --radius-xl: 32px;
 
-        .brand-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+        --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, monospace;
+    }
 
-        .brand-logo i {
-            font-size: 1.8rem;
-            color: var(--accent-green);
-            filter: drop-shadow(0 0 8px rgba(0, 230, 153, 0.5));
-        }
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
 
-        .brand-logo h1 {
-            font-size: 1.4rem;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
+    html, body {
+        height: 100%;
+    }
 
-        .brand-logo h1 span {
-            color: var(--accent-green);
-        }
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background:
+            radial-gradient(circle at 0% 0%, #d9ecdb 0%, transparent 45%),
+            radial-gradient(circle at 100% 100%, #cfe6d4 0%, transparent 45%),
+            linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 100%);
+        min-height: 100vh;
+        color: var(--green-900);
+        padding: 1.25rem;
+        -webkit-font-smoothing: antialiased;
+        font-feature-settings: 'tnum';
+    }
 
-        .status-badge {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(0, 230, 153, 0.1);
-            border: 1px solid rgba(0, 230, 153, 0.3);
-            padding: 0.4rem 0.9rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--accent-green);
-        }
+    /* ============================================================
+       LAYOUT
+       ============================================================ */
+    .app {
+        max-width: 1600px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+    }
 
-        .pulse-dot {
-            width: 8px;
-            height: 8px;
-            background-color: var(--accent-green);
-            border-radius: 50%;
-            box-shadow: 0 0 8px var(--accent-green);
-            animation: pulse 1.8s infinite;
-        }
+    /* ============================================================
+       TOP BAR
+       ============================================================ */
+    .topbar {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        padding: 1rem 1.75rem;
+        background: var(--card-bg);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border: 1px solid var(--card-border);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-md);
+        flex-wrap: wrap;
+    }
 
-        @keyframes pulse {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 230, 153, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(0, 230, 153, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 230, 153, 0); }
-        }
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        padding-right: 1.5rem;
+        border-right: 1px solid rgba(150, 190, 160, 0.4);
+    }
 
-        /* Dashboard Grid Layout */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1.25rem;
-        }
+    .brand-logo {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, var(--green-600) 0%, var(--green-800) 100%);
+        display: grid;
+        place-items: center;
+        color: white;
+        font-size: 1.6rem;
+        box-shadow: 0 8px 20px -6px rgba(45, 106, 79, 0.55);
+    }
 
-        /* Metric Glass Cards */
-        .card {
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 1.25rem;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.2s ease, border-color 0.2s ease;
-        }
+    .brand-text h1 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        color: var(--green-900);
+        line-height: 1.1;
+    }
 
-        .card:hover {
-            transform: translateY(-2px);
-            border-color: rgba(0, 230, 153, 0.35);
-        }
+    .brand-text p {
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: var(--green-700);
+        font-weight: 600;
+        margin-top: 2px;
+    }
 
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.8rem;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
+    .live-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        padding: 0.45rem 1rem;
+        background: linear-gradient(135deg, #d8f3dc 0%, #b7e4c7 100%);
+        border: 1px solid #74c69d;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--green-800);
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+    }
 
-        .card-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
-        }
+    .live-pill .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--green-700);
+        box-shadow: 0 0 0 0 rgba(45, 106, 79, 0.7);
+        animation: pulse 1.8s infinite;
+    }
 
-        .card-value {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 0.2rem;
-        }
+    @keyframes pulse {
+        0%   { box-shadow: 0 0 0 0 rgba(45, 106, 79, 0.7); }
+        70%  { box-shadow: 0 0 0 10px rgba(45, 106, 79, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(45, 106, 79, 0); }
+    }
 
-        .card-unit {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            font-weight: 400;
-        }
+    .topbar-stats {
+        display: flex;
+        gap: 2rem;
+        margin-left: auto;
+        flex-wrap: wrap;
+    }
 
-        .card-sub {
-            font-size: 0.75rem;
-            color: var(--accent-green);
-            margin-top: 0.2rem;
-        }
+    .topbar-stat {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
 
-        /* Specific Grid Spans */
-        .col-span-2 { grid-column: span 2; }
-        .col-span-3 { grid-column: span 3; }
-        .col-span-4 { grid-column: span 4; }
+    .topbar-stat .label {
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--green-700);
+        font-weight: 700;
+    }
 
-        /* Chart Styling */
-        .chart-container {
-            position: relative;
-            height: 240px;
-            width: 100%;
-        }
+    .topbar-stat .value {
+        font-family: var(--font-mono);
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--green-900);
+    }
 
-        /* Control Panel Buttons */
-        .control-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.8rem;
-            margin-top: 0.5rem;
-        }
+    /* ============================================================
+       KPI CARDS
+       ============================================================ */
+    .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1rem;
+    }
 
-        .btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 0.8rem 1rem;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: all 0.2s ease;
-        }
+    .kpi {
+        position: relative;
+        background: var(--card-bg);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border: 1px solid var(--card-border);
+        border-radius: var(--radius-lg);
+        padding: 1.25rem 1.4rem;
+        box-shadow: var(--shadow-sm);
+        display: flex;
+        flex-direction: column;
+        gap: 0.9rem;
+        overflow: hidden;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
 
-        .btn:hover {
-            background: rgba(0, 230, 153, 0.15);
-            border-color: var(--accent-green);
-            color: var(--accent-green);
-        }
+    .kpi:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+    }
 
-        .btn-danger:hover {
-            background: rgba(255, 77, 109, 0.15);
-            border-color: var(--accent-red);
-            color: var(--accent-red);
-        }
+    .kpi::before {
+        content: '';
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 5px;
+        background: var(--accent, var(--green-600));
+        border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+    }
 
-        /* Live Activity Feed Table */
-        .log-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.85rem;
-            text-align: left;
-        }
+    .kpi-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
 
-        .log-table th {
-            color: var(--text-muted);
-            padding: 0.6rem 0.8rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            font-weight: 500;
-        }
+    .kpi-title {
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        font-weight: 700;
+        color: var(--green-700);
+    }
 
-        .log-table td {
-            padding: 0.75rem 0.8rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-        }
+    .kpi-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        display: grid;
+        place-items: center;
+        background: var(--accent-bg, #e7f5ec);
+        color: var(--accent, var(--green-700));
+        font-size: 1.05rem;
+    }
 
-        .tag {
-            padding: 0.2rem 0.6rem;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
+    .kpi-value {
+        font-family: var(--font-mono);
+        font-size: 2rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1;
+        color: var(--green-900);
+        display: flex;
+        align-items: baseline;
+        gap: 0.3rem;
+    }
 
-        .tag-warning { background: rgba(255, 183, 3, 0.15); color: var(--accent-amber); }
-        .tag-success { background: rgba(0, 230, 153, 0.15); color: var(--accent-green); }
-        .tag-danger { background: rgba(255, 77, 109, 0.15); color: var(--accent-red); }
+    .kpi-value small {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--green-700);
+    }
 
-        /* Responsive Breakpoints */
-        @media (max-width: 1024px) {
-            .dashboard-grid { grid-template-columns: repeat(2, 1fr); }
-            .col-span-2, .col-span-3, .col-span-4 { grid-column: span 2; }
-        }
+    .kpi-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 0.74rem;
+        color: var(--green-700);
+        font-weight: 500;
+    }
 
-        @media (max-width: 640px) {
-            .dashboard-grid { grid-template-columns: 1fr; }
-            .col-span-2, .col-span-3, .col-span-4 { grid-column: span 1; }
-        }
-    </style>
+    .trend {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.2rem 0.55rem;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: 0.7rem;
+        font-family: var(--font-mono);
+    }
+
+    .trend.up   { background: #e6f4ea; color: #1b7c3b; }
+    .trend.down { background: #fdecea; color: #c0392b; }
+    .trend.flat { background: #eef1f3; color: #4a5568; }
+
+    /* KPI accent variants */
+    .kpi.moisture { --accent: var(--blue-600); --accent-bg: #e3f2fd; }
+    .kpi.temp     { --accent: var(--orange-600); --accent-bg: #fff1e6; }
+    .kpi.humidity { --accent: var(--purple-600); --accent-bg: #f0e9ff; }
+    .kpi.battery  { --accent: var(--green-700); --accent-bg: #e7f5ec; }
+
+    /* ============================================================
+       MAIN GRID
+       ============================================================ */
+    .main-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 2.4fr) minmax(0, 1fr);
+        gap: 1rem;
+    }
+
+    @media (max-width: 1100px) {
+        .main-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ============================================================
+       CARD (generic)
+       ============================================================ */
+    .card {
+        background: var(--card-bg);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border: 1px solid var(--card-border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        padding: 1.5rem 1.6rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .card-title {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .card-title h2 {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--green-900);
+        letter-spacing: -0.01em;
+    }
+
+    .card-title span {
+        font-size: 0.74rem;
+        color: var(--green-700);
+        font-weight: 500;
+    }
+
+    .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.35rem 0.85rem;
+        background: var(--green-50);
+        border: 1px solid var(--green-300);
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: var(--green-800);
+        letter-spacing: 0.04em;
+    }
+
+    .chip.live {
+        background: #e7f5ec;
+        border-color: #74c69d;
+    }
+
+    .chip.live::before {
+        content: '';
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--green-600);
+        animation: pulse 1.8s infinite;
+    }
+
+    /* ============================================================
+       CHART
+       ============================================================ */
+    .chart-wrap {
+        position: relative;
+        width: 100%;
+        height: 360px;
+    }
+
+    .chart-wrap canvas {
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    .chart-toolbar {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .legend-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.35rem 0.75rem;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        border: 1px solid transparent;
+        background: var(--green-50);
+        color: var(--green-800);
+        cursor: pointer;
+        transition: opacity 0.15s ease;
+        user-select: none;
+    }
+
+    .legend-pill.muted { opacity: 0.35; }
+
+    .legend-swatch {
+        width: 10px;
+        height: 10px;
+        border-radius: 3px;
+    }
+
+    /* ============================================================
+       SIDE COLUMN
+       ============================================================ */
+    .side-col {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    /* Control panel */
+    .controls-card {
+        background:
+            linear-gradient(140deg, var(--green-800) 0%, var(--green-900) 100%);
+        color: #e9f5e9;
+        border: 1px solid rgba(116, 198, 157, 0.35);
+        border-radius: var(--radius-lg);
+        padding: 1.5rem 1.6rem;
+        box-shadow: var(--shadow-lg);
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .controls-card .card-title h2 { color: #ffffff; }
+    .controls-card .card-title span { color: var(--green-300); }
+
+    .action-list {
+        display: grid;
+        gap: 0.65rem;
+    }
+
+    .action-btn {
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        padding: 0.9rem 1.1rem;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.08);
+        color: #ffffff;
+        font-weight: 600;
+        font-size: 0.92rem;
+        text-align: left;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        transition: all 0.15s ease;
+    }
+
+    .action-btn:hover {
+        background: rgba(255, 255, 255, 0.16);
+        transform: translateY(-1px);
+        border-color: rgba(255, 255, 255, 0.28);
+    }
+
+    .action-btn:active { transform: translateY(1px); }
+
+    .action-btn.primary {
+        background: linear-gradient(135deg, var(--green-500) 0%, var(--green-600) 100%);
+        border-color: rgba(255, 255, 255, 0.35);
+        box-shadow: 0 10px 24px -10px rgba(82, 183, 136, 0.9);
+    }
+
+    .action-btn.primary:hover {
+        background: linear-gradient(135deg, var(--green-400) 0%, var(--green-500) 100%);
+    }
+
+    .action-btn .ico {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.15);
+        display: grid;
+        place-items: center;
+        font-size: 1.1rem;
+    }
+
+    .action-btn .text {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.15;
+    }
+
+    .action-btn .text small {
+        font-size: 0.68rem;
+        opacity: 0.75;
+        font-weight: 500;
+        margin-top: 2px;
+        letter-spacing: 0.02em;
+    }
+
+    /* ============================================================
+       ENVIRONMENT PANEL
+       ============================================================ */
+    .env-list {
+        display: grid;
+        gap: 0.75rem;
+    }
+
+    .env-item {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        padding: 0.7rem 0.85rem;
+        border-radius: 12px;
+        background: var(--green-50);
+        border: 1px solid rgba(150, 190, 160, 0.3);
+    }
+
+    .env-item .emoji {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        border-radius: 10px;
+        background: #ffffff;
+        font-size: 1.05rem;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .env-item .info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+    }
+
+    .env-item .info .k {
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--green-700);
+    }
+
+    .env-item .info .v {
+        font-family: var(--font-mono);
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--green-900);
+    }
+
+    .env-item .bar {
+        width: 58px;
+        height: 6px;
+        border-radius: 999px;
+        background: #d8e8da;
+        overflow: hidden;
+    }
+
+    .env-item .bar > i {
+        display: block;
+        height: 100%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, var(--green-500), var(--green-700));
+        transition: width 0.5s ease;
+    }
+
+    /* ============================================================
+       EVENT LOG
+       ============================================================ */
+    .log-card {
+        flex: 1;
+        min-height: 0;
+    }
+
+    .log-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        max-height: 260px;
+        overflow-y: auto;
+        padding-right: 4px;
+    }
+
+    .log-list::-webkit-scrollbar { width: 6px; }
+    .log-list::-webkit-scrollbar-thumb {
+        background: rgba(150, 190, 160, 0.6);
+        border-radius: 999px;
+    }
+
+    .log-entry {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.7rem;
+        padding: 0.55rem 0.75rem;
+        border-radius: 10px;
+        font-size: 0.78rem;
+        background: var(--green-50);
+        border-left: 3px solid var(--green-600);
+        animation: slideIn 0.35s ease;
+    }
+
+    .log-entry.info    { border-left-color: var(--blue-600); }
+    .log-entry.success { border-left-color: var(--green-600); }
+    .log-entry.warn    { border-left-color: var(--amber-500); }
+    .log-entry.alert   { border-left-color: var(--red-600); }
+
+    .log-entry .time {
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        color: var(--green-700);
+        font-weight: 600;
+        flex-shrink: 0;
+        padding-top: 1px;
+    }
+
+    .log-entry .msg {
+        color: var(--green-900);
+        font-weight: 500;
+        line-height: 1.35;
+    }
+
+    @keyframes slideIn {
+        from { opacity: 0; transform: translateX(-6px); }
+        to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* ============================================================
+       STATUS FOOTER
+       ============================================================ */
+    .status-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.85rem 1.5rem;
+        border-radius: var(--radius-lg);
+        background: var(--card-bg);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border: 1px solid var(--card-border);
+        box-shadow: var(--shadow-sm);
+        flex-wrap: wrap;
+        font-size: 0.78rem;
+        color: var(--green-800);
+        font-weight: 500;
+    }
+
+    .status-group {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        flex-wrap: wrap;
+    }
+
+    .status-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+    }
+
+    .status-led {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--green-600);
+        box-shadow: 0 0 8px rgba(82, 183, 136, 0.9);
+    }
+
+    .status-led.warn { background: var(--amber-500); box-shadow: 0 0 8px rgba(245, 159, 0, 0.9); }
+    .status-led.err  { background: var(--red-600); box-shadow: 0 0 8px rgba(208, 0, 0, 0.9); }
+
+    .status-sep {
+        width: 1px;
+        height: 18px;
+        background: rgba(150, 190, 160, 0.5);
+    }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 700px) {
+        .topbar { padding: 0.9rem 1.15rem; }
+        .brand-text h1 { font-size: 1.05rem; }
+        .card { padding: 1.15rem 1.2rem; }
+        .kpi-value { font-size: 1.6rem; }
+        .chart-wrap { height: 280px; }
+    }
+</style>
 </head>
 <body>
+<div class="app">
 
-    <!-- Header / Nav -->
-    <header>
-        <div class="brand-logo">
-            <i class="fa-solid fa-robot"></i>
-            <div>
-                <h1>NIPAS <span>Telemetry</span></h1>
+    <!-- ============================================================
+         TOP BAR
+         ============================================================ -->
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-logo">🌱</div>
+            <div class="brand-text">
+                <h1>NIPAS</h1>
+                <p>Precision Agriculture</p>
             </div>
         </div>
-        <div style="display: flex; gap: 15px; align-items: center;">
-            <div class="status-badge">
-                <div class="pulse-dot"></div>
-                ESP32 Online (MQTT)
+
+        <div class="live-pill">
+            <span class="dot"></span>
+            Live Telemetry
+        </div>
+
+        <div class="topbar-stats">
+            <div class="topbar-stat">
+                <span class="label">Stream interval</span>
+                <span class="value" id="streamIntervalLabel">3.0s</span>
+            </div>
+            <div class="topbar-stat">
+                <span class="label">Local time</span>
+                <span class="value" id="clock">--:--:--</span>
+            </div>
+            <div class="topbar-stat">
+                <span class="label">Node</span>
+                <span class="value">NIPAS‑RPI‑04</span>
             </div>
         </div>
     </header>
 
-    <!-- Main Grid -->
-    <div class="dashboard-grid">
-
-        <!-- Card 1: Soil Moisture -->
-        <div class="card">
-            <div class="card-header">
-                <span>Sub-Surface Moisture</span>
-                <div class="card-icon" style="background: rgba(0, 180, 216, 0.15); color: var(--accent-blue);">
-                    <i class="fa-solid fa-droplet"></i>
-                </div>
+    <!-- ============================================================
+         KPI CARDS
+         ============================================================ -->
+    <section class="kpi-grid">
+        <div class="kpi moisture">
+            <div class="kpi-header">
+                <span class="kpi-title">Soil moisture</span>
+                <div class="kpi-icon">💧</div>
             </div>
-            <div class="card-value" id="moisture-val">42<span class="card-unit">%</span></div>
-            <div class="card-sub"><i class="fa-solid fa-circle-check"></i> Root zone moisture optimal</div>
+            <div class="kpi-value" id="kpiMoisture">--<small>%</small></div>
+            <div class="kpi-footer">
+                <span id="kpiMoistureSub">Optimal range 35–55%</span>
+                <span class="trend flat" id="kpiMoistureTrend">— flat</span>
+            </div>
         </div>
 
-        <!-- Card 2: Soil pH -->
-        <div class="card">
-            <div class="card-header">
-                <span>Root Zone pH</span>
-                <div class="card-icon" style="background: rgba(0, 230, 153, 0.15); color: var(--accent-green);">
-                    <i class="fa-solid fa-vial"></i>
-                </div>
+        <div class="kpi temp">
+            <div class="kpi-header">
+                <span class="kpi-title">Ambient temp</span>
+                <div class="kpi-icon">🌡️</div>
             </div>
-            <div class="card-value" id="ph-val">6.4<span class="card-unit"> pH</span></div>
-            <div class="card-sub"><i class="fa-solid fa-seedling"></i> Ideal for vegetable crops</div>
+            <div class="kpi-value" id="kpiTemp">--<small>°C</small></div>
+            <div class="kpi-footer">
+                <span id="kpiTempSub">Comfort zone 18–28°C</span>
+                <span class="trend flat" id="kpiTempTrend">— flat</span>
+            </div>
         </div>
 
-        <!-- Card 3: Ambient Temperature -->
-        <div class="card">
-            <div class="card-header">
-                <span>Canopy Temp (DHT22)</span>
-                <div class="card-icon" style="background: rgba(255, 183, 3, 0.15); color: var(--accent-amber);">
-                    <i class="fa-solid fa-temperature-half"></i>
-                </div>
+        <div class="kpi humidity">
+            <div class="kpi-header">
+                <span class="kpi-title">Air humidity</span>
+                <div class="kpi-icon">☁️</div>
             </div>
-            <div class="card-value" id="temp-val">28.5<span class="card-unit">°C</span></div>
-            <div class="card-sub">Humidity: <span id="hum-val">68</span>%</div>
+            <div class="kpi-value" id="kpiHumidity">--<small>%</small></div>
+            <div class="kpi-footer">
+                <span>Target 60–75% RH</span>
+                <span class="trend flat" id="kpiHumidityTrend">— flat</span>
+            </div>
         </div>
 
-        <!-- Card 4: Micro-Dosing Tank -->
+        <div class="kpi battery">
+            <div class="kpi-header">
+                <span class="kpi-title">Node battery</span>
+                <div class="kpi-icon">🔋</div>
+            </div>
+            <div class="kpi-value" id="kpiBattery">--<small>%</small></div>
+            <div class="kpi-footer">
+                <span id="kpiBatterySub">Solar charging</span>
+                <span class="trend flat" id="kpiBatteryTrend">— flat</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         MAIN GRID: chart + side column
+         ============================================================ -->
+    <div class="main-grid">
+
+        <!-- Chart card -->
         <div class="card">
             <div class="card-header">
-                <span>Dosing Solution Tank</span>
-                <div class="card-icon" style="background: rgba(255, 77, 109, 0.15); color: var(--accent-red);">
-                    <i class="fa-solid fa-flask"></i>
+                <div class="card-title">
+                    <h2>Live Sensor Telemetry</h2>
+                    <span>Soil moisture · Ambient temperature · rolling 15‑point window</span>
+                </div>
+                <div class="chart-toolbar">
+                    <span class="chip live">Streaming · 3s</span>
+                    <button class="legend-pill" data-toggle="0">
+                        <span class="legend-swatch" style="background:#1e88e5"></span> Moisture
+                    </button>
+                    <button class="legend-pill" data-toggle="1">
+                        <span class="legend-swatch" style="background:#e8590c"></span> Temperature
+                    </button>
                 </div>
             </div>
-            <div class="card-value">220<span class="card-unit"> mL</span></div>
-            <div class="card-sub" style="color: var(--text-muted);">Est. 220 targeted mist pulses left</div>
-        </div>
 
-        <!-- Line Graph: Real-time Telemetry -->
-        <div class="card col-span-3">
-            <div class="card-header">
-                <span>Real-Time Sub-Surface Telemetry Logs</span>
-                <span style="font-size: 0.75rem; color: var(--text-muted);">Live ESP32 Sampling (2s interval)</span>
-            </div>
-            <div class="chart-container">
+            <div class="chart-wrap">
                 <canvas id="telemetryChart"></canvas>
             </div>
         </div>
 
-        <!-- Manual Rover Overrides -->
-        <div class="card">
-            <div class="card-header">
-                <span>Rover Control & Override</span>
-                <i class="fa-solid fa-gamepad"></i>
+        <!-- Side column -->
+        <div class="side-col">
+
+            <!-- Controls -->
+            <div class="controls-card">
+                <div class="card-title">
+                    <h2>Actuator Controls</h2>
+                    <span>Manual overrides · take effect immediately</span>
+                </div>
+                <div class="action-list">
+                    <button class="action-btn primary" id="btnSpray">
+                        <div class="ico">💦</div>
+                        <div class="text">
+                            Spray Mist
+                            <small>Irrigate · moisture ↑ · temp ↓</small>
+                        </div>
+                    </button>
+                    <button class="action-btn" id="btnVent">
+                        <div class="ico">🌀</div>
+                        <div class="text">
+                            Ventilate
+                            <small>Air exchange · temp ↓</small>
+                        </div>
+                    </button>
+                    <button class="action-btn" id="btnHeat">
+                        <div class="ico">🔥</div>
+                        <div class="text">
+                            Heat Pulse
+                            <small>Greenhouse warming · temp ↑</small>
+                        </div>
+                    </button>
+                    <button class="action-btn" id="btnCalibrate">
+                        <div class="ico">🎯</div>
+                        <div class="text">
+                            Recalibrate Sensors
+                            <small>Re‑baseline probe offsets</small>
+                        </div>
+                    </button>
+                </div>
             </div>
-            <div class="control-grid">
-                <button class="btn" onclick="triggerAction('Probe Drop')"><i class="fa-solid fa-arrow-down"></i> Lower Probe</button>
-                <button class="btn" onclick="triggerAction('Probe Raise')"><i class="fa-solid fa-arrow-up"></i> Lift Probe</button>
-                <button class="btn" onclick="triggerAction('Targeted Dosing Pulse')"><i class="fa-solid fa-spray-can"></i> Manual Spray</button>
-                <button class="btn btn-danger" onclick="triggerAction('Emergency Stop')"><i class="fa-solid fa-circle-stop"></i> E-Stop Rover</button>
+
+            <!-- Environment -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2>Environment</h2>
+                        <span>Secondary sensor readings</span>
+                    </div>
+                </div>
+                <div class="env-list">
+                    <div class="env-item">
+                        <div class="emoji">☀️</div>
+                        <div class="info"><span class="k">Light intensity</span><span class="v" id="envLight">-- klx</span></div>
+                        <div class="bar"><i id="envLightBar" style="width:60%"></i></div>
+                    </div>
+                    <div class="env-item">
+                        <div class="emoji">🪨</div>
+                        <div class="info"><span class="k">Soil pH</span><span class="v" id="envPH">-- pH</span></div>
+                        <div class="bar"><i id="envPHBar" style="width:50%"></i></div>
+                    </div>
+                    <div class="env-item">
+                        <div class="emoji">⚡</div>
+                        <div class="info"><span class="k">Conductivity</span><span class="v" id="envEC">-- mS/cm</span></div>
+                        <div class="bar"><i id="envECBar" style="width:40%"></i></div>
+                    </div>
+                    <div class="env-item">
+                        <div class="emoji">🌬️</div>
+                        <div class="info"><span class="k">CO₂ level</span><span class="v" id="envCO2">-- ppm</span></div>
+                        <div class="bar"><i id="envCO2Bar" style="width:55%"></i></div>
+                    </div>
+                </div>
             </div>
         </div>
-
-        <!-- Leaf Inspection Log Table -->
-        <div class="card col-span-4">
-            <div class="card-header">
-                <span>Under-Canopy Edge Scan Detection Log (HSV Isolation)</span>
-                <span class="tag tag-success">Edge Processing Active</span>
-            </div>
-            <table class="log-table">
-                <thead>
-                    <tr>
-                        <th>Timestamp</th>
-                        <th>Row ID</th>
-                        <th>HSV Yellow-Shift %</th>
-                        <th>Status / Diagnostics</th>
-                        <th>Action Triggered</th>
-                    </tr>
-                </thead>
-                <tbody id="log-body">
-                    <tr>
-                        <td>10:42:15 AM</td>
-                        <td>Row 02 - Plant 14</td>
-                        <td>4.2%</td>
-                        <td><span class="tag tag-success">Healthy Foliage</span></td>
-                        <td>Continued Navigation</td>
-                    </tr>
-                    <tr>
-                        <td>10:41:50 AM</td>
-                        <td>Row 02 - Plant 11</td>
-                        <td>18.7%</td>
-                        <td><span class="tag tag-warning">Early Blight Suspected</span></td>
-                        <td>1s Targeted Atomized Micro-Dose</td>
-                    </tr>
-                    <tr>
-                        <td>10:40:12 AM</td>
-                        <td>Row 01 - Plant 08</td>
-                        <td>2.1%</td>
-                        <td><span class="tag tag-success">Healthy Foliage</span></td>
-                        <td>Continued Navigation</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
     </div>
 
-    <!-- Script for Live Chart Generation and Data Simulation -->
-    <script>
-        // Setup Chart.js Telemetry Graph
-        const ctx = document.getElementById('telemetryChart').getContext('2d');
-        const telemetryChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['10:41:00', '10:41:10', '10:41:20', '10:41:30', '10:41:40', '10:41:50', '10:42:00'],
-                datasets: [{
-                    label: 'Soil Moisture (%)',
-                    data: [45, 44, 42, 40, 38, 41, 42],
-                    borderColor: '#00b4d8',
-                    backgroundColor: 'rgba(0, 180, 216, 0.1)',
-                    fill: true,
-                    tension: 0.4
-                }, {
-                    label: 'Temperature (°C)',
-                    data: [28.1, 28.2, 28.3, 28.4, 28.5, 28.5, 28.5],
-                    borderColor: '#ffb703',
-                    borderDash: [5, 5],
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { labels: { color: '#94a3b8' } } },
-                scales: {
-                    x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-                    y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } }
-                }
-            }
-        });
+    <!-- ============================================================
+         EVENT LOG + STATUS
+         ============================================================ -->
+    <div class="main-grid" style="grid-template-columns: 1fr;">
+        <div class="card log-card">
+            <div class="card-header">
+                <div class="card-title">
+                    <h2>Event Log</h2>
+                    <span>Recent system activity and telemetry events</span>
+                </div>
+                <span class="chip" id="logCount">0 events</span>
+            </div>
+            <div class="log-list" id="logList"></div>
+        </div>
+    </div>
 
-        // Simulating Real-time Sensor Shifts
-        setInterval(() => {
-            let moisture = Math.floor(40 + Math.random() * 5);
-            let temp = (28.2 + Math.random() * 0.6).toFixed(1);
-            document.getElementById('moisture-val').innerHTML = moisture + '<span class="card-unit">%</span>';
-            document.getElementById('temp-val').innerHTML = temp + '<span class="card-unit">°C</span>';
+    <!-- Status bar -->
+    <footer class="status-bar">
+        <div class="status-group">
+            <span class="status-item"><span class="status-led"></span> WebSocket connected</span>
+            <span class="status-sep"></span>
+            <span class="status-item"><span class="status-led"></span> Sensors online · 6/6</span>
+            <span class="status-sep"></span>
+            <span class="status-item"><span class="status-led warn"></span> Low soil moisture alert armed</span>
+        </div>
+        <div class="status-group">
+            <span class="status-item">Uptime <strong id="uptime">00:00</strong></span>
+            <span class="status-sep"></span>
+            <span class="status-item">Packets <strong id="pktCount">0</strong></span>
+            <span class="status-sep"></span>
+            <span class="status-item">NIPAS v2.4 · build 2024‑11</span>
+        </div>
+    </footer>
 
-            // Add live data to graph
-            const now = new Date().toLocaleTimeString();
-            telemetryChart.data.labels.shift();
-            telemetryChart.data.labels.push(now);
-            telemetryChart.data.datasets[0].data.shift();
-            telemetryChart.data.datasets[0].data.push(moisture);
-            telemetryChart.update();
-        }, 3000);
+</div>
 
-        function triggerAction(actionName) {
-            alert("Command Sent via MQTT to ESP32: " + actionName);
+<script>
+(function () {
+    'use strict';
+
+    /* ============================================================
+       CONFIGURATION
+       ============================================================ */
+    const CONFIG = {
+        MAX_POINTS: 15,
+        STREAM_INTERVAL_MS: 3000,
+        MOISTURE_BASELINE: 42,
+        TEMP_BASELINE: 23.5,
+        HUMIDITY_BASELINE: 65,
+        MOISTURE_MIN: 15,
+        MOISTURE_MAX: 70,
+        TEMP_MIN: 15,
+        TEMP_MAX: 34,
+        HUMIDITY_MIN: 35,
+        HUMIDITY_MAX: 90,
+        ALERT_MOISTURE_LOW: 25,
+    };
+
+    /* ============================================================
+       STATE
+       ============================================================ */
+    const state = {
+        soilMoisture: 42,
+        ambientTemp: 23.5,
+        airHumidity: 65,
+        battery: 87,
+        light: 45,     // klx
+        ph: 6.5,
+        ec: 1.2,       // mS/cm
+        co2: 620,      // ppm
+        moistureHistory: [],
+        tempHistory: [],
+        humidityHistory: [],
+        timeLabels: [],
+        packets: 0,
+        startTime: Date.now(),
+        events: [],
+        datasetVisibility: [true, true],
+    };
+
+    /* ============================================================
+       DOM
+       ============================================================ */
+    const $ = (id) => document.getElementById(id);
+    const dom = {
+        clock: $('clock'),
+        kpiMoisture: $('kpiMoisture'),
+        kpiMoistureTrend: $('kpiMoistureTrend'),
+        kpiMoistureSub: $('kpiMoistureSub'),
+        kpiTemp: $('kpiTemp'),
+        kpiTempTrend: $('kpiTempTrend'),
+        kpiTempSub: $('kpiTempSub'),
+        kpiHumidity: $('kpiHumidity'),
+        kpiHumidityTrend: $('kpiHumidityTrend'),
+        kpiBattery: $('kpiBattery'),
+        kpiBatteryTrend: $('kpiBatteryTrend'),
+        kpiBatterySub: $('kpiBatterySub'),
+
+        envLight: $('envLight'),
+        envLightBar: $('envLightBar'),
+        envPH: $('envPH'),
+        envPHBar: $('envPHBar'),
+        envEC: $('envEC'),
+        envECBar: $('envECBar'),
+        envCO2: $('envCO2'),
+        envCO2Bar: $('envCO2Bar'),
+
+        logList: $('logList'),
+        logCount: $('logCount'),
+
+        uptime: $('uptime'),
+        pktCount: $('pktCount'),
+
+        btnSpray: $('btnSpray'),
+        btnVent: $('btnVent'),
+        btnHeat: $('btnHeat'),
+        btnCalibrate: $('btnCalibrate'),
+
+        streamIntervalLabel: $('streamIntervalLabel'),
+    };
+
+    /* ============================================================
+       UTILITIES
+       ============================================================ */
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    function localTime(d = new Date()) {
+        return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+    }
+
+    function clamp(v, min, max) { return Math.min(max, Math.max(min, v)); }
+
+    function rand(min, max) { return min + Math.random() * (max - min); }
+
+    function fmt(v, dec = 1) { return Number(v).toFixed(dec); }
+
+    /* ============================================================
+       EVENT LOG
+       ============================================================ */
+    function pushEvent(message, level = 'info') {
+        const evt = {
+            time: localTime(),
+            message,
+            level,
+        };
+        state.events.unshift(evt);
+        if (state.events.length > 40) state.events.pop();
+
+        const el = document.createElement('div');
+        el.className = `log-entry ${level}`;
+        el.innerHTML = `<span class="time">${evt.time}</span><span class="msg">${message}</span>`;
+        dom.logList.prepend(el);
+        while (dom.logList.children.length > 40) dom.logList.removeChild(dom.logList.lastChild);
+
+        dom.logCount.textContent = `${state.events.length} events`;
+    }
+
+    /* ============================================================
+       INITIAL HISTORY (past N points ending at "now")
+       ============================================================ */
+    function seedHistory() {
+        const now = Date.now();
+        for (let i = CONFIG.MAX_POINTS - 1; i >= 0; i--) {
+            const t = new Date(now - i * CONFIG.STREAM_INTERVAL_MS);
+            state.timeLabels.push(localTime(t));
+
+            // build a realistic-looking baseline with subtle variation
+            const m = CONFIG.MOISTURE_BASELINE + Math.sin(i * 0.7) * 2.5 + rand(-0.6, 0.6);
+            const tp = CONFIG.TEMP_BASELINE + Math.cos(i * 0.5) * 1.2 + rand(-0.4, 0.4);
+            const h = CONFIG.HUMIDITY_BASELINE + Math.sin(i * 0.4) * 3 + rand(-1, 1);
+
+            state.moistureHistory.push(clamp(m, CONFIG.MOISTURE_MIN, CONFIG.MOISTURE_MAX));
+            state.tempHistory.push(clamp(tp, CONFIG.TEMP_MIN, CONFIG.TEMP_MAX));
+            state.humidityHistory.push(clamp(h, CONFIG.HUMIDITY_MIN, CONFIG.HUMIDITY_MAX));
         }
-    </script>
+        state.soilMoisture = state.moistureHistory[state.moistureHistory.length - 1];
+        state.ambientTemp = state.tempHistory[state.tempHistory.length - 1];
+        state.airHumidity = state.humidityHistory[state.humidityHistory.length - 1];
+        state.packets = CONFIG.MAX_POINTS;
+    }
+
+    seedHistory();
+
+    /* ============================================================
+       CHART
+       ============================================================ */
+    const ctx = document.getElementById('telemetryChart').getContext('2d');
+
+    // gradient fill helper
+    function makeGradient(ctx, colorTop, colorBottom) {
+        const g = ctx.createLinearGradient(0, 0, 0, 360);
+        g.addColorStop(0, colorTop);
+        g.addColorStop(1, colorBottom);
+        return g;
+    }
+
+    const moistureGradient = makeGradient(ctx, 'rgba(30,136,229,0.28)', 'rgba(30,136,229,0.0)');
+    const tempGradient     = makeGradient(ctx, 'rgba(232,89,12,0.22)',  'rgba(232,89,12,0.0)');
+
+    const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: state.timeLabels.slice(),
+            datasets: [
+                {
+                    label: 'Soil moisture (%)',
+                    data: state.moistureHistory.slice(),
+                    borderColor: '#1e88e5',
+                    backgroundColor: moistureGradient,
+                    borderWidth: 2.6,
+                    pointBackgroundColor: '#1e88e5',
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 1.5,
+                    pointRadius: 4,
+                    pointHoverRadius: 7,
+                    pointHoverBorderWidth: 2,
+                    tension: 0.35,
+                    fill: true,
+                    yAxisID: 'y',
+                },
+                {
+                    label: 'Ambient temperature (°C)',
+                    data: state.tempHistory.slice(),
+                    borderColor: '#e8590c',
+                    backgroundColor: tempGradient,
+                    borderWidth: 2.6,
+                    pointBackgroundColor: '#e8590c',
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 1.5,
+                    pointRadius: 4,
+                    pointHoverRadius: 7,
+                    pointHoverBorderWidth: 2,
+                    tension: 0.35,
+                    fill: true,
+                    yAxisID: 'y1',
+                },
+            ],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: { duration: 500, easing: 'easeOutQuart' },
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: 'rgba(15,46,31,0.94)',
+                    titleColor: '#95d5b2',
+                    bodyColor: '#e9f5e9',
+                    padding: 12,
+                    cornerRadius: 10,
+                    borderColor: 'rgba(116,198,157,0.4)',
+                    borderWidth: 1,
+                    displayColors: true,
+                    usePointStyle: true,
+                    titleFont: { size: 12, weight: '600' },
+                    bodyFont: { size: 12, family: "'JetBrains Mono', monospace" },
+                    callbacks: {
+                        title: (items) => `⏱  ${items[0].label}`,
+                        label: (c) => {
+                            const unit = c.datasetIndex === 0 ? '%' : '°C';
+                            return `  ${c.dataset.label}: ${c.parsed.y.toFixed(1)}${unit}`;
+                        },
+                    },
+                },
+            },
+            scales: {
+                y: {
+                    position: 'left',
+                    suggestedMin: 15,
+                    suggestedMax: 70,
+                    grid: { color: 'rgba(150,190,160,0.18)', drawTicks: false },
+                    border: { display: false },
+                    ticks: {
+                        color: '#40916c',
+                        font: { size: 11, family: "'JetBrains Mono', monospace", weight: '600' },
+                        padding: 8,
+                        callback: (v) => v + '%',
+                    },
+                    title: {
+                        display: true,
+                        text: 'SOIL MOISTURE',
+                        color: '#1e88e5',
+                        font: { size: 10, weight: '700' },
+                        padding: { bottom: 6 },
+                    },
+                },
+                y1: {
+                    position: 'right',
+                    suggestedMin: 15,
+                    suggestedMax: 35,
+                    grid: { drawOnChartArea: false },
+                    border: { display: false },
+                    ticks: {
+                        color: '#e8590c',
+                        font: { size: 11, family: "'JetBrains Mono', monospace", weight: '600' },
+                        padding: 8,
+                        callback: (v) => v + '°',
+                    },
+                    title: {
+                        display: true,
+                        text: 'TEMP',
+                        color: '#e8590c',
+                        font: { size: 10, weight: '700' },
+                        padding: { bottom: 6 },
+                    },
+                },
+                x: {
+                    grid: { display: false },
+                    border: { display: false },
+                    ticks: {
+                        color: '#2d6a4f',
+                        font: { size: 10.5, family: "'JetBrains Mono', monospace" },
+                        maxRotation: 0,
+                        autoSkip: true,
+                        maxTicksLimit: 8,
+                        padding: 8,
+                    },
+                },
+            },
+        },
+    });
+
+    /* ============================================================
+       TELEMETRY TICK
+       ============================================================ */
+    function tick(options = {}) {
+        const { forcedMoisture = null, forcedTemp = null, forcedHumidity = null, silent = false } = options;
+
+        // --- update primary sensors ---
+        if (forcedMoisture === null) {
+            // mean-reverting random walk (spikes decay toward baseline)
+            const pull = (CONFIG.MOISTURE_BASELINE - state.soilMoisture) * 0.08;
+            state.soilMoisture = clamp(
+                state.soilMoisture + pull + rand(-0.7, 0.7),
+                CONFIG.MOISTURE_MIN, CONFIG.MOISTURE_MAX
+            );
+        } else {
+            state.soilMoisture = clamp(forcedMoisture, CONFIG.MOISTURE_MIN, CONFIG.MOISTURE_MAX);
+        }
+
+        if (forcedTemp === null) {
+            const pull = (CONFIG.TEMP_BASELINE - state.ambientTemp) * 0.08;
+            state.ambientTemp = clamp(
+                state.ambientTemp + pull + rand(-0.45, 0.45),
+                CONFIG.TEMP_MIN, CONFIG.TEMP_MAX
+            );
+        } else {
+            state.ambientTemp = clamp(forcedTemp, CONFIG.TEMP_MIN, CONFIG.TEMP_MAX);
+        }
+
+        if (forcedHumidity === null) {
+            const pull = (CONFIG.HUMIDITY_BASELINE - state.airHumidity) * 0.06;
+            state.airHumidity = clamp(
+                state.airHumidity + pull + rand(-1.2, 1.2),
+                CONFIG.HUMIDITY_MIN, CONFIG.HUMIDITY_MAX
+            );
+        } else {
+            state.airHumidity = clamp(forcedHumidity, CONFIG.HUMIDITY_MIN, CONFIG.HUMIDITY_MAX);
+        }
+
+        // --- secondary sensors (drift only) ---
+        state.light = clamp(state.light + rand(-3, 3), 5, 95);
+        state.ph = clamp(state.ph + rand(-0.05, 0.05), 5.2, 7.8);
+        state.ec = clamp(state.ec + rand(-0.04, 0.04), 0.3, 2.8);
+        state.co2 = clamp(state.co2 + rand(-25, 25), 380, 1200);
+        state.battery = clamp(state.battery - rand(0, 0.15), 0, 100);
+
+        // --- push to history ---
+        const label = localTime();
+        state.timeLabels.push(label);
+        state.moistureHistory.push(state.soilMoisture);
+        state.tempHistory.push(state.ambientTemp);
+        state.humidityHistory.push(state.airHumidity);
+
+        while (state.timeLabels.length > CONFIG.MAX_POINTS) {
+            state.timeLabels.shift();
+            state.moistureHistory.shift();
+            state.tempHistory.shift();
+            state.humidityHistory.shift();
+        }
+
+        state.packets++;
+
+        // --- update chart ---
+        chart.data.labels = state.timeLabels.slice();
+        chart.data.datasets[0].data = state.moistureHistory.slice();
+        chart.data.datasets[1].data = state.tempHistory.slice();
+        chart.update();
+
+        // --- update UI ---
+        updateKPIs();
+        updateEnvPanel();
+        if (!silent) checkAlerts();
+
+        dom.pktCount.textContent = state.packets.toLocaleString();
+    }
+
+    /* ============================================================
+       KPI UPDATE
+       ============================================================ */
+    function trendFor(history) {
+        if (history.length < 2) return { cls: 'flat', label: '— flat' };
+        const delta = history[history.length - 1] - history[history.length - 2];
+        if (delta > 0.15) return { cls: 'up',   label: `▲ +${delta.toFixed(1)}` };
+        if (delta < -0.15) return { cls: 'down', label: `▼ ${delta.toFixed(1)}` };
+        return { cls: 'flat', label: '— flat' };
+    }
+
+    function setTrend(el, t) {
+        el.className = `trend ${t.cls}`;
+        el.textContent = t.label;
+    }
+
+    function updateKPIs() {
+        dom.kpiMoisture.innerHTML = `${fmt(state.soilMoisture, 1)}<small>%</small>`;
+        dom.kpiTemp.innerHTML     = `${fmt(state.ambientTemp, 1)}<small>°C</small>`;
+        dom.kpiHumidity.innerHTML = `${fmt(state.airHumidity, 0)}<small>%</small>`;
+        dom.kpiBattery.innerHTML  = `${fmt(state.battery, 0)}<small>%</small>`;
+
+        setTrend(dom.kpiMoistureTrend, trendFor(state.moistureHistory));
+        setTrend(dom.kpiTempTrend,     trendFor(state.tempHistory));
+        setTrend(dom.kpiHumidityTrend, trendFor(state.humidityHistory));
+
+        // battery trend (simple)
+        const batT = state.battery > 80
+            ? { cls: 'up', label: '▲ healthy' }
+            : state.battery > 40
+                ? { cls: 'flat', label: '— nominal' }
+                : { cls: 'down', label: '▼ low' };
+        setTrend(dom.kpiBatteryTrend, batT);
+
+        // context subtitles
+        if (state.soilMoisture < 25) dom.kpiMoistureSub.textContent = '⚠ Low · irrigation recommended';
+        else if (state.soilMoisture > 60) dom.kpiMoistureSub.textContent = '⚠ High · possible oversaturation';
+        else dom.kpiMoistureSub.textContent = 'Optimal range 35–55%';
+
+        if (state.ambientTemp > 30) dom.kpiTempSub.textContent = '⚠ Hot · consider ventilation';
+        else if (state.ambientTemp < 18) dom.kpiTempSub.textContent = '⚠ Cold · heat pulse advised';
+        else dom.kpiTempSub.textContent = 'Comfort zone 18–28°C';
+    }
+
+    /* ============================================================
+       ENV PANEL UPDATE
+       ============================================================ */
+    function updateEnvPanel() {
+        dom.envLight.textContent = `${fmt(state.light, 0)} klx`;
+        dom.envLightBar.style.width = `${clamp(state.light, 0, 100)}%`;
+
+        dom.envPH.textContent = `${fmt(state.ph, 2)} pH`;
+        dom.envPHBar.style.width = `${clamp((state.ph - 4) / 5 * 100, 0, 100)}%`;
+
+        dom.envEC.textContent = `${fmt(state.ec, 2)} mS/cm`;
+        dom.envECBar.style.width = `${clamp(state.ec / 3 * 100, 0, 100)}%`;
+
+        dom.envCO2.textContent = `${fmt(state.co2, 0)} ppm`;
+        dom.envCO2Bar.style.width = `${clamp((state.co2 - 380) / (1200 - 380) * 100, 0, 100)}%`;
+    }
+
+    /* ============================================================
+       ALERTS
+       ============================================================ */
+    let lastAlertTime = 0;
+    function checkAlerts() {
+        const now = Date.now();
+        if (now - lastAlertTime < 8000) return;
+
+        if (state.soilMoisture < CONFIG.ALERT_MOISTURE_LOW) {
+            pushEvent(`⚠ Soil moisture critically low (${fmt(state.soilMoisture, 1)}%)`, 'alert');
+            lastAlertTime = now;
+        } else if (state.ambientTemp > 31) {
+            pushEvent(`⚠ Ambient temperature high (${fmt(state.ambientTemp, 1)}°C)`, 'warn');
+            lastAlertTime = now;
+        }
+    }
+
+    /* ============================================================
+       ACTION HANDLERS
+       ============================================================ */
+    function pulseButton(btn) {
+        btn.style.transform = 'scale(0.97)';
+        setTimeout(() => { btn.style.transform = ''; }, 130);
+    }
+
+    function handleSpray() {
+        pulseButton(dom.btnSpray);
+        // Spray mist = water application → moisture ↑, temp ↓, humidity ↑
+        const moistureGain = rand(8, 14);
+        const tempDrop     = rand(0.6, 1.6);
+        const humidityGain = rand(4, 9);
+
+        const newMoisture = clamp(state.soilMoisture + moistureGain, CONFIG.MOISTURE_MIN, CONFIG.MOISTURE_MAX);
+        const newTemp     = clamp(state.ambientTemp - tempDrop, CONFIG.TEMP_MIN, CONFIG.TEMP_MAX);
+        const newHumidity = clamp(state.airHumidity + humidityGain, CONFIG.HUMIDITY_MIN, CONFIG.HUMIDITY_MAX);
+
+        tick({ forcedMoisture: newMoisture, forcedTemp: newTemp, forcedHumidity: newHumidity });
+        pushEvent(`💦 Spray Mist → moisture +${fmt(moistureGain, 1)}%, temp −${fmt(tempDrop, 1)}°C`, 'success');
+    }
+
+    function handleVent() {
+        pulseButton(dom.btnVent);
+        const tempDrop     = rand(1.5, 3.0);
+        const humidityDrop = rand(6, 12);
+
+        const newTemp     = clamp(state.ambientTemp - tempDrop, CONFIG.TEMP_MIN, CONFIG.TEMP_MAX);
+        const newHumidity = clamp(state.airHumidity - humidityDrop, CONFIG.HUMIDITY_MIN, CONFIG.HUMIDITY_MAX);
+
+        tick({ forcedTemp: newTemp, forcedHumidity: newHumidity });
+        pushEvent(`🌀 Ventilation → temp −${fmt(tempDrop, 1)}°C, RH −${fmt(humidityDrop, 1)}%`, 'info');
+    }
+
+    function handleHeat() {
+        pulseButton(dom.btnHeat);
+        const tempGain     = rand(1.5, 3.2);
+        const humidityDrop = rand(3, 7);
+
+        const newTemp     = clamp(state.ambientTemp + tempGain, CONFIG.TEMP_MIN, CONFIG.TEMP_MAX);
+        const newHumidity = clamp(state.airHumidity - humidityDrop, CONFIG.HUMIDITY_MIN, CONFIG.HUMIDITY_MAX);
+
+        tick({ forcedTemp: newTemp, forcedHumidity: newHumidity });
+        pushEvent(`🔥 Heat Pulse → temp +${fmt(tempGain, 1)}°C`, 'warn');
+    }
+
+    function handleCalibrate() {
+        pulseButton(dom.btnCalibrate);
+        // soft rebaseline - nudge values back toward baselines
+        state.soilMoisture = clamp(state.soilMoisture * 0.5 + CONFIG.MOISTURE_BASELINE * 0.5, CONFIG.MOISTURE_MIN, CONFIG.MOISTURE_MAX);
+        state.ambientTemp  = clamp(state.ambientTemp * 0.5 + CONFIG.TEMP_BASELINE * 0.5, CONFIG.TEMP_MIN, CONFIG.TEMP_MAX);
+        state.airHumidity  = clamp(state.airHumidity * 0.5 + CONFIG.HUMIDITY_BASELINE * 0.5, CONFIG.HUMIDITY_MIN, CONFIG.HUMIDITY_MAX);
+        state.ph = 6.5;
+        state.ec = 1.2;
+        tick({ silent: true });
+        pushEvent(`🎯 Sensors recalibrated to baseline offsets`, 'success');
+    }
+
+    dom.btnSpray.addEventListener('click', handleSpray);
+    dom.btnVent.addEventListener('click', handleVent);
+    dom.btnHeat.addEventListener('click', handleHeat);
+    dom.btnCalibrate.addEventListener('click', handleCalibrate);
+
+    /* ============================================================
+       LEGEND TOGGLES
+       ============================================================ */
+    document.querySelectorAll('.legend-pill').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const idx = Number(btn.dataset.toggle);
+            const meta = chart.getDatasetMeta(idx);
+            meta.hidden = !meta.hidden;
+            btn.classList.toggle('muted', meta.hidden);
+            chart.update();
+        });
+    });
+
+    /* ============================================================
+       CLOCK + UPTIME
+       ============================================================ */
+    function updateClock() {
+        dom.clock.textContent = localTime();
+    }
+
+    function updateUptime() {
+        const secs = Math.floor((Date.now() - state.startTime) / 1000);
+        const m = Math.floor(secs / 60);
+        const s = secs % 60;
+        dom.uptime.textContent = `${pad(m)}:${pad(s)}`;
+    }
+
+    setInterval(updateClock, 1000);
+    setInterval(updateUptime, 1000);
+    updateClock();
+    updateUptime();
+
+    /* ============================================================
+       STREAM INTERVAL
+       ============================================================ */
+    const streamTimer = setInterval(() => {
+        tick();
+    }, CONFIG.STREAM_INTERVAL_MS);
+
+    // cleanup
+    window.addEventListener('beforeunload', () => clearInterval(streamTimer));
+
+    /* ============================================================
+       BOOT LOG
+       ============================================================ */
+    dom.streamIntervalLabel.textContent = `${(CONFIG.STREAM_INTERVAL_MS / 1000).toFixed(1)}s`;
+    updateKPIs();
+    updateEnvPanel();
+    pushEvent('🟢 NIPAS dashboard initialised · streaming @ 3s', 'success');
+    pushEvent('📡 WebSocket handshake complete · node NIPAS‑RPI‑04', 'info');
+    pushEvent('🌱 Baseline telemetry loaded (15‑point window)', 'info');
+
+})();
+</script>
 </body>
 </html>
