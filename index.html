@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>NIPAS · Precision Agriculture Control Center</title>
+<title>NIPAS · Field Control Center</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
     :root {
+        --green-950: #081c13;
         --green-900: #0f2e1f;
         --green-800: #1b4332;
         --green-700: #2d6a4f;
@@ -18,40 +19,24 @@
         --green-50:  #edf7ef;
 
         --blue-600: #1e88e5;
-        --blue-400: #64b5f6;
         --orange-600: #e8590c;
-        --orange-400: #ff8a4c;
         --purple-600: #7048e8;
-        --purple-400: #b197fc;
         --red-600: #d00000;
         --amber-500: #f59f00;
+        --yellow-400: #ffd43b;
+        --teal-500: #0ca678;
 
         --bg-1: #eaf4ec;
         --bg-2: #d7ead9;
-        --card-bg: rgba(255, 255, 255, 0.78);
+        --card-bg: rgba(255, 255, 255, 0.82);
         --card-border: rgba(150, 190, 160, 0.4);
         --shadow-sm: 0 2px 6px rgba(20, 50, 30, 0.06);
         --shadow-md: 0 10px 30px -10px rgba(20, 60, 30, 0.25);
         --shadow-lg: 0 25px 50px -20px rgba(15, 40, 20, 0.35);
-
-        --radius-sm: 10px;
-        --radius-md: 16px;
-        --radius-lg: 24px;
-        --radius-xl: 32px;
-
         --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, monospace;
     }
-
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-    }
-
-    html, body {
-        height: 100%;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
     body {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         background:
@@ -64,554 +49,355 @@
         -webkit-font-smoothing: antialiased;
         font-feature-settings: 'tnum';
     }
+    .app { max-width: 1700px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
 
-    /* ============================================================
-       LAYOUT
-       ============================================================ */
-    .app {
-        max-width: 1600px;
-        margin: 0 auto;
-        display: flex;
-        flex-direction: column;
-        gap: 1.25rem;
-    }
-
-    /* ============================================================
-       TOP BAR
-       ============================================================ */
+    /* ================= TOP BAR ================= */
     .topbar {
-        display: flex;
-        align-items: center;
-        gap: 1.5rem;
-        padding: 1rem 1.75rem;
+        display: flex; align-items: center; gap: 1.2rem;
+        padding: 1rem 1.6rem;
         background: var(--card-bg);
         backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
         border: 1px solid var(--card-border);
-        border-radius: var(--radius-xl);
+        border-radius: 28px;
         box-shadow: var(--shadow-md);
         flex-wrap: wrap;
     }
-
-    .brand {
-        display: flex;
-        align-items: center;
-        gap: 0.85rem;
-        padding-right: 1.5rem;
-        border-right: 1px solid rgba(150, 190, 160, 0.4);
-    }
-
+    .brand { display: flex; align-items: center; gap: 0.85rem; padding-right: 1.4rem; border-right: 1px solid rgba(150, 190, 160, 0.4); }
     .brand-logo {
-        width: 48px;
-        height: 48px;
-        border-radius: 14px;
+        width: 50px; height: 50px; border-radius: 14px;
         background: linear-gradient(135deg, var(--green-600) 0%, var(--green-800) 100%);
-        display: grid;
-        place-items: center;
-        color: white;
-        font-size: 1.6rem;
+        display: grid; place-items: center; color: white; font-size: 1.7rem;
         box-shadow: 0 8px 20px -6px rgba(45, 106, 79, 0.55);
     }
+    .brand-text h1 { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.02em; color: var(--green-900); line-height: 1.1; }
+    .brand-text p { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--green-700); font-weight: 700; margin-top: 3px; }
 
-    .brand-text h1 {
-        font-size: 1.25rem;
-        font-weight: 700;
-        letter-spacing: -0.01em;
-        color: var(--green-900);
-        line-height: 1.1;
-    }
-
-    .brand-text p {
-        font-size: 0.72rem;
-        text-transform: uppercase;
-        letter-spacing: 0.15em;
-        color: var(--green-700);
-        font-weight: 600;
-        margin-top: 2px;
-    }
-
-    .live-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.55rem;
-        padding: 0.45rem 1rem;
-        background: linear-gradient(135deg, #d8f3dc 0%, #b7e4c7 100%);
-        border: 1px solid #74c69d;
+    .conn-stack { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+    .conn-pill {
+        display: inline-flex; align-items: center; gap: 0.5rem;
+        padding: 0.42rem 0.9rem;
+        background: #f1f3f5;
+        border: 1px solid #dee2e6;
         border-radius: 999px;
-        font-size: 0.78rem;
-        font-weight: 700;
-        color: var(--green-800);
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
+        font-size: 0.72rem; font-weight: 700;
+        color: #495057;
+        letter-spacing: 0.03em;
+        transition: all 0.3s ease;
     }
-
-    .live-pill .dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: var(--green-700);
-        box-shadow: 0 0 0 0 rgba(45, 106, 79, 0.7);
-        animation: pulse 1.8s infinite;
-    }
-
+    .conn-pill.online { background: linear-gradient(135deg, #d8f3dc, #b7e4c7); border-color: #52b788; color: #1b4332; }
+    .conn-pill.offline { background: #ffe3e3; border-color: #ff8787; color: #c92a2a; }
+    .conn-pill.warn { background: #fff9db; border-color: #ffd43b; color: #856404; }
+    .conn-pill .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+    .conn-pill.online .dot { animation: pulse 1.8s infinite; }
     @keyframes pulse {
         0%   { box-shadow: 0 0 0 0 rgba(45, 106, 79, 0.7); }
-        70%  { box-shadow: 0 0 0 10px rgba(45, 106, 79, 0); }
+        70%  { box-shadow: 0 0 0 8px rgba(45, 106, 79, 0); }
         100% { box-shadow: 0 0 0 0 rgba(45, 106, 79, 0); }
     }
 
-    .topbar-stats {
-        display: flex;
-        gap: 2rem;
-        margin-left: auto;
-        flex-wrap: wrap;
-    }
+    .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+    .topbar-stat { display: flex; flex-direction: column; gap: 2px; }
+    .topbar-stat .label { font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--green-700); font-weight: 700; }
+    .topbar-stat .value { font-family: var(--font-mono); font-size: 0.95rem; font-weight: 700; color: var(--green-900); }
 
-    .topbar-stat {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
+    .mode-switch {
+        display: inline-flex;
+        background: #f1f3f5;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        padding: 3px;
+        gap: 3px;
     }
-
-    .topbar-stat .label {
-        font-size: 0.68rem;
-        text-transform: uppercase;
-        letter-spacing: 0.12em;
-        color: var(--green-700);
-        font-weight: 700;
+    .mode-switch button {
+        border: none; cursor: pointer;
+        padding: 0.4rem 0.9rem;
+        font-size: 0.72rem; font-weight: 700;
+        border-radius: 7px;
+        background: transparent;
+        color: #495057;
+        letter-spacing: 0.03em;
+        transition: all 0.15s ease;
     }
+    .mode-switch button.active { background: var(--green-700); color: white; box-shadow: 0 4px 10px -3px rgba(45, 106, 79, 0.6); }
 
-    .topbar-stat .value {
-        font-family: var(--font-mono);
-        font-size: 0.95rem;
-        font-weight: 600;
-        color: var(--green-900);
-    }
-
-    /* ============================================================
-       KPI CARDS
-       ============================================================ */
-    .kpi-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 1rem;
-    }
-
+    /* ================= KPI GRID ================= */
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
     .kpi {
         position: relative;
         background: var(--card-bg);
         backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
         border: 1px solid var(--card-border);
-        border-radius: var(--radius-lg);
-        padding: 1.25rem 1.4rem;
+        border-radius: 22px;
+        padding: 1.2rem 1.35rem;
         box-shadow: var(--shadow-sm);
-        display: flex;
-        flex-direction: column;
-        gap: 0.9rem;
+        display: flex; flex-direction: column; gap: 0.85rem;
         overflow: hidden;
         transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-
-    .kpi:hover {
-        transform: translateY(-3px);
-        box-shadow: var(--shadow-md);
-    }
-
-    .kpi::before {
-        content: '';
-        position: absolute;
-        inset: 0 auto 0 0;
-        width: 5px;
-        background: var(--accent, var(--green-600));
-        border-radius: var(--radius-lg) 0 0 var(--radius-lg);
-    }
-
-    .kpi-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .kpi-title {
-        font-size: 0.72rem;
-        text-transform: uppercase;
-        letter-spacing: 0.14em;
-        font-weight: 700;
-        color: var(--green-700);
-    }
-
-    .kpi-icon {
-        width: 34px;
-        height: 34px;
-        border-radius: 10px;
-        display: grid;
-        place-items: center;
-        background: var(--accent-bg, #e7f5ec);
-        color: var(--accent, var(--green-700));
-        font-size: 1.05rem;
-    }
-
-    .kpi-value {
-        font-family: var(--font-mono);
-        font-size: 2rem;
-        font-weight: 700;
-        letter-spacing: -0.02em;
-        line-height: 1;
-        color: var(--green-900);
-        display: flex;
-        align-items: baseline;
-        gap: 0.3rem;
-    }
-
-    .kpi-value small {
-        font-size: 0.9rem;
-        font-weight: 500;
-        color: var(--green-700);
-    }
-
-    .kpi-footer {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        font-size: 0.74rem;
-        color: var(--green-700);
-        font-weight: 500;
-    }
-
-    .trend {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.25rem;
-        padding: 0.2rem 0.55rem;
-        border-radius: 999px;
-        font-weight: 700;
-        font-size: 0.7rem;
-        font-family: var(--font-mono);
-    }
-
+    .kpi:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+    .kpi::before { content: ''; position: absolute; inset: 0 auto 0 0; width: 5px; background: var(--accent, var(--green-600)); }
+    .kpi-header { display: flex; align-items: center; justify-content: space-between; }
+    .kpi-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.14em; font-weight: 800; color: var(--green-700); }
+    .kpi-icon { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: var(--accent-bg, #e7f5ec); color: var(--accent, var(--green-700)); font-size: 1.05rem; }
+    .kpi-value { font-family: var(--font-mono); font-size: 1.9rem; font-weight: 800; line-height: 1; color: var(--green-900); display: flex; align-items: baseline; gap: 0.3rem; }
+    .kpi-value small { font-size: 0.85rem; font-weight: 600; color: var(--green-700); }
+    .kpi-footer { display: flex; align-items: center; justify-content: space-between; font-size: 0.72rem; color: var(--green-700); font-weight: 600; }
+    .trend { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.2rem 0.55rem; border-radius: 999px; font-weight: 800; font-size: 0.68rem; font-family: var(--font-mono); }
     .trend.up   { background: #e6f4ea; color: #1b7c3b; }
     .trend.down { background: #fdecea; color: #c0392b; }
     .trend.flat { background: #eef1f3; color: #4a5568; }
 
-    /* KPI accent variants */
     .kpi.moisture { --accent: var(--blue-600); --accent-bg: #e3f2fd; }
     .kpi.temp     { --accent: var(--orange-600); --accent-bg: #fff1e6; }
     .kpi.humidity { --accent: var(--purple-600); --accent-bg: #f0e9ff; }
-    .kpi.battery  { --accent: var(--green-700); --accent-bg: #e7f5ec; }
+    .kpi.leaf     { --accent: var(--green-700); --accent-bg: #e7f5ec; }
+    .kpi.power    { --accent: var(--amber-500); --accent-bg: #fff9db; }
+    .kpi.water    { --accent: var(--teal-500); --accent-bg: #e0fbf5; }
 
-    /* ============================================================
-       MAIN GRID
-       ============================================================ */
-    .main-grid {
-        display: grid;
-        grid-template-columns: minmax(0, 2.4fr) minmax(0, 1fr);
-        gap: 1rem;
-    }
+    /* ================= MAIN LAYOUT ================= */
+    .main-grid { display: grid; grid-template-columns: minmax(0, 2.2fr) minmax(0, 1fr); gap: 1rem; align-items: start; }
+    @media (max-width: 1200px) { .main-grid { grid-template-columns: 1fr; } }
 
-    @media (max-width: 1100px) {
-        .main-grid { grid-template-columns: 1fr; }
-    }
-
-    /* ============================================================
-       CARD (generic)
-       ============================================================ */
+    /* ================= CARD ================= */
     .card {
         background: var(--card-bg);
         backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
         border: 1px solid var(--card-border);
-        border-radius: var(--radius-lg);
+        border-radius: 22px;
         box-shadow: var(--shadow-sm);
-        padding: 1.5rem 1.6rem;
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
+        padding: 1.35rem 1.5rem;
+        display: flex; flex-direction: column; gap: 0.95rem;
     }
-
-    .card-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 1rem;
-        flex-wrap: wrap;
-    }
-
-    .card-title {
-        display: flex;
-        flex-direction: column;
-        gap: 3px;
-    }
-
-    .card-title h2 {
-        font-size: 1.05rem;
-        font-weight: 700;
-        color: var(--green-900);
-        letter-spacing: -0.01em;
-    }
-
-    .card-title span {
-        font-size: 0.74rem;
-        color: var(--green-700);
-        font-weight: 500;
-    }
-
+    .card-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+    .card-title h2 { font-size: 1rem; font-weight: 800; color: var(--green-900); letter-spacing: -0.01em; }
+    .card-title span { font-size: 0.72rem; color: var(--green-700); font-weight: 500; display: block; margin-top: 2px; }
     .chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.4rem;
-        padding: 0.35rem 0.85rem;
+        display: inline-flex; align-items: center; gap: 0.4rem;
+        padding: 0.32rem 0.8rem;
         background: var(--green-50);
         border: 1px solid var(--green-300);
         border-radius: 999px;
-        font-size: 0.72rem;
-        font-weight: 700;
-        color: var(--green-800);
+        font-size: 0.7rem; font-weight: 800; color: var(--green-800);
         letter-spacing: 0.04em;
+        text-transform: uppercase;
     }
+    .chip.live::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--green-600); animation: pulse 1.8s infinite; }
+    .chip.warn { background: #fff9db; border-color: #ffd43b; color: #856404; }
+    .chip.alert { background: #ffe3e3; border-color: #ff8787; color: #c92a2a; }
+    .chip.info { background: #e3f2fd; border-color: #64b5f6; color: #1565c0; }
 
-    .chip.live {
-        background: #e7f5ec;
-        border-color: #74c69d;
-    }
+    /* ================= CHART ================= */
+    .chart-wrap { position: relative; width: 100%; height: 320px; }
+    .chart-wrap canvas { width: 100% !important; height: 100% !important; }
 
-    .chip.live::before {
-        content: '';
-        width: 7px;
-        height: 7px;
-        border-radius: 50%;
-        background: var(--green-600);
-        animation: pulse 1.8s infinite;
-    }
+    /* ================= SIDE COLUMN ================= */
+    .side-col { display: flex; flex-direction: column; gap: 1rem; }
 
-    /* ============================================================
-       CHART
-       ============================================================ */
-    .chart-wrap {
+    /* Leaf panel */
+    .leaf-video-box {
         position: relative;
         width: 100%;
-        height: 360px;
+        aspect-ratio: 4 / 3;
+        background: #0f1a12;
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid rgba(45, 106, 79, 0.4);
+        box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.6);
     }
-
-    .chart-wrap canvas {
-        width: 100% !important;
-        height: 100% !important;
+    .leaf-video-box canvas { width: 100%; height: 100%; display: block; }
+    .leaf-video-box .scanline {
+        position: absolute; left: 0; right: 0; height: 2px;
+        background: linear-gradient(90deg, transparent, #74c69d, transparent);
+        box-shadow: 0 0 12px #74c69d;
+        animation: scan 3.5s linear infinite;
+        pointer-events: none;
     }
-
-    .chart-toolbar {
-        display: flex;
-        gap: 0.5rem;
-        flex-wrap: wrap;
+    @keyframes scan {
+        0% { top: 0; opacity: 0; }
+        10% { opacity: 1; }
+        90% { opacity: 1; }
+        100% { top: 100%; opacity: 0; }
     }
+    .leaf-overlay-tag {
+        position: absolute; top: 8px; left: 8px;
+        background: rgba(15, 46, 31, 0.88);
+        color: #b7e4c7;
+        padding: 0.25rem 0.6rem;
+        font-size: 0.62rem; font-weight: 800;
+        letter-spacing: 0.08em;
+        border-radius: 6px;
+        text-transform: uppercase;
+        font-family: var(--font-mono);
+    }
+    .leaf-overlay-tag.rec::before {
+        content: '';
+        display: inline-block;
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        background: #ff4040;
+        margin-right: 5px;
+        animation: blink 1s infinite;
+    }
+    @keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0.2; } }
 
-    .legend-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.4rem;
-        padding: 0.35rem 0.75rem;
-        border-radius: 999px;
-        font-size: 0.72rem;
-        font-weight: 600;
-        border: 1px solid transparent;
+    .leaf-status-bar {
+        display: flex; align-items: center; gap: 0.65rem;
+        padding: 0.7rem 0.9rem;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #edf7ef, #d8f3dc);
+        border: 1px solid #74c69d;
+        font-weight: 700;
+        transition: all 0.3s ease;
+    }
+    .leaf-status-bar.healthy   { background: linear-gradient(135deg, #d8f3dc, #b7e4c7); border-color: #52b788; color: #1b4332; }
+    .leaf-status-bar.moderate  { background: linear-gradient(135deg, #fff9db, #ffec99); border-color: #ffd43b; color: #856404; }
+    .leaf-status-bar.high      { background: linear-gradient(135deg, #ffe3e3, #ffc9c9); border-color: #ff8787; color: #c92a2a; }
+    .leaf-status-bar .ico { font-size: 1.15rem; }
+    .leaf-status-bar .txt { font-size: 0.82rem; }
+
+    .leaf-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem; }
+    .leaf-stat {
+        padding: 0.55rem 0.7rem;
         background: var(--green-50);
-        color: var(--green-800);
-        cursor: pointer;
-        transition: opacity 0.15s ease;
-        user-select: none;
+        border: 1px solid rgba(150, 190, 160, 0.35);
+        border-radius: 10px;
     }
+    .leaf-stat .k { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--green-700); }
+    .leaf-stat .v { font-family: var(--font-mono); font-size: 0.95rem; font-weight: 800; color: var(--green-900); margin-top: 2px; }
 
-    .legend-pill.muted { opacity: 0.35; }
-
-    .legend-swatch {
-        width: 10px;
-        height: 10px;
-        border-radius: 3px;
-    }
-
-    /* ============================================================
-       SIDE COLUMN
-       ============================================================ */
-    .side-col {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    /* Control panel */
+    /* ================= CONTROLS ================= */
     .controls-card {
-        background:
-            linear-gradient(140deg, var(--green-800) 0%, var(--green-900) 100%);
+        background: linear-gradient(140deg, var(--green-800) 0%, var(--green-950) 100%);
         color: #e9f5e9;
         border: 1px solid rgba(116, 198, 157, 0.35);
-        border-radius: var(--radius-lg);
-        padding: 1.5rem 1.6rem;
+        border-radius: 22px;
+        padding: 1.35rem 1.5rem;
         box-shadow: var(--shadow-lg);
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
+        display: flex; flex-direction: column; gap: 0.95rem;
     }
-
     .controls-card .card-title h2 { color: #ffffff; }
     .controls-card .card-title span { color: var(--green-300); }
 
-    .action-list {
-        display: grid;
-        gap: 0.65rem;
+    .control-section-label {
+        font-size: 0.62rem;
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        color: var(--green-300);
+        font-weight: 800;
+        margin-top: 0.4rem;
+        margin-bottom: -0.3rem;
     }
 
+    .action-list { display: grid; gap: 0.55rem; }
     .action-btn {
-        border: none;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 0.85rem;
-        padding: 0.9rem 1.1rem;
-        border-radius: 14px;
+        border: none; cursor: pointer;
+        display: flex; align-items: center; gap: 0.8rem;
+        padding: 0.8rem 1rem;
+        border-radius: 12px;
         background: rgba(255, 255, 255, 0.08);
         color: #ffffff;
-        font-weight: 600;
-        font-size: 0.92rem;
+        font-weight: 700; font-size: 0.88rem;
         text-align: left;
         border: 1px solid rgba(255, 255, 255, 0.12);
         transition: all 0.15s ease;
     }
-
-    .action-btn:hover {
-        background: rgba(255, 255, 255, 0.16);
-        transform: translateY(-1px);
-        border-color: rgba(255, 255, 255, 0.28);
-    }
-
+    .action-btn:hover { background: rgba(255, 255, 255, 0.16); transform: translateY(-1px); border-color: rgba(255, 255, 255, 0.28); }
     .action-btn:active { transform: translateY(1px); }
-
-    .action-btn.primary {
+    .action-btn.on {
         background: linear-gradient(135deg, var(--green-500) 0%, var(--green-600) 100%);
-        border-color: rgba(255, 255, 255, 0.35);
-        box-shadow: 0 10px 24px -10px rgba(82, 183, 136, 0.9);
+        border-color: rgba(255, 255, 255, 0.4);
+        box-shadow: 0 8px 20px -6px rgba(82, 183, 136, 0.8);
     }
-
-    .action-btn.primary:hover {
-        background: linear-gradient(135deg, var(--green-400) 0%, var(--green-500) 100%);
+    .action-btn.danger.on {
+        background: linear-gradient(135deg, #e03131 0%, #c92a2a 100%);
+        box-shadow: 0 8px 20px -6px rgba(224, 49, 49, 0.8);
     }
+    .action-btn.warn.on {
+        background: linear-gradient(135deg, #f59f00 0%, #e8590c 100%);
+        box-shadow: 0 8px 20px -6px rgba(245, 159, 0, 0.8);
+    }
+    .action-btn .ico { width: 34px; height: 34px; border-radius: 9px; background: rgba(255, 255, 255, 0.15); display: grid; place-items: center; font-size: 1rem; flex-shrink: 0; }
+    .action-btn .text { display: flex; flex-direction: column; line-height: 1.15; flex: 1; }
+    .action-btn .text small { font-size: 0.66rem; opacity: 0.75; font-weight: 500; margin-top: 2px; }
+    .action-btn .state-badge {
+        font-size: 0.62rem;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        padding: 0.2rem 0.55rem;
+        border-radius: 6px;
+        background: rgba(0,0,0,0.2);
+        color: rgba(255,255,255,0.75);
+        font-family: var(--font-mono);
+    }
+    .action-btn.on .state-badge { background: rgba(0,0,0,0.25); color: #ffffff; }
 
-    .action-btn .ico {
-        width: 36px;
-        height: 36px;
-        border-radius: 10px;
-        background: rgba(255, 255, 255, 0.15);
+    /* ================= HARDWARE GRID (Bottom) ================= */
+    .hw-grid {
         display: grid;
-        place-items: center;
-        font-size: 1.1rem;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1rem;
     }
 
-    .action-btn .text {
-        display: flex;
-        flex-direction: column;
-        line-height: 1.15;
+    .hw-card {
+        background: var(--card-bg);
+        backdrop-filter: blur(14px);
+        border: 1px solid var(--card-border);
+        border-radius: 18px;
+        padding: 1.1rem 1.2rem;
+        box-shadow: var(--shadow-sm);
+        display: flex; flex-direction: column; gap: 0.75rem;
+    }
+    .hw-card h3 {
+        font-size: 0.72rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--green-700);
+        display: flex; align-items: center; gap: 0.5rem;
+    }
+    .hw-card h3 .icon {
+        width: 22px; height: 22px;
+        display: grid; place-items: center;
+        background: var(--green-100);
+        border-radius: 6px;
+        font-size: 0.85rem;
     }
 
-    .action-btn .text small {
-        font-size: 0.68rem;
-        opacity: 0.75;
-        font-weight: 500;
-        margin-top: 2px;
-        letter-spacing: 0.02em;
-    }
-
-    /* ============================================================
-       ENVIRONMENT PANEL
-       ============================================================ */
-    .env-list {
-        display: grid;
-        gap: 0.75rem;
-    }
-
-    .env-item {
-        display: flex;
-        align-items: center;
-        gap: 0.85rem;
-        padding: 0.7rem 0.85rem;
-        border-radius: 12px;
+    .hw-row {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0.55rem 0.75rem;
         background: var(--green-50);
         border: 1px solid rgba(150, 190, 160, 0.3);
-    }
-
-    .env-item .emoji {
-        width: 34px;
-        height: 34px;
-        display: grid;
-        place-items: center;
         border-radius: 10px;
-        background: #ffffff;
-        font-size: 1.05rem;
-        box-shadow: var(--shadow-sm);
+        font-size: 0.78rem;
     }
+    .hw-row .name { color: var(--green-800); font-weight: 600; }
+    .hw-row .val  { font-family: var(--font-mono); font-weight: 800; color: var(--green-900); }
+    .hw-row .val.good { color: #1b7c3b; }
+    .hw-row .val.warn { color: #a06600; }
+    .hw-row .val.bad  { color: #c92a2a; }
 
-    .env-item .info {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 1px;
-    }
-
-    .env-item .info .k {
-        font-size: 0.72rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        color: var(--green-700);
-    }
-
-    .env-item .info .v {
-        font-family: var(--font-mono);
-        font-size: 0.95rem;
-        font-weight: 600;
-        color: var(--green-900);
-    }
-
-    .env-item .bar {
-        width: 58px;
-        height: 6px;
+    /* Progress bar inside hw-row */
+    .progress-mini {
+        width: 60px; height: 6px;
         border-radius: 999px;
         background: #d8e8da;
         overflow: hidden;
+        margin-left: 0.6rem;
     }
-
-    .env-item .bar > i {
-        display: block;
-        height: 100%;
+    .progress-mini > i {
+        display: block; height: 100%;
         border-radius: 999px;
         background: linear-gradient(90deg, var(--green-500), var(--green-700));
-        transition: width 0.5s ease;
+        transition: width 0.6s ease;
     }
 
-    /* ============================================================
-       EVENT LOG
-       ============================================================ */
-    .log-card {
-        flex: 1;
-        min-height: 0;
-    }
-
-    .log-list {
-        display: flex;
-        flex-direction: column;
-        gap: 0.4rem;
-        max-height: 260px;
-        overflow-y: auto;
-        padding-right: 4px;
-    }
-
+    /* ================= EVENT LOG ================= */
+    .log-list { display: flex; flex-direction: column; gap: 0.4rem; max-height: 260px; overflow-y: auto; padding-right: 4px; }
     .log-list::-webkit-scrollbar { width: 6px; }
-    .log-list::-webkit-scrollbar-thumb {
-        background: rgba(150, 190, 160, 0.6);
-        border-radius: 999px;
-    }
-
+    .log-list::-webkit-scrollbar-thumb { background: rgba(150, 190, 160, 0.6); border-radius: 999px; }
     .log-entry {
-        display: flex;
-        align-items: flex-start;
-        gap: 0.7rem;
+        display: flex; align-items: flex-start; gap: 0.7rem;
         padding: 0.55rem 0.75rem;
         border-radius: 10px;
         font-size: 0.78rem;
@@ -619,134 +405,215 @@
         border-left: 3px solid var(--green-600);
         animation: slideIn 0.35s ease;
     }
-
     .log-entry.info    { border-left-color: var(--blue-600); }
     .log-entry.success { border-left-color: var(--green-600); }
     .log-entry.warn    { border-left-color: var(--amber-500); }
     .log-entry.alert   { border-left-color: var(--red-600); }
+    .log-entry .time { font-family: var(--font-mono); font-size: 0.7rem; color: var(--green-700); font-weight: 700; flex-shrink: 0; padding-top: 1px; }
+    .log-entry .msg { color: var(--green-900); font-weight: 500; line-height: 1.35; }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(-6px); } to { opacity: 1; transform: translateX(0); } }
 
-    .log-entry .time {
-        font-family: var(--font-mono);
-        font-size: 0.7rem;
-        color: var(--green-700);
-        font-weight: 600;
-        flex-shrink: 0;
-        padding-top: 1px;
-    }
-
-    .log-entry .msg {
-        color: var(--green-900);
-        font-weight: 500;
-        line-height: 1.35;
-    }
-
-    @keyframes slideIn {
-        from { opacity: 0; transform: translateX(-6px); }
-        to   { opacity: 1; transform: translateX(0); }
-    }
-
-    /* ============================================================
-       STATUS FOOTER
-       ============================================================ */
+    /* ================= STATUS BAR ================= */
     .status-bar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+        display: flex; align-items: center; justify-content: space-between;
         gap: 1rem;
         padding: 0.85rem 1.5rem;
-        border-radius: var(--radius-lg);
+        border-radius: 22px;
         background: var(--card-bg);
         backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
         border: 1px solid var(--card-border);
         box-shadow: var(--shadow-sm);
         flex-wrap: wrap;
-        font-size: 0.78rem;
-        color: var(--green-800);
-        font-weight: 500;
+        font-size: 0.76rem; color: var(--green-800); font-weight: 600;
     }
-
-    .status-group {
-        display: flex;
-        align-items: center;
-        gap: 1.25rem;
-        flex-wrap: wrap;
-    }
-
-    .status-item {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.45rem;
-    }
-
-    .status-led {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: var(--green-600);
-        box-shadow: 0 0 8px rgba(82, 183, 136, 0.9);
-    }
-
+    .status-group { display: flex; align-items: center; gap: 1.15rem; flex-wrap: wrap; }
+    .status-item { display: inline-flex; align-items: center; gap: 0.45rem; }
+    .status-led { width: 8px; height: 8px; border-radius: 50%; background: var(--green-600); box-shadow: 0 0 8px rgba(82, 183, 136, 0.9); }
     .status-led.warn { background: var(--amber-500); box-shadow: 0 0 8px rgba(245, 159, 0, 0.9); }
     .status-led.err  { background: var(--red-600); box-shadow: 0 0 8px rgba(208, 0, 0, 0.9); }
+    .status-sep { width: 1px; height: 18px; background: rgba(150, 190, 160, 0.5); }
 
-    .status-sep {
-        width: 1px;
-        height: 18px;
-        background: rgba(150, 190, 160, 0.5);
+    /* ================= SETTINGS DRAWER ================= */
+    .settings-overlay {
+        position: fixed; inset: 0;
+        background: rgba(15, 46, 31, 0.45);
+        backdrop-filter: blur(4px);
+        z-index: 100;
+        opacity: 0; pointer-events: none;
+        transition: opacity 0.3s ease;
     }
+    .settings-overlay.open { opacity: 1; pointer-events: auto; }
 
-    /* ============================================================
-       RESPONSIVE
-       ============================================================ */
+    .settings-drawer {
+        position: fixed; top: 0; right: 0; bottom: 0;
+        width: 400px; max-width: 92vw;
+        background: #ffffff;
+        box-shadow: -20px 0 60px rgba(15, 40, 20, 0.35);
+        z-index: 101;
+        transform: translateX(100%);
+        transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex; flex-direction: column;
+    }
+    .settings-drawer.open { transform: translateX(0); }
+
+    .settings-header {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid #e9ecef;
+        display: flex; align-items: center; justify-content: space-between;
+    }
+    .settings-header h2 { font-size: 1rem; font-weight: 800; color: var(--green-900); }
+    .settings-close {
+        border: none; background: #f1f3f5;
+        width: 32px; height: 32px; border-radius: 8px;
+        cursor: pointer;
+        font-size: 1.1rem; color: #495057;
+        display: grid; place-items: center;
+    }
+    .settings-close:hover { background: #e9ecef; }
+
+    .settings-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 1.25rem 1.5rem;
+        display: flex; flex-direction: column; gap: 1rem;
+    }
+    .settings-section h3 {
+        font-size: 0.72rem; font-weight: 800;
+        text-transform: uppercase; letter-spacing: 0.14em;
+        color: var(--green-700);
+        margin-bottom: 0.6rem;
+    }
+    .settings-field {
+        display: flex; flex-direction: column; gap: 0.35rem;
+        margin-bottom: 0.75rem;
+    }
+    .settings-field label { font-size: 0.76rem; font-weight: 600; color: var(--green-800); }
+    .settings-field input, .settings-field select {
+        padding: 0.55rem 0.75rem;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-family: var(--font-mono);
+        color: var(--green-900);
+        outline: none;
+        transition: border-color 0.15s ease;
+    }
+    .settings-field input:focus, .settings-field select:focus { border-color: var(--green-600); }
+
+    .switch-row {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0.65rem 0.8rem;
+        background: var(--green-50);
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: var(--green-800);
+    }
+    .switch {
+        position: relative;
+        width: 40px; height: 22px;
+        background: #ced4da;
+        border-radius: 999px;
+        cursor: pointer;
+        transition: background 0.2s ease;
+    }
+    .switch::after {
+        content: '';
+        position: absolute;
+        top: 2px; left: 2px;
+        width: 18px; height: 18px;
+        background: white;
+        border-radius: 50%;
+        transition: transform 0.2s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .switch.on { background: var(--green-600); }
+    .switch.on::after { transform: translateX(18px); }
+
+    .settings-footer {
+        padding: 1rem 1.5rem;
+        border-top: 1px solid #e9ecef;
+        display: flex; gap: 0.5rem;
+    }
+    .btn-outline {
+        flex: 1;
+        border: 1px solid #dee2e6;
+        background: white;
+        padding: 0.7rem 1rem;
+        border-radius: 9px;
+        font-weight: 700;
+        font-size: 0.82rem;
+        cursor: pointer;
+        color: var(--green-800);
+        transition: all 0.15s ease;
+    }
+    .btn-outline:hover { background: var(--green-50); border-color: var(--green-400); }
+
+    .open-settings-btn {
+        border: none; cursor: pointer;
+        display: inline-flex; align-items: center; gap: 0.5rem;
+        padding: 0.55rem 1rem;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--green-600), var(--green-700));
+        color: white;
+        font-weight: 700;
+        font-size: 0.78rem;
+        letter-spacing: 0.02em;
+        box-shadow: 0 6px 14px -6px rgba(45, 106, 79, 0.7);
+        transition: transform 0.15s ease;
+        cursor: pointer;
+    }
+    .open-settings-btn:hover { transform: translateY(-1px); }
+
     @media (max-width: 700px) {
         .topbar { padding: 0.9rem 1.15rem; }
         .brand-text h1 { font-size: 1.05rem; }
-        .card { padding: 1.15rem 1.2rem; }
-        .kpi-value { font-size: 1.6rem; }
-        .chart-wrap { height: 280px; }
+        .card { padding: 1.1rem 1.15rem; }
+        .kpi-value { font-size: 1.5rem; }
+        .chart-wrap { height: 240px; }
+        .topbar-stats { display: none; }
     }
 </style>
 </head>
 <body>
 <div class="app">
 
-    <!-- ============================================================
-         TOP BAR
-         ============================================================ -->
+    <!-- ============================ TOP BAR ============================ -->
     <header class="topbar">
         <div class="brand">
             <div class="brand-logo">🌱</div>
             <div class="brand-text">
                 <h1>NIPAS</h1>
-                <p>Precision Agriculture</p>
+                <p>Field Control Center</p>
             </div>
         </div>
 
-        <div class="live-pill">
-            <span class="dot"></span>
-            Live Telemetry
+        <div class="conn-stack">
+            <span class="conn-pill online" id="connWifi"><span class="dot"></span> WiFi</span>
+            <span class="conn-pill online" id="connWs"><span class="dot"></span> WS · 81</span>
+            <span class="conn-pill online" id="connCam"><span class="dot"></span> CAM</span>
+            <span class="conn-pill online" id="connSensors"><span class="dot"></span> SENSORS</span>
         </div>
 
-        <div class="topbar-stats">
-            <div class="topbar-stat">
-                <span class="label">Stream interval</span>
-                <span class="value" id="streamIntervalLabel">3.0s</span>
-            </div>
+        <div class="topbar-right">
             <div class="topbar-stat">
                 <span class="label">Local time</span>
                 <span class="value" id="clock">--:--:--</span>
             </div>
             <div class="topbar-stat">
                 <span class="label">Node</span>
-                <span class="value">NIPAS‑RPI‑04</span>
+                <span class="value">NIPAS‑ESP32‑01</span>
             </div>
+            <div class="mode-switch" id="modeSwitch">
+                <button class="active" data-mode="demo">Demo</button>
+                <button data-mode="live">Live</button>
+            </div>
+            <button class="open-settings-btn" id="openSettings">⚙ Settings</button>
         </div>
     </header>
 
-    <!-- ============================================================
-         KPI CARDS
-         ============================================================ -->
+    <!-- ============================ KPI GRID ============================ -->
     <section class="kpi-grid">
         <div class="kpi moisture">
             <div class="kpi-header">
@@ -755,7 +622,7 @@
             </div>
             <div class="kpi-value" id="kpiMoisture">--<small>%</small></div>
             <div class="kpi-footer">
-                <span id="kpiMoistureSub">Optimal range 35–55%</span>
+                <span id="kpiMoistureSub">Capacitive v1.2</span>
                 <span class="trend flat" id="kpiMoistureTrend">— flat</span>
             </div>
         </div>
@@ -767,14 +634,14 @@
             </div>
             <div class="kpi-value" id="kpiTemp">--<small>°C</small></div>
             <div class="kpi-footer">
-                <span id="kpiTempSub">Comfort zone 18–28°C</span>
+                <span>DHT22 sensor</span>
                 <span class="trend flat" id="kpiTempTrend">— flat</span>
             </div>
         </div>
 
         <div class="kpi humidity">
             <div class="kpi-header">
-                <span class="kpi-title">Air humidity</span>
+                <span class="kpi-title">Humidity</span>
                 <div class="kpi-icon">☁️</div>
             </div>
             <div class="kpi-value" id="kpiHumidity">--<small>%</small></div>
@@ -784,157 +651,349 @@
             </div>
         </div>
 
-        <div class="kpi battery">
+        <div class="kpi leaf">
             <div class="kpi-header">
-                <span class="kpi-title">Node battery</span>
+                <span class="kpi-title">Leaf health</span>
+                <div class="kpi-icon">🍃</div>
+            </div>
+            <div class="kpi-value" id="kpiLeaf">--<small>%</small></div>
+            <div class="kpi-footer">
+                <span id="kpiLeafSub">Scanning…</span>
+                <span class="trend flat" id="kpiLeafTrend">— flat</span>
+            </div>
+        </div>
+
+        <div class="kpi power">
+            <div class="kpi-header">
+                <span class="kpi-title">Battery</span>
                 <div class="kpi-icon">🔋</div>
             </div>
-            <div class="kpi-value" id="kpiBattery">--<small>%</small></div>
+            <div class="kpi-value" id="kpiPower">--<small>V</small></div>
             <div class="kpi-footer">
-                <span id="kpiBatterySub">Solar charging</span>
-                <span class="trend flat" id="kpiBatteryTrend">— flat</span>
+                <span id="kpiPowerSub">Li‑ion 18650 pack</span>
+                <span class="trend flat" id="kpiPowerTrend">— flat</span>
+            </div>
+        </div>
+
+        <div class="kpi water">
+            <div class="kpi-header">
+                <span class="kpi-title">Water tank</span>
+                <div class="kpi-icon">🪣</div>
+            </div>
+            <div class="kpi-value" id="kpiWater">--<small>%</small></div>
+            <div class="kpi-footer">
+                <span id="kpiWaterSub">Reservoir level</span>
+                <span class="trend flat" id="kpiWaterTrend">— flat</span>
             </div>
         </div>
     </section>
 
-    <!-- ============================================================
-         MAIN GRID: chart + side column
-         ============================================================ -->
+    <!-- ============================ MAIN GRID ============================ -->
     <div class="main-grid">
 
-        <!-- Chart card -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">
-                    <h2>Live Sensor Telemetry</h2>
-                    <span>Soil moisture · Ambient temperature · rolling 15‑point window</span>
+        <!-- LEFT: chart + hardware grid -->
+        <div style="display:flex; flex-direction:column; gap:1rem;">
+
+            <!-- Telemetry chart -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2>Live Sensor Telemetry</h2>
+                        <span>Soil moisture · Temperature · rolling 15‑point window</span>
+                    </div>
+                    <div style="display:flex; gap:0.4rem;">
+                        <span class="chip live">Streaming · 3s</span>
+                    </div>
                 </div>
-                <div class="chart-toolbar">
-                    <span class="chip live">Streaming · 3s</span>
-                    <button class="legend-pill" data-toggle="0">
-                        <span class="legend-swatch" style="background:#1e88e5"></span> Moisture
-                    </button>
-                    <button class="legend-pill" data-toggle="1">
-                        <span class="legend-swatch" style="background:#e8590c"></span> Temperature
-                    </button>
+                <div class="chart-wrap">
+                    <canvas id="telemetryChart"></canvas>
                 </div>
             </div>
 
-            <div class="chart-wrap">
-                <canvas id="telemetryChart"></canvas>
+            <!-- Hardware status grid -->
+            <div class="hw-grid">
+                <div class="hw-card">
+                    <h3><span class="icon">🔌</span> Power Management</h3>
+                    <div class="hw-row">
+                        <span class="name">12V input</span>
+                        <span class="val" id="hwPower12v">12.1 V</span>
+                    </div>
+                    <div class="hw-row">
+                        <span class="name">LM2596 output (5V)</span>
+                        <span class="val good" id="hwPower5v">5.02 V</span>
+                    </div>
+                    <div class="hw-row">
+                        <span class="name">ESP32 draw</span>
+                        <span class="val" id="hwDraw">240 mA</span>
+                    </div>
+                    <div class="hw-row">
+                        <span class="name">Battery cells</span>
+                        <span class="val" id="hwCells">3 × 18650 · OK</span>
+                    </div>
+                </div>
+
+                <div class="hw-card">
+                    <h3><span class="icon">🚰</span> Actuation</h3>
+                    <div class="hw-row">
+                        <span class="name">Spray pump</span>
+                        <span class="val" id="hwPump">IDLE</span>
+                    </div>
+                    <div class="hw-row">
+                        <span class="name">Solenoid valve</span>
+                        <span class="val" id="hwSolenoid">CLOSED</span>
+                    </div>
+                    <div class="hw-row">
+                        <span class="name">Relay module</span>
+                        <span class="val good" id="hwRelay">OK</span>
+                    </div>
+                    <div class="hw-row">
+                        <span class="name">Tank level</span>
+                        <div style="display:flex; align-items:center;">
+                            <span class="val" id="hwTank">78%</span>
+                            <div class="progress-mini"><i id="hwTankBar" style="width:78%"></i></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hw-card">
+                    <h3><span class="icon">🦾</span> Probe Mechanism</h3>
+                    <div class="hw-row">
+                        <span class="name">Servo (MG996R)</span>
+                        <span class="val" id="hwServo">RETRACTED</span>
+                    </div>
+                    <div class="hw-row">
+                        <span class="name">Probe angle</span>
+                        <span class="val" id="hwAngle">0°</span>
+                    </div>
+                    <div class="hw-row">
+                        <span class="name">Deployment state</span>
+                        <span class="val" id="hwProbeState">Standby</span>
+                    </div>
+                </div>
+
+                <div class="hw-card">
+                    <h3><span class="icon">📡</span> Connectivity</h3>
+                    <div class="hw-row">
+                        <span class="name">WiFi RSSI</span>
+                        <span class="val good" id="hwRssi">-58 dBm</span>
+                    </div>
+                    <div class="hw-row">
+                        <span class="name">Uptime</span>
+                        <span class="val" id="hwUptime">00:00</span>
+                    </div>
+                    <div class="hw-row">
+                        <span class="name">Packets</span>
+                        <span class="val" id="hwPackets">0</span>
+                    </div>
+                    <div class="hw-row">
+                        <span class="name">Latency</span>
+                        <span class="val good" id="hwLatency">23 ms</span>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Side column -->
+        <!-- RIGHT: leaf + controls -->
         <div class="side-col">
+
+            <!-- Leaf panel -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2>🍃 Leaf Health · ESP32‑CAM</h2>
+                        <span>HSV disease detection · tomato · chili · brinjal</span>
+                    </div>
+                    <span class="chip live" id="camStatus">CAM · live</span>
+                </div>
+
+                <div class="leaf-video-box">
+                    <canvas id="leafCanvas" width="480" height="360"></canvas>
+                    <div class="scanline"></div>
+                    <div class="leaf-overlay-tag rec" id="camTag">CAM‑01 · REC</div>
+                </div>
+
+                <div class="leaf-status-bar healthy" id="leafStatusBar">
+                    <span class="ico" id="leafStatusIco">✓</span>
+                    <span class="txt" id="leafStatusTxt">Analyzing leaf surface…</span>
+                </div>
+
+                <div class="leaf-stats">
+                    <div class="leaf-stat"><div class="k">Infection</div><div class="v" id="leafInfection">0.0%</div></div>
+                    <div class="leaf-stat"><div class="k">Severity</div><div class="v" id="leafSeverity">—</div></div>
+                    <div class="leaf-stat"><div class="k">Chlorosis</div><div class="v" id="leafChlor">0.0%</div></div>
+                    <div class="leaf-stat"><div class="k">Necrosis</div><div class="v" id="leafNecr">0.0%</div></div>
+                </div>
+            </div>
 
             <!-- Controls -->
             <div class="controls-card">
                 <div class="card-title">
-                    <h2>Actuator Controls</h2>
-                    <span>Manual overrides · take effect immediately</span>
+                    <h2>Manual Controls</h2>
+                    <span>Real‑time actuator override · tap to toggle</span>
                 </div>
+
+                <div class="control-section-label">Actuation</div>
                 <div class="action-list">
-                    <button class="action-btn primary" id="btnSpray">
+                    <button class="action-btn" data-actuator="pump" id="btnPump">
                         <div class="ico">💦</div>
                         <div class="text">
-                            Spray Mist
-                            <small>Irrigate · moisture ↑ · temp ↓</small>
+                            Spray Pump
+                            <small>12V mist · moisture ↑ · temp ↓</small>
                         </div>
+                        <span class="state-badge">OFF</span>
                     </button>
-                    <button class="action-btn" id="btnVent">
+                    <button class="action-btn" data-actuator="solenoid" id="btnSolenoid">
+                        <div class="ico">🚰</div>
+                        <div class="text">
+                            Solenoid Valve
+                            <small>Precision misting line</small>
+                        </div>
+                        <span class="state-badge">CLOSED</span>
+                    </button>
+                    <button class="action-btn danger" data-actuator="fungicide" id="btnFungicide">
+                        <div class="ico">🧪</div>
+                        <div class="text">
+                            Fungicide Dose
+                            <small>Targeted disease treatment</small>
+                        </div>
+                        <span class="state-badge">OFF</span>
+                    </button>
+                </div>
+
+                <div class="control-section-label">Probe & Environment</div>
+                <div class="action-list">
+                    <button class="action-btn warn" data-actuator="probe" id="btnProbe">
+                        <div class="ico">🦾</div>
+                        <div class="text">
+                            Deploy Probe
+                            <small>MG996R servo · lowers soil sensor</small>
+                        </div>
+                        <span class="state-badge">RETRACTED</span>
+                    </button>
+                    <button class="action-btn" data-actuator="vent" id="btnVent">
                         <div class="ico">🌀</div>
                         <div class="text">
-                            Ventilate
-                            <small>Air exchange · temp ↓</small>
+                            Ventilation Fan
+                            <small>Air exchange · temp ↓ · RH ↓</small>
                         </div>
+                        <span class="state-badge">OFF</span>
                     </button>
-                    <button class="action-btn" id="btnHeat">
-                        <div class="ico">🔥</div>
+                    <button class="action-btn" data-actuator="scan" id="btnScan">
+                        <div class="ico">📷</div>
                         <div class="text">
-                            Heat Pulse
-                            <small>Greenhouse warming · temp ↑</small>
+                            Trigger Leaf Scan
+                            <small>Manual ESP32‑CAM capture</small>
                         </div>
+                        <span class="state-badge">GO</span>
                     </button>
-                    <button class="action-btn" id="btnCalibrate">
-                        <div class="ico">🎯</div>
-                        <div class="text">
-                            Recalibrate Sensors
-                            <small>Re‑baseline probe offsets</small>
-                        </div>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Environment -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">
-                        <h2>Environment</h2>
-                        <span>Secondary sensor readings</span>
-                    </div>
-                </div>
-                <div class="env-list">
-                    <div class="env-item">
-                        <div class="emoji">☀️</div>
-                        <div class="info"><span class="k">Light intensity</span><span class="v" id="envLight">-- klx</span></div>
-                        <div class="bar"><i id="envLightBar" style="width:60%"></i></div>
-                    </div>
-                    <div class="env-item">
-                        <div class="emoji">🪨</div>
-                        <div class="info"><span class="k">Soil pH</span><span class="v" id="envPH">-- pH</span></div>
-                        <div class="bar"><i id="envPHBar" style="width:50%"></i></div>
-                    </div>
-                    <div class="env-item">
-                        <div class="emoji">⚡</div>
-                        <div class="info"><span class="k">Conductivity</span><span class="v" id="envEC">-- mS/cm</span></div>
-                        <div class="bar"><i id="envECBar" style="width:40%"></i></div>
-                    </div>
-                    <div class="env-item">
-                        <div class="emoji">🌬️</div>
-                        <div class="info"><span class="k">CO₂ level</span><span class="v" id="envCO2">-- ppm</span></div>
-                        <div class="bar"><i id="envCO2Bar" style="width:55%"></i></div>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ============================================================
-         EVENT LOG + STATUS
-         ============================================================ -->
-    <div class="main-grid" style="grid-template-columns: 1fr;">
-        <div class="card log-card">
-            <div class="card-header">
-                <div class="card-title">
-                    <h2>Event Log</h2>
-                    <span>Recent system activity and telemetry events</span>
-                </div>
-                <span class="chip" id="logCount">0 events</span>
+    <!-- ============================ EVENT LOG ============================ -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">
+                <h2>System Event Log</h2>
+                <span>Chronological activity across all subsystems</span>
             </div>
-            <div class="log-list" id="logList"></div>
+            <span class="chip" id="logCount">0 events</span>
         </div>
+        <div class="log-list" id="logList"></div>
     </div>
 
-    <!-- Status bar -->
+    <!-- ============================ STATUS BAR ============================ -->
     <footer class="status-bar">
         <div class="status-group">
-            <span class="status-item"><span class="status-led"></span> WebSocket connected</span>
+            <span class="status-item"><span class="status-led" id="ledWs"></span> WebSocket :81</span>
             <span class="status-sep"></span>
-            <span class="status-item"><span class="status-led"></span> Sensors online · 6/6</span>
+            <span class="status-item"><span class="status-led" id="ledSensors"></span> Sensors 6/6</span>
             <span class="status-sep"></span>
-            <span class="status-item"><span class="status-led warn"></span> Low soil moisture alert armed</span>
+            <span class="status-item"><span class="status-led warn" id="ledDisease"></span> Disease watch</span>
         </div>
         <div class="status-group">
-            <span class="status-item">Uptime <strong id="uptime">00:00</strong></span>
+            <span class="status-item">Mode <strong id="modeLabel">DEMO</strong></span>
             <span class="status-sep"></span>
-            <span class="status-item">Packets <strong id="pktCount">0</strong></span>
-            <span class="status-sep"></span>
-            <span class="status-item">NIPAS v2.4 · build 2024‑11</span>
+            <span class="status-item">NIPAS v3.0 · build 2025‑01</span>
         </div>
     </footer>
-
 </div>
+
+<!-- ============================ SETTINGS DRAWER ============================ -->
+<div class="settings-overlay" id="settingsOverlay"></div>
+<aside class="settings-drawer" id="settingsDrawer">
+    <div class="settings-header">
+        <h2>⚙ System Settings</h2>
+        <button class="settings-close" id="closeSettings">✕</button>
+    </div>
+    <div class="settings-body">
+
+        <div class="settings-section">
+            <h3>Connection</h3>
+            <div class="settings-field">
+                <label>ESP32 IP address</label>
+                <input type="text" id="setIp" value="192.168.1.42" />
+            </div>
+            <div class="settings-field">
+                <label>WebSocket port</label>
+                <input type="text" id="setPort" value="81" />
+            </div>
+            <div class="settings-field">
+                <label>WiFi SSID (display only)</label>
+                <input type="text" id="setSsid" value="NIPAS-Field" />
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3>Telemetry</h3>
+            <div class="settings-field">
+                <label>Stream interval (ms)</label>
+                <input type="number" id="setInterval" value="3000" min="500" step="500" />
+            </div>
+            <div class="settings-field">
+                <label>Chart window (points)</label>
+                <input type="number" id="setWindow" value="15" min="5" max="60" />
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3>Automation</h3>
+            <div class="switch-row">
+                <span>Auto‑spray on low moisture</span>
+                <div class="switch on" data-toggle="autoSpray"></div>
+            </div>
+            <div class="switch-row">
+                <span>Auto‑vent on high temp</span>
+                <div class="switch" data-toggle="autoVent"></div>
+            </div>
+            <div class="switch-row">
+                <span>Auto‑probe deployment</span>
+                <div class="switch" data-toggle="autoProbe"></div>
+            </div>
+            <div class="switch-row">
+                <span>Continuous leaf scanning</span>
+                <div class="switch on" data-toggle="autoScan"></div>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3>Thresholds</h3>
+            <div class="settings-field">
+                <label>Low moisture alert (%)</label>
+                <input type="number" id="setLowMoisture" value="25" />
+            </div>
+            <div class="settings-field">
+                <label>High temperature alert (°C)</label>
+                <input type="number" id="setHighTemp" value="31" />
+            </div>
+        </div>
+    </div>
+    <div class="settings-footer">
+        <button class="btn-outline" id="resetSettings">Reset defaults</button>
+        <button class="btn-outline" id="applySettings" style="background:var(--green-700); color:white; border-color:var(--green-700);">Apply</button>
+    </div>
+</aside>
 
 <script>
 (function () {
@@ -946,16 +1005,16 @@
     const CONFIG = {
         MAX_POINTS: 15,
         STREAM_INTERVAL_MS: 3000,
+        LEAF_SCAN_INTERVAL_MS: 5000,
         MOISTURE_BASELINE: 42,
         TEMP_BASELINE: 23.5,
         HUMIDITY_BASELINE: 65,
-        MOISTURE_MIN: 15,
-        MOISTURE_MAX: 70,
-        TEMP_MIN: 15,
-        TEMP_MAX: 34,
-        HUMIDITY_MIN: 35,
-        HUMIDITY_MAX: 90,
+        MOISTURE_MIN: 15, MOISTURE_MAX: 70,
+        TEMP_MIN: 15,     TEMP_MAX: 34,
+        HUMIDITY_MIN: 35, HUMIDITY_MAX: 90,
         ALERT_MOISTURE_LOW: 25,
+        ALERT_TEMP_HIGH: 31,
+        MODE: 'demo',
     };
 
     /* ============================================================
@@ -965,11 +1024,8 @@
         soilMoisture: 42,
         ambientTemp: 23.5,
         airHumidity: 65,
-        battery: 87,
-        light: 45,     // klx
-        ph: 6.5,
-        ec: 1.2,       // mS/cm
-        co2: 620,      // ppm
+        batteryVoltage: 12.1,
+        tankLevel: 78,
         moistureHistory: [],
         tempHistory: [],
         humidityHistory: [],
@@ -977,125 +1033,123 @@
         packets: 0,
         startTime: Date.now(),
         events: [],
-        datasetVisibility: [true, true],
+        // leaf
+        leafInfection: 0,
+        leafChlorosis: 0,
+        leafNecrosis: 0,
+        leafSeverity: 'none',
+        leafHealthPct: 100,
+        // actuators
+        actuators: {
+            pump: false,
+            solenoid: false,
+            fungicide: false,
+            probe: false,
+            vent: false,
+        },
+        // auto toggles
+        auto: {
+            autoSpray: true,
+            autoVent: false,
+            autoProbe: false,
+            autoScan: true,
+        },
     };
 
     /* ============================================================
-       DOM
+       DOM HELPERS
        ============================================================ */
     const $ = (id) => document.getElementById(id);
     const dom = {
         clock: $('clock'),
-        kpiMoisture: $('kpiMoisture'),
-        kpiMoistureTrend: $('kpiMoistureTrend'),
-        kpiMoistureSub: $('kpiMoistureSub'),
-        kpiTemp: $('kpiTemp'),
-        kpiTempTrend: $('kpiTempTrend'),
-        kpiTempSub: $('kpiTempSub'),
-        kpiHumidity: $('kpiHumidity'),
-        kpiHumidityTrend: $('kpiHumidityTrend'),
-        kpiBattery: $('kpiBattery'),
-        kpiBatteryTrend: $('kpiBatteryTrend'),
-        kpiBatterySub: $('kpiBatterySub'),
+        connWifi: $('connWifi'), connWs: $('connWs'), connCam: $('connCam'), connSensors: $('connSensors'),
+        kpiMoisture: $('kpiMoisture'), kpiMoistureTrend: $('kpiMoistureTrend'), kpiMoistureSub: $('kpiMoistureSub'),
+        kpiTemp: $('kpiTemp'), kpiTempTrend: $('kpiTempTrend'),
+        kpiHumidity: $('kpiHumidity'), kpiHumidityTrend: $('kpiHumidityTrend'),
+        kpiLeaf: $('kpiLeaf'), kpiLeafTrend: $('kpiLeafTrend'), kpiLeafSub: $('kpiLeafSub'),
+        kpiPower: $('kpiPower'), kpiPowerTrend: $('kpiPowerTrend'), kpiPowerSub: $('kpiPowerSub'),
+        kpiWater: $('kpiWater'), kpiWaterTrend: $('kpiWaterTrend'), kpiWaterSub: $('kpiWaterSub'),
 
-        envLight: $('envLight'),
-        envLightBar: $('envLightBar'),
-        envPH: $('envPH'),
-        envPHBar: $('envPHBar'),
-        envEC: $('envEC'),
-        envECBar: $('envECBar'),
-        envCO2: $('envCO2'),
-        envCO2Bar: $('envCO2Bar'),
+        hwPower12v: $('hwPower12v'), hwPower5v: $('hwPower5v'), hwDraw: $('hwDraw'), hwCells: $('hwCells'),
+        hwPump: $('hwPump'), hwSolenoid: $('hwSolenoid'), hwRelay: $('hwRelay'), hwTank: $('hwTank'), hwTankBar: $('hwTankBar'),
+        hwServo: $('hwServo'), hwAngle: $('hwAngle'), hwProbeState: $('hwProbeState'),
+        hwRssi: $('hwRssi'), hwUptime: $('hwUptime'), hwPackets: $('hwPackets'), hwLatency: $('hwLatency'),
 
-        logList: $('logList'),
-        logCount: $('logCount'),
+        leafCanvas: $('leafCanvas'),
+        leafStatusBar: $('leafStatusBar'),
+        leafStatusIco: $('leafStatusIco'),
+        leafStatusTxt: $('leafStatusTxt'),
+        leafInfection: $('leafInfection'),
+        leafSeverity: $('leafSeverity'),
+        leafChlor: $('leafChlor'),
+        leafNecr: $('leafNecr'),
+        camStatus: $('camStatus'),
 
-        uptime: $('uptime'),
-        pktCount: $('pktCount'),
+        logList: $('logList'), logCount: $('logCount'),
 
-        btnSpray: $('btnSpray'),
-        btnVent: $('btnVent'),
-        btnHeat: $('btnHeat'),
-        btnCalibrate: $('btnCalibrate'),
+        btnPump: $('btnPump'), btnSolenoid: $('btnSolenoid'), btnFungicide: $('btnFungicide'),
+        btnProbe: $('btnProbe'), btnVent: $('btnVent'), btnScan: $('btnScan'),
 
-        streamIntervalLabel: $('streamIntervalLabel'),
+        ledWs: $('ledWs'), ledSensors: $('ledSensors'), ledDisease: $('ledDisease'),
+        modeLabel: $('modeLabel'),
     };
 
     /* ============================================================
-       UTILITIES
+       UTILS
        ============================================================ */
     function pad(n) { return String(n).padStart(2, '0'); }
-
     function localTime(d = new Date()) {
         return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
     }
-
     function clamp(v, min, max) { return Math.min(max, Math.max(min, v)); }
-
     function rand(min, max) { return min + Math.random() * (max - min); }
-
     function fmt(v, dec = 1) { return Number(v).toFixed(dec); }
 
     /* ============================================================
        EVENT LOG
        ============================================================ */
     function pushEvent(message, level = 'info') {
-        const evt = {
-            time: localTime(),
-            message,
-            level,
-        };
+        const evt = { time: localTime(), message, level };
         state.events.unshift(evt);
-        if (state.events.length > 40) state.events.pop();
+        if (state.events.length > 50) state.events.pop();
 
         const el = document.createElement('div');
         el.className = `log-entry ${level}`;
         el.innerHTML = `<span class="time">${evt.time}</span><span class="msg">${message}</span>`;
         dom.logList.prepend(el);
-        while (dom.logList.children.length > 40) dom.logList.removeChild(dom.logList.lastChild);
-
+        while (dom.logList.children.length > 50) dom.logList.removeChild(dom.logList.lastChild);
         dom.logCount.textContent = `${state.events.length} events`;
     }
 
     /* ============================================================
-       INITIAL HISTORY (past N points ending at "now")
+       SEED DATA
        ============================================================ */
     function seedHistory() {
         const now = Date.now();
         for (let i = CONFIG.MAX_POINTS - 1; i >= 0; i--) {
             const t = new Date(now - i * CONFIG.STREAM_INTERVAL_MS);
             state.timeLabels.push(localTime(t));
-
-            // build a realistic-looking baseline with subtle variation
-            const m = CONFIG.MOISTURE_BASELINE + Math.sin(i * 0.7) * 2.5 + rand(-0.6, 0.6);
-            const tp = CONFIG.TEMP_BASELINE + Math.cos(i * 0.5) * 1.2 + rand(-0.4, 0.4);
-            const h = CONFIG.HUMIDITY_BASELINE + Math.sin(i * 0.4) * 3 + rand(-1, 1);
-
-            state.moistureHistory.push(clamp(m, CONFIG.MOISTURE_MIN, CONFIG.MOISTURE_MAX));
-            state.tempHistory.push(clamp(tp, CONFIG.TEMP_MIN, CONFIG.TEMP_MAX));
-            state.humidityHistory.push(clamp(h, CONFIG.HUMIDITY_MIN, CONFIG.HUMIDITY_MAX));
+            state.moistureHistory.push(clamp(CONFIG.MOISTURE_BASELINE + Math.sin(i * 0.7) * 2.5 + rand(-0.6, 0.6), CONFIG.MOISTURE_MIN, CONFIG.MOISTURE_MAX));
+            state.tempHistory.push(clamp(CONFIG.TEMP_BASELINE + Math.cos(i * 0.5) * 1.2 + rand(-0.4, 0.4), CONFIG.TEMP_MIN, CONFIG.TEMP_MAX));
+            state.humidityHistory.push(clamp(CONFIG.HUMIDITY_BASELINE + Math.sin(i * 0.4) * 3 + rand(-1, 1), CONFIG.HUMIDITY_MIN, CONFIG.HUMIDITY_MAX));
         }
         state.soilMoisture = state.moistureHistory[state.moistureHistory.length - 1];
         state.ambientTemp = state.tempHistory[state.tempHistory.length - 1];
         state.airHumidity = state.humidityHistory[state.humidityHistory.length - 1];
         state.packets = CONFIG.MAX_POINTS;
     }
-
     seedHistory();
 
     /* ============================================================
        CHART
        ============================================================ */
     const ctx = document.getElementById('telemetryChart').getContext('2d');
-
-    // gradient fill helper
     function makeGradient(ctx, colorTop, colorBottom) {
-        const g = ctx.createLinearGradient(0, 0, 0, 360);
+        const g = ctx.createLinearGradient(0, 0, 0, 320);
         g.addColorStop(0, colorTop);
         g.addColorStop(1, colorBottom);
         return g;
     }
-
     const moistureGradient = makeGradient(ctx, 'rgba(30,136,229,0.28)', 'rgba(30,136,229,0.0)');
     const tempGradient     = makeGradient(ctx, 'rgba(232,89,12,0.22)',  'rgba(232,89,12,0.0)');
 
@@ -1115,13 +1169,12 @@
                     pointBorderWidth: 1.5,
                     pointRadius: 4,
                     pointHoverRadius: 7,
-                    pointHoverBorderWidth: 2,
                     tension: 0.35,
                     fill: true,
                     yAxisID: 'y',
                 },
                 {
-                    label: 'Ambient temperature (°C)',
+                    label: 'Ambient temp (°C)',
                     data: state.tempHistory.slice(),
                     borderColor: '#e8590c',
                     backgroundColor: tempGradient,
@@ -1131,7 +1184,6 @@
                     pointBorderWidth: 1.5,
                     pointRadius: 4,
                     pointHoverRadius: 7,
-                    pointHoverBorderWidth: 2,
                     tension: 0.35,
                     fill: true,
                     yAxisID: 'y1',
@@ -1139,26 +1191,21 @@
             ],
         },
         options: {
-            responsive: true,
-            maintainAspectRatio: false,
+            responsive: true, maintainAspectRatio: false,
             animation: { duration: 500, easing: 'easeOutQuart' },
             interaction: { mode: 'index', intersect: false },
             plugins: {
                 legend: { display: false },
                 tooltip: {
                     backgroundColor: 'rgba(15,46,31,0.94)',
-                    titleColor: '#95d5b2',
-                    bodyColor: '#e9f5e9',
-                    padding: 12,
-                    cornerRadius: 10,
-                    borderColor: 'rgba(116,198,157,0.4)',
-                    borderWidth: 1,
-                    displayColors: true,
+                    titleColor: '#95d5b2', bodyColor: '#e9f5e9',
+                    padding: 12, cornerRadius: 10,
+                    borderColor: 'rgba(116,198,157,0.4)', borderWidth: 1,
                     usePointStyle: true,
                     titleFont: { size: 12, weight: '600' },
                     bodyFont: { size: 12, family: "'JetBrains Mono', monospace" },
                     callbacks: {
-                        title: (items) => `⏱  ${items[0].label}`,
+                        title: (items) => `⏱ ${items[0].label}`,
                         label: (c) => {
                             const unit = c.datasetIndex === 0 ? '%' : '°C';
                             return `  ${c.dataset.label}: ${c.parsed.y.toFixed(1)}${unit}`;
@@ -1169,55 +1216,22 @@
             scales: {
                 y: {
                     position: 'left',
-                    suggestedMin: 15,
-                    suggestedMax: 70,
+                    suggestedMin: 15, suggestedMax: 70,
                     grid: { color: 'rgba(150,190,160,0.18)', drawTicks: false },
                     border: { display: false },
-                    ticks: {
-                        color: '#40916c',
-                        font: { size: 11, family: "'JetBrains Mono', monospace", weight: '600' },
-                        padding: 8,
-                        callback: (v) => v + '%',
-                    },
-                    title: {
-                        display: true,
-                        text: 'SOIL MOISTURE',
-                        color: '#1e88e5',
-                        font: { size: 10, weight: '700' },
-                        padding: { bottom: 6 },
-                    },
+                    ticks: { color: '#40916c', font: { size: 11, family: "'JetBrains Mono', monospace", weight: '600' }, padding: 8, callback: (v) => v + '%' },
+                    title: { display: true, text: 'SOIL MOISTURE', color: '#1e88e5', font: { size: 10, weight: '700' }, padding: { bottom: 6 } },
                 },
                 y1: {
                     position: 'right',
-                    suggestedMin: 15,
-                    suggestedMax: 35,
-                    grid: { drawOnChartArea: false },
-                    border: { display: false },
-                    ticks: {
-                        color: '#e8590c',
-                        font: { size: 11, family: "'JetBrains Mono', monospace", weight: '600' },
-                        padding: 8,
-                        callback: (v) => v + '°',
-                    },
-                    title: {
-                        display: true,
-                        text: 'TEMP',
-                        color: '#e8590c',
-                        font: { size: 10, weight: '700' },
-                        padding: { bottom: 6 },
-                    },
+                    suggestedMin: 15, suggestedMax: 35,
+                    grid: { drawOnChartArea: false }, border: { display: false },
+                    ticks: { color: '#e8590c', font: { size: 11, family: "'JetBrains Mono', monospace", weight: '600' }, padding: 8, callback: (v) => v + '°' },
+                    title: { display: true, text: 'TEMP', color: '#e8590c', font: { size: 10, weight: '700' }, padding: { bottom: 6 } },
                 },
                 x: {
-                    grid: { display: false },
-                    border: { display: false },
-                    ticks: {
-                        color: '#2d6a4f',
-                        font: { size: 10.5, family: "'JetBrains Mono', monospace" },
-                        maxRotation: 0,
-                        autoSkip: true,
-                        maxTicksLimit: 8,
-                        padding: 8,
-                    },
+                    grid: { display: false }, border: { display: false },
+                    ticks: { color: '#2d6a4f', font: { size: 10.5, family: "'JetBrains Mono', monospace" }, maxRotation: 0, autoSkip: true, maxTicksLimit: 8, padding: 8 },
                 },
             },
         },
@@ -1229,73 +1243,47 @@
     function tick(options = {}) {
         const { forcedMoisture = null, forcedTemp = null, forcedHumidity = null, silent = false } = options;
 
-        // --- update primary sensors ---
         if (forcedMoisture === null) {
-            // mean-reverting random walk (spikes decay toward baseline)
             const pull = (CONFIG.MOISTURE_BASELINE - state.soilMoisture) * 0.08;
-            state.soilMoisture = clamp(
-                state.soilMoisture + pull + rand(-0.7, 0.7),
-                CONFIG.MOISTURE_MIN, CONFIG.MOISTURE_MAX
-            );
-        } else {
-            state.soilMoisture = clamp(forcedMoisture, CONFIG.MOISTURE_MIN, CONFIG.MOISTURE_MAX);
-        }
+            state.soilMoisture = clamp(state.soilMoisture + pull + rand(-0.7, 0.7), CONFIG.MOISTURE_MIN, CONFIG.MOISTURE_MAX);
+        } else state.soilMoisture = clamp(forcedMoisture, CONFIG.MOISTURE_MIN, CONFIG.MOISTURE_MAX);
 
         if (forcedTemp === null) {
             const pull = (CONFIG.TEMP_BASELINE - state.ambientTemp) * 0.08;
-            state.ambientTemp = clamp(
-                state.ambientTemp + pull + rand(-0.45, 0.45),
-                CONFIG.TEMP_MIN, CONFIG.TEMP_MAX
-            );
-        } else {
-            state.ambientTemp = clamp(forcedTemp, CONFIG.TEMP_MIN, CONFIG.TEMP_MAX);
-        }
+            state.ambientTemp = clamp(state.ambientTemp + pull + rand(-0.45, 0.45), CONFIG.TEMP_MIN, CONFIG.TEMP_MAX);
+        } else state.ambientTemp = clamp(forcedTemp, CONFIG.TEMP_MIN, CONFIG.TEMP_MAX);
 
         if (forcedHumidity === null) {
             const pull = (CONFIG.HUMIDITY_BASELINE - state.airHumidity) * 0.06;
-            state.airHumidity = clamp(
-                state.airHumidity + pull + rand(-1.2, 1.2),
-                CONFIG.HUMIDITY_MIN, CONFIG.HUMIDITY_MAX
-            );
-        } else {
-            state.airHumidity = clamp(forcedHumidity, CONFIG.HUMIDITY_MIN, CONFIG.HUMIDITY_MAX);
+            state.airHumidity = clamp(state.airHumidity + pull + rand(-1.2, 1.2), CONFIG.HUMIDITY_MIN, CONFIG.HUMIDITY_MAX);
+        } else state.airHumidity = clamp(forcedHumidity, CONFIG.HUMIDITY_MIN, CONFIG.HUMIDITY_MAX);
+
+        // battery slowly drains, tank slowly depletes (only in demo mode)
+        if (CONFIG.MODE === 'demo') {
+            state.batteryVoltage = clamp(state.batteryVoltage - rand(0, 0.005), 9.0, 12.8);
+            state.tankLevel = clamp(state.tankLevel - rand(0, 0.05), 0, 100);
         }
 
-        // --- secondary sensors (drift only) ---
-        state.light = clamp(state.light + rand(-3, 3), 5, 95);
-        state.ph = clamp(state.ph + rand(-0.05, 0.05), 5.2, 7.8);
-        state.ec = clamp(state.ec + rand(-0.04, 0.04), 0.3, 2.8);
-        state.co2 = clamp(state.co2 + rand(-25, 25), 380, 1200);
-        state.battery = clamp(state.battery - rand(0, 0.15), 0, 100);
-
-        // --- push to history ---
         const label = localTime();
         state.timeLabels.push(label);
         state.moistureHistory.push(state.soilMoisture);
         state.tempHistory.push(state.ambientTemp);
         state.humidityHistory.push(state.airHumidity);
-
         while (state.timeLabels.length > CONFIG.MAX_POINTS) {
             state.timeLabels.shift();
             state.moistureHistory.shift();
             state.tempHistory.shift();
             state.humidityHistory.shift();
         }
-
         state.packets++;
 
-        // --- update chart ---
         chart.data.labels = state.timeLabels.slice();
         chart.data.datasets[0].data = state.moistureHistory.slice();
         chart.data.datasets[1].data = state.tempHistory.slice();
         chart.update();
 
-        // --- update UI ---
-        updateKPIs();
-        updateEnvPanel();
+        updateKPIs(); updateHardware();
         if (!silent) checkAlerts();
-
-        dom.pktCount.textContent = state.packets.toLocaleString();
     }
 
     /* ============================================================
@@ -1308,55 +1296,92 @@
         if (delta < -0.15) return { cls: 'down', label: `▼ ${delta.toFixed(1)}` };
         return { cls: 'flat', label: '— flat' };
     }
-
-    function setTrend(el, t) {
-        el.className = `trend ${t.cls}`;
-        el.textContent = t.label;
-    }
+    function setTrend(el, t) { el.className = `trend ${t.cls}`; el.textContent = t.label; }
 
     function updateKPIs() {
         dom.kpiMoisture.innerHTML = `${fmt(state.soilMoisture, 1)}<small>%</small>`;
         dom.kpiTemp.innerHTML     = `${fmt(state.ambientTemp, 1)}<small>°C</small>`;
         dom.kpiHumidity.innerHTML = `${fmt(state.airHumidity, 0)}<small>%</small>`;
-        dom.kpiBattery.innerHTML  = `${fmt(state.battery, 0)}<small>%</small>`;
+        dom.kpiLeaf.innerHTML     = `${fmt(state.leafHealthPct, 0)}<small>%</small>`;
+        dom.kpiPower.innerHTML    = `${fmt(state.batteryVoltage, 2)}<small>V</small>`;
+        dom.kpiWater.innerHTML    = `${fmt(state.tankLevel, 0)}<small>%</small>`;
 
         setTrend(dom.kpiMoistureTrend, trendFor(state.moistureHistory));
         setTrend(dom.kpiTempTrend,     trendFor(state.tempHistory));
         setTrend(dom.kpiHumidityTrend, trendFor(state.humidityHistory));
 
-        // battery trend (simple)
-        const batT = state.battery > 80
-            ? { cls: 'up', label: '▲ healthy' }
-            : state.battery > 40
-                ? { cls: 'flat', label: '— nominal' }
-                : { cls: 'down', label: '▼ low' };
-        setTrend(dom.kpiBatteryTrend, batT);
+        const leafTrend =
+            state.leafHealthPct > 80 ? { cls: 'up',   label: '✓ healthy' } :
+            state.leafHealthPct > 50 ? { cls: 'flat', label: '· mild' } :
+                                       { cls: 'down', label: '▼ infected' };
+        setTrend(dom.kpiLeafTrend, leafTrend);
 
-        // context subtitles
-        if (state.soilMoisture < 25) dom.kpiMoistureSub.textContent = '⚠ Low · irrigation recommended';
-        else if (state.soilMoisture > 60) dom.kpiMoistureSub.textContent = '⚠ High · possible oversaturation';
-        else dom.kpiMoistureSub.textContent = 'Optimal range 35–55%';
+        const battTrend =
+            state.batteryVoltage > 11.5 ? { cls: 'up',   label: '▲ good' } :
+            state.batteryVoltage > 10.5 ? { cls: 'flat', label: '· ok' } :
+                                          { cls: 'down', label: '▼ low' };
+        setTrend(dom.kpiPowerTrend, battTrend);
 
-        if (state.ambientTemp > 30) dom.kpiTempSub.textContent = '⚠ Hot · consider ventilation';
-        else if (state.ambientTemp < 18) dom.kpiTempSub.textContent = '⚠ Cold · heat pulse advised';
-        else dom.kpiTempSub.textContent = 'Comfort zone 18–28°C';
+        const waterTrend =
+            state.tankLevel > 50 ? { cls: 'up',   label: '✓ ok' } :
+            state.tankLevel > 20 ? { cls: 'flat', label: '· refill soon' } :
+                                   { cls: 'down', label: '▼ empty' };
+        setTrend(dom.kpiWaterTrend, waterTrend);
+
+        if (state.soilMoisture < 25) dom.kpiMoistureSub.textContent = '⚠ Low · irrigation needed';
+        else if (state.soilMoisture > 60) dom.kpiMoistureSub.textContent = '⚠ High · oversaturated';
+        else dom.kpiMoistureSub.textContent = 'Capacitive v1.2 · OK';
+
+        dom.kpiLeafSub.textContent =
+            state.leafSeverity === 'high' ? '⚠ Disease detected' :
+            state.leafSeverity === 'moderate' ? '⚠ Monitor closely' :
+            'Leaf surface healthy';
+
+        dom.kpiPowerSub.textContent =
+            state.batteryVoltage > 11.5 ? 'Li‑ion pack · charging' :
+            state.batteryVoltage > 10.5 ? 'Li‑ion pack · nominal' :
+            'Li‑ion pack · low';
+
+        dom.kpiWaterSub.textContent =
+            state.tankLevel > 50 ? 'Reservoir OK' :
+            state.tankLevel > 20 ? 'Refill recommended' :
+            'Reservoir empty';
     }
 
     /* ============================================================
-       ENV PANEL UPDATE
+       HARDWARE PANEL UPDATE
        ============================================================ */
-    function updateEnvPanel() {
-        dom.envLight.textContent = `${fmt(state.light, 0)} klx`;
-        dom.envLightBar.style.width = `${clamp(state.light, 0, 100)}%`;
+    function updateHardware() {
+        // Power
+        dom.hwPower12v.textContent = fmt(state.batteryVoltage + rand(-0.05, 0.05), 2) + ' V';
+        dom.hwPower5v.textContent  = fmt(5.00 + rand(-0.02, 0.02), 2) + ' V';
+        dom.hwDraw.textContent     = Math.round(220 + rand(-20, 40)) + ' mA';
+        dom.hwCells.textContent    = '3 × 18650 · ' + (state.batteryVoltage > 11 ? 'OK' : 'LOW');
 
-        dom.envPH.textContent = `${fmt(state.ph, 2)} pH`;
-        dom.envPHBar.style.width = `${clamp((state.ph - 4) / 5 * 100, 0, 100)}%`;
+        // Actuation
+        dom.hwPump.textContent = state.actuators.pump ? 'RUNNING' : 'IDLE';
+        dom.hwPump.className = 'val ' + (state.actuators.pump ? 'good' : '');
+        dom.hwSolenoid.textContent = state.actuators.solenoid ? 'OPEN' : 'CLOSED';
+        dom.hwSolenoid.className = 'val ' + (state.actuators.solenoid ? 'good' : '');
+        dom.hwRelay.textContent = 'OK';
+        dom.hwTank.textContent = fmt(state.tankLevel, 0) + '%';
+        dom.hwTankBar.style.width = state.tankLevel + '%';
 
-        dom.envEC.textContent = `${fmt(state.ec, 2)} mS/cm`;
-        dom.envECBar.style.width = `${clamp(state.ec / 3 * 100, 0, 100)}%`;
+        // Probe
+        dom.hwServo.textContent = state.actuators.probe ? 'DEPLOYED' : 'RETRACTED';
+        dom.hwServo.className = 'val ' + (state.actuators.probe ? 'good' : '');
+        dom.hwAngle.textContent = state.actuators.probe ? '90°' : '0°';
+        dom.hwProbeState.textContent = state.actuators.probe ? 'Active' : 'Standby';
 
-        dom.envCO2.textContent = `${fmt(state.co2, 0)} ppm`;
-        dom.envCO2Bar.style.width = `${clamp((state.co2 - 380) / (1200 - 380) * 100, 0, 100)}%`;
+        // Connection
+        dom.hwRssi.textContent = (Math.round(-55 + rand(-5, 5))) + ' dBm';
+        dom.hwLatency.textContent = Math.round(20 + rand(-5, 15)) + ' ms';
+        dom.hwPackets.textContent = state.packets.toLocaleString();
+
+        // Uptime
+        const secs = Math.floor((Date.now() - state.startTime) / 1000);
+        const up = `${pad(Math.floor(secs / 60))}:${pad(secs % 60)}`;
+        dom.hwUptime.textContent = up;
     }
 
     /* ============================================================
@@ -1366,131 +1391,400 @@
     function checkAlerts() {
         const now = Date.now();
         if (now - lastAlertTime < 8000) return;
-
         if (state.soilMoisture < CONFIG.ALERT_MOISTURE_LOW) {
-            pushEvent(`⚠ Soil moisture critically low (${fmt(state.soilMoisture, 1)}%)`, 'alert');
+            pushEvent(`⚠ Low soil moisture (${fmt(state.soilMoisture, 1)}%) — consider irrigation`, 'alert');
             lastAlertTime = now;
-        } else if (state.ambientTemp > 31) {
-            pushEvent(`⚠ Ambient temperature high (${fmt(state.ambientTemp, 1)}°C)`, 'warn');
+            if (state.auto.autoSpray) triggerActuator('pump', true, 3000);
+        } else if (state.ambientTemp > CONFIG.ALERT_TEMP_HIGH) {
+            pushEvent(`⚠ High temperature (${fmt(state.ambientTemp, 1)}°C) — consider ventilation`, 'warn');
+            lastAlertTime = now;
+            if (state.auto.autoVent) triggerActuator('vent', true, 3000);
+        } else if (state.batteryVoltage < 10.5) {
+            pushEvent(`🔋 Battery low (${fmt(state.batteryVoltage, 2)}V)`, 'warn');
             lastAlertTime = now;
         }
     }
 
     /* ============================================================
-       ACTION HANDLERS
+       ============================================================
+       LEAF HEALTH · SIMULATED ESP32-CAM + HSV DETECTION
+       ============================================================
        ============================================================ */
-    function pulseButton(btn) {
-        btn.style.transform = 'scale(0.97)';
-        setTimeout(() => { btn.style.transform = ''; }, 130);
+    const DISEASE_PROFILES = [
+        { name: 'Early Blight',       type: 'necrosis',  spotColor: 'rgba(80, 40, 10, 0.85)',  hsv: { h:[10,40], s:[0.4,0.9], v:[0.2,0.55] }, severityRange:[0.08, 0.22] },
+        { name: 'Bacterial Spot',     type: 'necrosis',  spotColor: 'rgba(40, 25, 10, 0.9)',   hsv: { h:[15,35], s:[0.5,0.95], v:[0.15,0.4] }, severityRange:[0.05, 0.18] },
+        { name: 'Chlorosis',          type: 'chlorosis', spotColor: 'rgba(230, 210, 80, 0.75)', hsv: { h:[40,75], s:[0.4,0.85], v:[0.55,0.95] }, severityRange:[0.10, 0.35] },
+        { name: 'Powdery Mildew',     type: 'chlorosis', spotColor: 'rgba(240, 240, 225, 0.8)', hsv: { h:[0,60],  s:[0.0,0.25], v:[0.75,1.0] }, severityRange:[0.15, 0.40] },
+        { name: 'Healthy',            type: 'healthy',   spotColor: 'rgba(30, 100, 40, 0.4)',   hsv: { h:[80,150],s:[0.4,0.9], v:[0.25,0.75] }, severityRange:[0, 0.03] },
+    ];
+
+    const leafCanvas = dom.leafCanvas;
+    const leafCtx = leafCanvas.getContext('2d');
+    const LEAF_W = leafCanvas.width, LEAF_H = leafCanvas.height;
+    const leafShape = { cx: LEAF_W/2, cy: LEAF_H/2, rx: LEAF_W*0.42, ry: LEAF_H*0.46, rotation: -0.15 };
+
+    let currentSpots = [];
+    let currentProfile = DISEASE_PROFILES[4];
+
+    function generateSpots(profile, count) {
+        const spots = [];
+        for (let i = 0; i < count; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const radius = Math.sqrt(Math.random()) * 0.75;
+            const x = leafShape.cx + Math.cos(angle) * radius * leafShape.rx;
+            const y = leafShape.cy + Math.sin(angle) * radius * leafShape.ry;
+            spots.push({ x, y, r: rand(4, 14) });
+        }
+        return spots;
     }
 
-    function handleSpray() {
-        pulseButton(dom.btnSpray);
-        // Spray mist = water application → moisture ↑, temp ↓, humidity ↑
-        const moistureGain = rand(8, 14);
-        const tempDrop     = rand(0.6, 1.6);
-        const humidityGain = rand(4, 9);
+    function drawLeafFrame(profile, spots) {
+        const c = leafCtx;
+        c.clearRect(0, 0, LEAF_W, LEAF_H);
 
-        const newMoisture = clamp(state.soilMoisture + moistureGain, CONFIG.MOISTURE_MIN, CONFIG.MOISTURE_MAX);
-        const newTemp     = clamp(state.ambientTemp - tempDrop, CONFIG.TEMP_MIN, CONFIG.TEMP_MAX);
-        const newHumidity = clamp(state.airHumidity + humidityGain, CONFIG.HUMIDITY_MIN, CONFIG.HUMIDITY_MAX);
+        const bgGrad = c.createRadialGradient(LEAF_W/2, LEAF_H/2, 20, LEAF_W/2, LEAF_H/2, LEAF_W*0.7);
+        bgGrad.addColorStop(0, '#1a2a1e');
+        bgGrad.addColorStop(1, '#0a1410');
+        c.fillStyle = bgGrad;
+        c.fillRect(0, 0, LEAF_W, LEAF_H);
 
-        tick({ forcedMoisture: newMoisture, forcedTemp: newTemp, forcedHumidity: newHumidity });
-        pushEvent(`💦 Spray Mist → moisture +${fmt(moistureGain, 1)}%, temp −${fmt(tempDrop, 1)}°C`, 'success');
+        c.save();
+        c.translate(leafShape.cx, leafShape.cy);
+        c.rotate(leafShape.rotation);
+
+        const leafColor = profile.type === 'healthy' ? 'rgb(66,155,82)'
+                       : profile.type === 'chlorosis' ? 'rgb(150,170,60)'
+                       : 'rgb(90,130,60)';
+        const leafGrad = c.createRadialGradient(0, 0, 10, 0, 0, leafShape.rx);
+        leafGrad.addColorStop(0, leafColor);
+        leafGrad.addColorStop(1, 'rgb(35,80,45)');
+        c.fillStyle = leafGrad;
+        c.beginPath();
+        c.ellipse(0, 0, leafShape.rx, leafShape.ry, 0, 0, Math.PI * 2);
+        c.fill();
+
+        c.strokeStyle = 'rgba(20,50,25,0.5)';
+        c.lineWidth = 1.5;
+        c.beginPath(); c.moveTo(-leafShape.rx, 0); c.lineTo(leafShape.rx, 0); c.stroke();
+        for (let i = -4; i <= 4; i++) {
+            if (i === 0) continue;
+            const px = (i/4) * leafShape.rx;
+            c.beginPath(); c.moveTo(px, 0); c.lineTo(px*0.6, -leafShape.ry*0.5); c.stroke();
+            c.beginPath(); c.moveTo(px, 0); c.lineTo(px*0.6,  leafShape.ry*0.5); c.stroke();
+        }
+
+        spots.forEach((s, idx) => {
+            const dx = s.x - leafShape.cx, dy = s.y - leafShape.cy;
+            const cos = Math.cos(-leafShape.rotation), sin = Math.sin(-leafShape.rotation);
+            const lx = dx*cos - dy*sin, ly = dx*sin + dy*cos;
+
+            const sg = c.createRadialGradient(lx, ly, 1, lx, ly, s.r);
+            sg.addColorStop(0, profile.spotColor);
+            sg.addColorStop(1, 'rgba(0,0,0,0)');
+            c.fillStyle = sg;
+            c.beginPath(); c.arc(lx, ly, s.r, 0, Math.PI*2); c.fill();
+
+            if (profile.type === 'necrosis' && idx % 2 === 0) {
+                c.fillStyle = 'rgba(20,10,5,0.6)';
+                c.beginPath(); c.arc(lx, ly, s.r*0.4, 0, Math.PI*2); c.fill();
+            }
+        });
+        c.restore();
+
+        // Detection overlays
+        spots.forEach((s) => {
+            c.strokeStyle = profile.type === 'healthy' ? 'rgba(120,220,140,0.5)'
+                          : profile.type === 'chlorosis' ? 'rgba(250,200,60,0.9)'
+                          : 'rgba(255,120,80,0.9)';
+            c.lineWidth = 1.5;
+            c.beginPath(); c.arc(s.x, s.y, s.r + 3, 0, Math.PI*2); c.stroke();
+        });
+
+        c.font = 'bold 11px monospace';
+        c.fillStyle = 'rgba(180,240,200,0.7)';
+        c.fillText(`HSV MASK · ${profile.name.toUpperCase()}`, 10, LEAF_H - 12);
+
+        // HSV histogram bar
+        const barW = 120, barH = 8, barX = LEAF_W - barW - 10, barY = LEAF_H - 16;
+        c.fillStyle = 'rgba(0,0,0,0.5)';
+        c.fillRect(barX, barY, barW, barH);
+        c.fillStyle = profile.type === 'healthy' ? 'rgb(82,183,136)'
+                    : profile.type === 'chlorosis' ? 'rgb(250,176,5)'
+                    : 'rgb(232,89,12)';
+        const fillRatio = Math.min(1, state.leafInfection * 2.5);
+        c.fillRect(barX, barY, barW * fillRatio, barH);
     }
 
-    function handleVent() {
-        pulseButton(dom.btnVent);
-        const tempDrop     = rand(1.5, 3.0);
-        const humidityDrop = rand(6, 12);
+    function simulateLeafScan(options = {}) {
+        const { silent = false } = options;
+        const roll = Math.random();
+        let profile;
+        if (roll < 0.45)      profile = DISEASE_PROFILES[4];
+        else if (roll < 0.65) profile = DISEASE_PROFILES[2];
+        else if (roll < 0.78) profile = DISEASE_PROFILES[3];
+        else if (roll < 0.90) profile = DISEASE_PROFILES[0];
+        else                  profile = DISEASE_PROFILES[1];
 
-        const newTemp     = clamp(state.ambientTemp - tempDrop, CONFIG.TEMP_MIN, CONFIG.TEMP_MAX);
-        const newHumidity = clamp(state.airHumidity - humidityDrop, CONFIG.HUMIDITY_MIN, CONFIG.HUMIDITY_MAX);
+        const infectionLevel = rand(profile.severityRange[0], profile.severityRange[1]);
+        const spotCount = profile.type === 'healthy' ? Math.floor(rand(0, 3)) : Math.floor(rand(6, 22));
+        currentSpots = generateSpots(profile, spotCount);
+        currentProfile = profile;
 
-        tick({ forcedTemp: newTemp, forcedHumidity: newHumidity });
-        pushEvent(`🌀 Ventilation → temp −${fmt(tempDrop, 1)}°C, RH −${fmt(humidityDrop, 1)}%`, 'info');
+        const chlorosisPct = profile.type === 'chlorosis' ? infectionLevel : rand(0, 0.02);
+        const necrosisPct  = profile.type === 'necrosis'  ? infectionLevel : rand(0, 0.015);
+        const totalInfection = chlorosisPct + necrosisPct;
+
+        let severity;
+        if (totalInfection > 0.30)      severity = 'high';
+        else if (totalInfection > 0.15) severity = 'moderate';
+        else if (totalInfection > 0.05) severity = 'low';
+        else                            severity = 'none';
+
+        state.leafInfection = totalInfection;
+        state.leafChlorosis = chlorosisPct;
+        state.leafNecrosis  = necrosisPct;
+        state.leafSeverity  = severity;
+        state.leafHealthPct = clamp(100 - totalInfection * 200, 0, 100);
+
+        updateLeafUI();
+        drawLeafFrame(profile, currentSpots);
+
+        if (!silent) {
+            const pct = (totalInfection * 100).toFixed(1);
+            if (severity === 'high') pushEvent(`🦠 ${profile.name} detected — ${pct}% infection (HIGH)`, 'alert');
+            else if (severity === 'moderate') pushEvent(`⚠ ${profile.name} — ${pct}% infection`, 'warn');
+            else if (severity === 'low') pushEvent(`🍃 Mild ${profile.name.toLowerCase()} (${pct}%)`, 'info');
+            else pushEvent(`✓ Leaf scan complete — healthy`, 'success');
+        }
     }
 
-    function handleHeat() {
-        pulseButton(dom.btnHeat);
-        const tempGain     = rand(1.5, 3.2);
-        const humidityDrop = rand(3, 7);
+    function updateLeafUI() {
+        dom.leafInfection.textContent = (state.leafInfection * 100).toFixed(1) + '%';
+        dom.leafChlor.textContent     = (state.leafChlorosis * 100).toFixed(1) + '%';
+        dom.leafNecr.textContent      = (state.leafNecrosis  * 100).toFixed(1) + '%';
+        dom.leafSeverity.textContent  = state.leafSeverity.toUpperCase();
 
-        const newTemp     = clamp(state.ambientTemp + tempGain, CONFIG.TEMP_MIN, CONFIG.TEMP_MAX);
-        const newHumidity = clamp(state.airHumidity - humidityDrop, CONFIG.HUMIDITY_MIN, CONFIG.HUMIDITY_MAX);
+        dom.leafStatusBar.classList.remove('healthy','moderate','high');
+        if (state.leafSeverity === 'high') {
+            dom.leafStatusBar.classList.add('high');
+            dom.leafStatusIco.textContent = '🦠';
+            dom.leafStatusTxt.textContent = `High infection — ${(state.leafInfection*100).toFixed(1)}% affected`;
+        } else if (state.leafSeverity === 'moderate') {
+            dom.leafStatusBar.classList.add('moderate');
+            dom.leafStatusIco.textContent = '⚠';
+            dom.leafStatusTxt.textContent = `Moderate infection — ${(state.leafInfection*100).toFixed(1)}%`;
+        } else if (state.leafSeverity === 'low') {
+            dom.leafStatusBar.classList.add('moderate');
+            dom.leafStatusIco.textContent = '🍃';
+            dom.leafStatusTxt.textContent = `Mild symptoms — monitoring`;
+        } else {
+            dom.leafStatusBar.classList.add('healthy');
+            dom.leafStatusIco.textContent = '✓';
+            dom.leafStatusTxt.textContent = `Leaf surface healthy`;
+        }
 
-        tick({ forcedTemp: newTemp, forcedHumidity: newHumidity });
-        pushEvent(`🔥 Heat Pulse → temp +${fmt(tempGain, 1)}°C`, 'warn');
+        dom.camStatus.textContent = `CAM · ${state.leafSeverity === 'none' ? 'healthy' : state.leafSeverity}`;
+        dom.camStatus.classList.remove('alert','warn');
+        if (state.leafSeverity === 'high') dom.camStatus.classList.add('alert');
+        else if (state.leafSeverity === 'moderate') dom.camStatus.classList.add('warn');
+
+        updateKPIs();
     }
-
-    function handleCalibrate() {
-        pulseButton(dom.btnCalibrate);
-        // soft rebaseline - nudge values back toward baselines
-        state.soilMoisture = clamp(state.soilMoisture * 0.5 + CONFIG.MOISTURE_BASELINE * 0.5, CONFIG.MOISTURE_MIN, CONFIG.MOISTURE_MAX);
-        state.ambientTemp  = clamp(state.ambientTemp * 0.5 + CONFIG.TEMP_BASELINE * 0.5, CONFIG.TEMP_MIN, CONFIG.TEMP_MAX);
-        state.airHumidity  = clamp(state.airHumidity * 0.5 + CONFIG.HUMIDITY_BASELINE * 0.5, CONFIG.HUMIDITY_MIN, CONFIG.HUMIDITY_MAX);
-        state.ph = 6.5;
-        state.ec = 1.2;
-        tick({ silent: true });
-        pushEvent(`🎯 Sensors recalibrated to baseline offsets`, 'success');
-    }
-
-    dom.btnSpray.addEventListener('click', handleSpray);
-    dom.btnVent.addEventListener('click', handleVent);
-    dom.btnHeat.addEventListener('click', handleHeat);
-    dom.btnCalibrate.addEventListener('click', handleCalibrate);
 
     /* ============================================================
-       LEGEND TOGGLES
+       ACTUATOR CONTROLS
        ============================================================ */
-    document.querySelectorAll('.legend-pill').forEach((btn) => {
+    function updateActuatorButton(btn, on, onLabel, offLabel) {
+        if (on) btn.classList.add('on'); else btn.classList.remove('on');
+        const badge = btn.querySelector('.state-badge');
+        badge.textContent = on ? onLabel : offLabel;
+    }
+
+    function triggerActuator(name, on, autoOffMs = null) {
+        state.actuators[name] = on;
+        updateHardware();
+
+        const labels = {
+            pump:      { on: 'RUNNING', off: 'OFF',    btn: dom.btnPump,      onL: 'RUNNING', offL: 'OFF' },
+            solenoid:  { on: 'OPEN',    off: 'CLOSED', btn: dom.btnSolenoid,  onL: 'OPEN',    offL: 'CLOSED' },
+            fungicide: { on: 'DOSING',  off: 'OFF',    btn: dom.btnFungicide, onL: 'DOSING',  offL: 'OFF' },
+            probe:     { on: 'DEPLOYED',off: 'RETRACT',btn: dom.btnProbe,     onL: 'DEPLOYED',offL: 'RETRACTED' },
+            vent:      { on: 'ON',      off: 'OFF',    btn: dom.btnVent,      onL: 'ON',      offL: 'OFF' },
+        };
+        if (labels[name]) {
+            updateActuatorButton(labels[name].btn, on, labels[name].onL, labels[name].offL);
+        }
+
+        // Physical side-effects on telemetry
+        if (name === 'pump' && on) {
+            tick({
+                forcedMoisture: clamp(state.soilMoisture + rand(8, 14), CONFIG.MOISTURE_MIN, CONFIG.MOISTURE_MAX),
+                forcedTemp: clamp(state.ambientTemp - rand(0.6, 1.6), CONFIG.TEMP_MIN, CONFIG.TEMP_MAX),
+                forcedHumidity: clamp(state.airHumidity + rand(4, 9), CONFIG.HUMIDITY_MIN, CONFIG.HUMIDITY_MAX),
+            });
+            state.tankLevel = clamp(state.tankLevel - rand(2, 4), 0, 100);
+        }
+        if (name === 'solenoid' && on) {
+            tick({
+                forcedHumidity: clamp(state.airHumidity + rand(2, 5), CONFIG.HUMIDITY_MIN, CONFIG.HUMIDITY_MAX),
+            });
+        }
+        if (name === 'vent' && on) {
+            tick({
+                forcedTemp: clamp(state.ambientTemp - rand(1.5, 3.0), CONFIG.TEMP_MIN, CONFIG.TEMP_MAX),
+                forcedHumidity: clamp(state.airHumidity - rand(6, 12), CONFIG.HUMIDITY_MIN, CONFIG.HUMIDITY_MAX),
+            });
+        }
+        if (name === 'fungicide' && on) {
+            if (state.leafSeverity !== 'none') {
+                state.leafInfection = Math.max(0, state.leafInfection * 0.35);
+                state.leafChlorosis = Math.max(0, state.leafChlorosis * 0.4);
+                state.leafNecrosis  = Math.max(0, state.leafNecrosis  * 0.4);
+                const totalAfter = state.leafChlorosis + state.leafNecrosis;
+                state.leafSeverity =
+                    totalAfter > 0.30 ? 'high' :
+                    totalAfter > 0.15 ? 'moderate' :
+                    totalAfter > 0.05 ? 'low' : 'none';
+                state.leafHealthPct = clamp(100 - totalAfter * 200, 0, 100);
+                updateLeafUI();
+                drawLeafFrame(currentProfile, currentSpots);
+            }
+        }
+
+        // auto-off for momentary actions
+        if (on && autoOffMs) {
+            setTimeout(() => triggerActuator(name, false), autoOffMs);
+        }
+    }
+
+    function attachToggle(btn, name, onLabel, offLabel) {
         btn.addEventListener('click', () => {
-            const idx = Number(btn.dataset.toggle);
-            const meta = chart.getDatasetMeta(idx);
-            meta.hidden = !meta.hidden;
-            btn.classList.toggle('muted', meta.hidden);
-            chart.update();
+            const newState = !state.actuators[name];
+            triggerActuator(name, newState);
+            if (newState) {
+                pushEvent(`▶ Manual: ${name.toUpperCase()} → ${onLabel}`, 'info');
+            } else {
+                pushEvent(`⏹ Manual: ${name.toUpperCase()} → ${offLabel}`, 'info');
+            }
+        });
+    }
+
+    attachToggle(dom.btnPump, 'pump', 'RUNNING', 'OFF');
+    attachToggle(dom.btnSolenoid, 'solenoid', 'OPEN', 'CLOSED');
+    attachToggle(dom.btnVent, 'vent', 'ON', 'OFF');
+
+    dom.btnFungicide.addEventListener('click', () => {
+        const wasOn = state.actuators.fungicide;
+        triggerActuator('fungicide', !wasOn, 2500);
+        pushEvent(`🧪 Fungicide dose triggered`, 'success');
+    });
+
+    dom.btnProbe.addEventListener('click', () => {
+        const newState = !state.actuators.probe;
+        triggerActuator('probe', newState);
+        pushEvent(`🦾 Probe ${newState ? 'deployed' : 'retracted'}`, newState ? 'success' : 'info');
+    });
+
+    dom.btnScan.addEventListener('click', () => {
+        pushEvent(`📷 Manual leaf scan triggered`, 'info');
+        simulateLeafScan();
+    });
+
+    /* ============================================================
+       MODE SWITCH
+       ============================================================ */
+    document.querySelectorAll('#modeSwitch button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('#modeSwitch button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            CONFIG.MODE = btn.dataset.mode;
+            dom.modeLabel.textContent = CONFIG.MODE.toUpperCase();
+            pushEvent(`🔄 Mode switched to ${CONFIG.MODE.toUpperCase()}`, 'info');
+
+            if (CONFIG.MODE === 'live') {
+                dom.connWs.className = 'conn-pill offline';
+                dom.connWs.innerHTML = '<span class="dot"></span> WS · offline';
+                pushEvent('⚠ Live mode selected — connect ESP32 at 192.168.1.42:81', 'warn');
+            } else {
+                dom.connWs.className = 'conn-pill online';
+                dom.connWs.innerHTML = '<span class="dot"></span> WS · 81';
+            }
         });
     });
 
     /* ============================================================
-       CLOCK + UPTIME
+       SETTINGS DRAWER
        ============================================================ */
-    function updateClock() {
-        dom.clock.textContent = localTime();
-    }
+    const drawer = $('settingsDrawer'), overlay = $('settingsOverlay');
+    $('openSettings').addEventListener('click', () => { drawer.classList.add('open'); overlay.classList.add('open'); });
+    $('closeSettings').addEventListener('click', closeSettings);
+    overlay.addEventListener('click', closeSettings);
+    function closeSettings() { drawer.classList.remove('open'); overlay.classList.remove('open'); }
 
-    function updateUptime() {
-        const secs = Math.floor((Date.now() - state.startTime) / 1000);
-        const m = Math.floor(secs / 60);
-        const s = secs % 60;
-        dom.uptime.textContent = `${pad(m)}:${pad(s)}`;
-    }
+    document.querySelectorAll('.switch').forEach(sw => {
+        sw.addEventListener('click', () => {
+            sw.classList.toggle('on');
+            const key = sw.dataset.toggle;
+            if (key) state.auto[key] = sw.classList.contains('on');
+        });
+    });
 
-    setInterval(updateClock, 1000);
-    setInterval(updateUptime, 1000);
-    updateClock();
-    updateUptime();
+    $('applySettings').addEventListener('click', () => {
+        const newInterval = parseInt($('setInterval').value, 10);
+        const newWindow = parseInt($('setWindow').value, 10);
+        if (newInterval && newInterval >= 500) {
+            CONFIG.STREAM_INTERVAL_MS = newInterval;
+        }
+        if (newWindow && newWindow >= 5) {
+            CONFIG.MAX_POINTS = newWindow;
+            while (state.timeLabels.length > CONFIG.MAX_POINTS) {
+                state.timeLabels.shift(); state.moistureHistory.shift();
+                state.tempHistory.shift(); state.humidityHistory.shift();
+            }
+        }
+        CONFIG.ALERT_MOISTURE_LOW = parseInt($('setLowMoisture').value, 10) || 25;
+        CONFIG.ALERT_TEMP_HIGH = parseInt($('setHighTemp').value, 10) || 31;
+        pushEvent('⚙ Settings applied', 'success');
+        closeSettings();
+    });
+
+    $('resetSettings').addEventListener('click', () => {
+        $('setIp').value = '192.168.1.42';
+        $('setPort').value = '81';
+        $('setSsid').value = 'NIPAS-Field';
+        $('setInterval').value = 3000;
+        $('setWindow').value = 15;
+        $('setLowMoisture').value = 25;
+        $('setHighTemp').value = 31;
+        pushEvent('⚙ Settings reset to defaults', 'info');
+    });
 
     /* ============================================================
-       STREAM INTERVAL
+       CLOCK
        ============================================================ */
-    const streamTimer = setInterval(() => {
-        tick();
-    }, CONFIG.STREAM_INTERVAL_MS);
-
-    // cleanup
-    window.addEventListener('beforeunload', () => clearInterval(streamTimer));
+    setInterval(() => { dom.clock.textContent = localTime(); }, 1000);
+    dom.clock.textContent = localTime();
 
     /* ============================================================
-       BOOT LOG
+       INTERVALS
        ============================================================ */
-    dom.streamIntervalLabel.textContent = `${(CONFIG.STREAM_INTERVAL_MS / 1000).toFixed(1)}s`;
+    let streamTimer = setInterval(() => tick(), CONFIG.STREAM_INTERVAL_MS);
+    setInterval(() => { if (state.auto.autoScan) simulateLeafScan(); }, CONFIG.LEAF_SCAN_INTERVAL_MS);
+    setInterval(() => updateHardware(), 2000);
+
+    /* ============================================================
+       BOOT
+       ============================================================ */
     updateKPIs();
-    updateEnvPanel();
-    pushEvent('🟢 NIPAS dashboard initialised · streaming @ 3s', 'success');
-    pushEvent('📡 WebSocket handshake complete · node NIPAS‑RPI‑04', 'info');
-    pushEvent('🌱 Baseline telemetry loaded (15‑point window)', 'info');
+    updateLeafUI();
+    updateHardware();
+    simulateLeafScan({ silent: true });
+    drawLeafFrame(currentProfile, currentSpots);
+
+    pushEvent('🟢 NIPAS control center initialised', 'success');
+    pushEvent('📡 ESP32 · WebSocket server on :81', 'info');
+    pushEvent('📷 ESP32‑CAM · HSV disease detection active', 'info');
+    pushEvent('🔌 Power system nominal · 12V → 5V buck OK', 'info');
 
 })();
 </script>
