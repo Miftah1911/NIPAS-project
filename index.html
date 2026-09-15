@@ -101,20 +101,15 @@
     .topbar-stat .value { font-family: var(--font-mono); font-size: 0.95rem; font-weight: 700; color: var(--green-900); }
 
     .mode-switch {
-        display: inline-flex;
-        background: #f1f3f5;
-        border: 1px solid #dee2e6;
-        border-radius: 10px;
-        padding: 3px;
-        gap: 3px;
+        display: inline-flex; background: #f1f3f5; border: 1px solid #dee2e6;
+        border-radius: 10px; padding: 3px; gap: 3px;
     }
     .mode-switch button {
         border: none; cursor: pointer;
         padding: 0.4rem 0.9rem;
         font-size: 0.72rem; font-weight: 700;
         border-radius: 7px;
-        background: transparent;
-        color: #495057;
+        background: transparent; color: #495057;
         letter-spacing: 0.03em;
         transition: all 0.15s ease;
     }
@@ -154,6 +149,38 @@
     .kpi.power    { --accent: var(--amber-500); --accent-bg: #fff9db; }
     .kpi.water    { --accent: var(--teal-500); --accent-bg: #e0fbf5; }
 
+    /* KPI mini progress bar (tank, battery) */
+    .kpi-progress {
+        width: 100%;
+        height: 6px;
+        border-radius: 999px;
+        background: #e9f2eb;
+        overflow: hidden;
+        margin-top: 0.25rem;
+    }
+    .kpi-progress > i {
+        display: block; height: 100%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, var(--green-500), var(--green-700));
+        transition: width 0.6s ease;
+    }
+    .kpi.water .kpi-progress > i { background: linear-gradient(90deg, #38d9a9, #0ca678); }
+    .kpi.power .kpi-progress > i { background: linear-gradient(90deg, #ffd43b, #f59f00); }
+
+    /* KPI pulse animation */
+    @keyframes kpiPulse {
+        0%   { box-shadow: 0 0 0 0 rgba(82, 183, 136, 0.75); }
+        50%  { box-shadow: 0 0 0 14px rgba(82, 183, 136, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(82, 183, 136, 0); }
+    }
+    .kpi.pulse { animation: kpiPulse 0.9s ease-out; }
+    @keyframes kpiPulseDanger {
+        0%   { box-shadow: 0 0 0 0 rgba(208, 0, 0, 0.75); }
+        50%  { box-shadow: 0 0 0 14px rgba(208, 0, 0, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(208, 0, 0, 0); }
+    }
+    .kpi.pulse-danger { animation: kpiPulseDanger 0.9s ease-out; }
+
     /* ================= MAIN LAYOUT ================= */
     .main-grid { display: grid; grid-template-columns: minmax(0, 2.2fr) minmax(0, 1fr); gap: 1rem; align-items: start; }
     @media (max-width: 1200px) { .main-grid { grid-template-columns: 1fr; } }
@@ -186,9 +213,10 @@
     .chip.alert { background: #ffe3e3; border-color: #ff8787; color: #c92a2a; }
     .chip.info { background: #e3f2fd; border-color: #64b5f6; color: #1565c0; }
 
-    /* ================= CHART ================= */
+    /* ================= CHARTS ================= */
     .chart-wrap { position: relative; width: 100%; height: 320px; }
     .chart-wrap canvas { width: 100% !important; height: 100% !important; }
+    .chart-wrap.small { height: 200px; }
 
     /* ================= SIDE COLUMN ================= */
     .side-col { display: flex; flex-direction: column; gap: 1rem; }
@@ -331,13 +359,12 @@
     }
     .action-btn.on .state-badge { background: rgba(0,0,0,0.25); color: #ffffff; }
 
-    /* ================= HARDWARE GRID (Bottom) ================= */
+    /* ================= HARDWARE GRID ================= */
     .hw-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
         gap: 1rem;
     }
-
     .hw-card {
         background: var(--card-bg);
         backdrop-filter: blur(14px);
@@ -362,7 +389,6 @@
         border-radius: 6px;
         font-size: 0.85rem;
     }
-
     .hw-row {
         display: flex; align-items: center; justify-content: space-between;
         padding: 0.55rem 0.75rem;
@@ -376,8 +402,6 @@
     .hw-row .val.good { color: #1b7c3b; }
     .hw-row .val.warn { color: #a06600; }
     .hw-row .val.bad  { color: #c92a2a; }
-
-    /* Progress bar inside hw-row */
     .progress-mini {
         width: 60px; height: 6px;
         border-radius: 999px;
@@ -455,7 +479,6 @@
         display: flex; flex-direction: column;
     }
     .settings-drawer.open { transform: translateX(0); }
-
     .settings-header {
         padding: 1.25rem 1.5rem;
         border-bottom: 1px solid #e9ecef;
@@ -470,10 +493,8 @@
         display: grid; place-items: center;
     }
     .settings-close:hover { background: #e9ecef; }
-
     .settings-body {
-        flex: 1;
-        overflow-y: auto;
+        flex: 1; overflow-y: auto;
         padding: 1.25rem 1.5rem;
         display: flex; flex-direction: column; gap: 1rem;
     }
@@ -496,10 +517,8 @@
         font-family: var(--font-mono);
         color: var(--green-900);
         outline: none;
-        transition: border-color 0.15s ease;
     }
-    .settings-field input:focus, .settings-field select:focus { border-color: var(--green-600); }
-
+    .settings-field input:focus { border-color: var(--green-600); }
     .switch-row {
         display: flex; align-items: center; justify-content: space-between;
         padding: 0.65rem 0.8rem;
@@ -530,7 +549,6 @@
     }
     .switch.on { background: var(--green-600); }
     .switch.on::after { transform: translateX(18px); }
-
     .settings-footer {
         padding: 1rem 1.5rem;
         border-top: 1px solid #e9ecef;
@@ -546,10 +564,8 @@
         font-size: 0.82rem;
         cursor: pointer;
         color: var(--green-800);
-        transition: all 0.15s ease;
     }
     .btn-outline:hover { background: var(--green-50); border-color: var(--green-400); }
-
     .open-settings-btn {
         border: none; cursor: pointer;
         display: inline-flex; align-items: center; gap: 0.5rem;
@@ -559,12 +575,40 @@
         color: white;
         font-weight: 700;
         font-size: 0.78rem;
-        letter-spacing: 0.02em;
         box-shadow: 0 6px 14px -6px rgba(45, 106, 79, 0.7);
         transition: transform 0.15s ease;
-        cursor: pointer;
     }
     .open-settings-btn:hover { transform: translateY(-1px); }
+
+    /* ================= TOASTS ================= */
+    .toast-stack {
+        position: fixed;
+        top: 20px; right: 20px;
+        z-index: 200;
+        display: flex; flex-direction: column; gap: 0.5rem;
+        pointer-events: none;
+    }
+    .toast {
+        background: linear-gradient(135deg, #1b4332, #0f2e1f);
+        color: #e9f5e9;
+        padding: 0.85rem 1.15rem;
+        border-radius: 12px;
+        box-shadow: 0 12px 30px -8px rgba(15, 46, 31, 0.55);
+        font-size: 0.85rem;
+        font-weight: 600;
+        border-left: 4px solid var(--green-500);
+        min-width: 260px;
+        max-width: 340px;
+        transform: translateX(120%);
+        animation: toastIn 0.4s ease forwards, toastOut 0.4s ease 3.6s forwards;
+        display: flex; align-items: center; gap: 0.65rem;
+        line-height: 1.35;
+    }
+    .toast.warn  { border-left-color: var(--amber-500); }
+    .toast.alert { border-left-color: var(--red-600); }
+    .toast.info  { border-left-color: var(--blue-600); }
+    @keyframes toastIn  { to { transform: translateX(0); } }
+    @keyframes toastOut { to { transform: translateX(120%); opacity: 0; } }
 
     @media (max-width: 700px) {
         .topbar { padding: 0.9rem 1.15rem; }
@@ -577,6 +621,8 @@
 </style>
 </head>
 <body>
+<div class="toast-stack" id="toastStack"></div>
+
 <div class="app">
 
     <!-- ============================ TOP BAR ============================ -->
@@ -591,7 +637,7 @@
 
         <div class="conn-stack">
             <span class="conn-pill online" id="connWifi"><span class="dot"></span> WiFi</span>
-            <span class="conn-pill online" id="connWs"><span class="dot"></span> WS · 81</span>
+            <span class="conn-pill online" id="connWs"><span class="dot"></span> MQTT · 8884</span>
             <span class="conn-pill online" id="connCam"><span class="dot"></span> CAM</span>
             <span class="conn-pill online" id="connSensors"><span class="dot"></span> SENSORS</span>
         </div>
@@ -669,6 +715,7 @@
                 <div class="kpi-icon">🔋</div>
             </div>
             <div class="kpi-value" id="kpiPower">--<small>V</small></div>
+            <div class="kpi-progress"><i id="kpiPowerBar" style="width:87%"></i></div>
             <div class="kpi-footer">
                 <span id="kpiPowerSub">Li‑ion 18650 pack</span>
                 <span class="trend flat" id="kpiPowerTrend">— flat</span>
@@ -681,6 +728,7 @@
                 <div class="kpi-icon">🪣</div>
             </div>
             <div class="kpi-value" id="kpiWater">--<small>%</small></div>
+            <div class="kpi-progress"><i id="kpiWaterBar" style="width:78%"></i></div>
             <div class="kpi-footer">
                 <span id="kpiWaterSub">Reservoir level</span>
                 <span class="trend flat" id="kpiWaterTrend">— flat</span>
@@ -691,7 +739,7 @@
     <!-- ============================ MAIN GRID ============================ -->
     <div class="main-grid">
 
-        <!-- LEFT: chart + hardware grid -->
+        <!-- LEFT -->
         <div style="display:flex; flex-direction:column; gap:1rem;">
 
             <!-- Telemetry chart -->
@@ -701,12 +749,23 @@
                         <h2>Live Sensor Telemetry</h2>
                         <span>Soil moisture · Temperature · rolling 15‑point window</span>
                     </div>
-                    <div style="display:flex; gap:0.4rem;">
-                        <span class="chip live">Streaming · 3s</span>
-                    </div>
+                    <span class="chip live">Streaming · 3s</span>
                 </div>
                 <div class="chart-wrap">
                     <canvas id="telemetryChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Tank + infection trend chart -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2>Consumables & Health</h2>
+                        <span>Tank level · Leaf infection · last 30 events</span>
+                    </div>
+                </div>
+                <div class="chart-wrap small">
+                    <canvas id="consumablesChart"></canvas>
                 </div>
             </div>
 
@@ -714,38 +773,17 @@
             <div class="hw-grid">
                 <div class="hw-card">
                     <h3><span class="icon">🔌</span> Power Management</h3>
-                    <div class="hw-row">
-                        <span class="name">12V input</span>
-                        <span class="val" id="hwPower12v">12.1 V</span>
-                    </div>
-                    <div class="hw-row">
-                        <span class="name">LM2596 output (5V)</span>
-                        <span class="val good" id="hwPower5v">5.02 V</span>
-                    </div>
-                    <div class="hw-row">
-                        <span class="name">ESP32 draw</span>
-                        <span class="val" id="hwDraw">240 mA</span>
-                    </div>
-                    <div class="hw-row">
-                        <span class="name">Battery cells</span>
-                        <span class="val" id="hwCells">3 × 18650 · OK</span>
-                    </div>
+                    <div class="hw-row"><span class="name">12V input</span><span class="val" id="hwPower12v">12.1 V</span></div>
+                    <div class="hw-row"><span class="name">LM2596 output (5V)</span><span class="val good" id="hwPower5v">5.02 V</span></div>
+                    <div class="hw-row"><span class="name">ESP32 draw</span><span class="val" id="hwDraw">240 mA</span></div>
+                    <div class="hw-row"><span class="name">Battery cells</span><span class="val" id="hwCells">3 × 18650 · OK</span></div>
                 </div>
 
                 <div class="hw-card">
                     <h3><span class="icon">🚰</span> Actuation</h3>
-                    <div class="hw-row">
-                        <span class="name">Spray pump</span>
-                        <span class="val" id="hwPump">IDLE</span>
-                    </div>
-                    <div class="hw-row">
-                        <span class="name">Solenoid valve</span>
-                        <span class="val" id="hwSolenoid">CLOSED</span>
-                    </div>
-                    <div class="hw-row">
-                        <span class="name">Relay module</span>
-                        <span class="val good" id="hwRelay">OK</span>
-                    </div>
+                    <div class="hw-row"><span class="name">Spray pump</span><span class="val" id="hwPump">IDLE</span></div>
+                    <div class="hw-row"><span class="name">Solenoid valve</span><span class="val" id="hwSolenoid">CLOSED</span></div>
+                    <div class="hw-row"><span class="name">Relay module</span><span class="val good" id="hwRelay">OK</span></div>
                     <div class="hw-row">
                         <span class="name">Tank level</span>
                         <div style="display:flex; align-items:center;">
@@ -757,43 +795,22 @@
 
                 <div class="hw-card">
                     <h3><span class="icon">🦾</span> Probe Mechanism</h3>
-                    <div class="hw-row">
-                        <span class="name">Servo (MG996R)</span>
-                        <span class="val" id="hwServo">RETRACTED</span>
-                    </div>
-                    <div class="hw-row">
-                        <span class="name">Probe angle</span>
-                        <span class="val" id="hwAngle">0°</span>
-                    </div>
-                    <div class="hw-row">
-                        <span class="name">Deployment state</span>
-                        <span class="val" id="hwProbeState">Standby</span>
-                    </div>
+                    <div class="hw-row"><span class="name">Servo (MG996R)</span><span class="val" id="hwServo">RETRACTED</span></div>
+                    <div class="hw-row"><span class="name">Probe angle</span><span class="val" id="hwAngle">0°</span></div>
+                    <div class="hw-row"><span class="name">Deployment state</span><span class="val" id="hwProbeState">Standby</span></div>
                 </div>
 
                 <div class="hw-card">
                     <h3><span class="icon">📡</span> Connectivity</h3>
-                    <div class="hw-row">
-                        <span class="name">WiFi RSSI</span>
-                        <span class="val good" id="hwRssi">-58 dBm</span>
-                    </div>
-                    <div class="hw-row">
-                        <span class="name">Uptime</span>
-                        <span class="val" id="hwUptime">00:00</span>
-                    </div>
-                    <div class="hw-row">
-                        <span class="name">Packets</span>
-                        <span class="val" id="hwPackets">0</span>
-                    </div>
-                    <div class="hw-row">
-                        <span class="name">Latency</span>
-                        <span class="val good" id="hwLatency">23 ms</span>
-                    </div>
+                    <div class="hw-row"><span class="name">WiFi RSSI</span><span class="val good" id="hwRssi">-58 dBm</span></div>
+                    <div class="hw-row"><span class="name">Uptime</span><span class="val" id="hwUptime">00:00</span></div>
+                    <div class="hw-row"><span class="name">Packets</span><span class="val" id="hwPackets">0</span></div>
+                    <div class="hw-row"><span class="name">Latency</span><span class="val good" id="hwLatency">23 ms</span></div>
                 </div>
             </div>
         </div>
 
-        <!-- RIGHT: leaf + controls -->
+        <!-- RIGHT -->
         <div class="side-col">
 
             <!-- Leaf panel -->
@@ -836,26 +853,17 @@
                 <div class="action-list">
                     <button class="action-btn" data-actuator="pump" id="btnPump">
                         <div class="ico">💦</div>
-                        <div class="text">
-                            Spray Pump
-                            <small>12V mist · moisture ↑ · temp ↓</small>
-                        </div>
+                        <div class="text">Spray Pump<small>12V mist · moisture ↑ · temp ↓ · tank ↓</small></div>
                         <span class="state-badge">OFF</span>
                     </button>
                     <button class="action-btn" data-actuator="solenoid" id="btnSolenoid">
                         <div class="ico">🚰</div>
-                        <div class="text">
-                            Solenoid Valve
-                            <small>Precision misting line</small>
-                        </div>
+                        <div class="text">Solenoid Valve<small>Precision misting line · RH ↑</small></div>
                         <span class="state-badge">CLOSED</span>
                     </button>
                     <button class="action-btn danger" data-actuator="fungicide" id="btnFungicide">
                         <div class="ico">🧪</div>
-                        <div class="text">
-                            Fungicide Dose
-                            <small>Targeted disease treatment</small>
-                        </div>
+                        <div class="text">Fungicide Dose<small>Reduces infection · severity ↓</small></div>
                         <span class="state-badge">OFF</span>
                     </button>
                 </div>
@@ -864,26 +872,17 @@
                 <div class="action-list">
                     <button class="action-btn warn" data-actuator="probe" id="btnProbe">
                         <div class="ico">🦾</div>
-                        <div class="text">
-                            Deploy Probe
-                            <small>MG996R servo · lowers soil sensor</small>
-                        </div>
+                        <div class="text">Deploy Probe<small>MG996R servo · 0° ↔ 90°</small></div>
                         <span class="state-badge">RETRACTED</span>
                     </button>
                     <button class="action-btn" data-actuator="vent" id="btnVent">
                         <div class="ico">🌀</div>
-                        <div class="text">
-                            Ventilation Fan
-                            <small>Air exchange · temp ↓ · RH ↓</small>
-                        </div>
+                        <div class="text">Ventilation Fan<small>Air exchange · temp ↓ · RH ↓</small></div>
                         <span class="state-badge">OFF</span>
                     </button>
                     <button class="action-btn" data-actuator="scan" id="btnScan">
                         <div class="ico">📷</div>
-                        <div class="text">
-                            Trigger Leaf Scan
-                            <small>Manual ESP32‑CAM capture</small>
-                        </div>
+                        <div class="text">Trigger Leaf Scan<small>Manual ESP32‑CAM capture</small></div>
                         <span class="state-badge">GO</span>
                     </button>
                 </div>
@@ -906,7 +905,7 @@
     <!-- ============================ STATUS BAR ============================ -->
     <footer class="status-bar">
         <div class="status-group">
-            <span class="status-item"><span class="status-led" id="ledWs"></span> WebSocket :81</span>
+            <span class="status-item"><span class="status-led" id="ledWs"></span> MQTT :8884</span>
             <span class="status-sep"></span>
             <span class="status-item"><span class="status-led" id="ledSensors"></span> Sensors 6/6</span>
             <span class="status-sep"></span>
@@ -915,7 +914,7 @@
         <div class="status-group">
             <span class="status-item">Mode <strong id="modeLabel">DEMO</strong></span>
             <span class="status-sep"></span>
-            <span class="status-item">NIPAS v3.0 · build 2025‑01</span>
+            <span class="status-item">NIPAS v3.1 · build 2025‑02</span>
         </div>
     </footer>
 </div>
@@ -928,65 +927,28 @@
         <button class="settings-close" id="closeSettings">✕</button>
     </div>
     <div class="settings-body">
-
         <div class="settings-section">
             <h3>Connection</h3>
-            <div class="settings-field">
-                <label>ESP32 IP address</label>
-                <input type="text" id="setIp" value="192.168.1.42" />
-            </div>
-            <div class="settings-field">
-                <label>WebSocket port</label>
-                <input type="text" id="setPort" value="81" />
-            </div>
-            <div class="settings-field">
-                <label>WiFi SSID (display only)</label>
-                <input type="text" id="setSsid" value="NIPAS-Field" />
-            </div>
+            <div class="settings-field"><label>ESP32 IP</label><input type="text" id="setIp" value="192.168.1.42" /></div>
+            <div class="settings-field"><label>MQTT port</label><input type="text" id="setPort" value="8884" /></div>
+            <div class="settings-field"><label>WiFi SSID (display only)</label><input type="text" id="setSsid" value="NIPAS-Field" /></div>
         </div>
-
         <div class="settings-section">
             <h3>Telemetry</h3>
-            <div class="settings-field">
-                <label>Stream interval (ms)</label>
-                <input type="number" id="setInterval" value="3000" min="500" step="500" />
-            </div>
-            <div class="settings-field">
-                <label>Chart window (points)</label>
-                <input type="number" id="setWindow" value="15" min="5" max="60" />
-            </div>
+            <div class="settings-field"><label>Stream interval (ms)</label><input type="number" id="setInterval" value="3000" min="500" step="500" /></div>
+            <div class="settings-field"><label>Chart window (points)</label><input type="number" id="setWindow" value="15" min="5" max="60" /></div>
         </div>
-
         <div class="settings-section">
             <h3>Automation</h3>
-            <div class="switch-row">
-                <span>Auto‑spray on low moisture</span>
-                <div class="switch on" data-toggle="autoSpray"></div>
-            </div>
-            <div class="switch-row">
-                <span>Auto‑vent on high temp</span>
-                <div class="switch" data-toggle="autoVent"></div>
-            </div>
-            <div class="switch-row">
-                <span>Auto‑probe deployment</span>
-                <div class="switch" data-toggle="autoProbe"></div>
-            </div>
-            <div class="switch-row">
-                <span>Continuous leaf scanning</span>
-                <div class="switch on" data-toggle="autoScan"></div>
-            </div>
+            <div class="switch-row"><span>Auto‑spray on low moisture</span><div class="switch on" data-toggle="autoSpray"></div></div>
+            <div class="switch-row"><span>Auto‑vent on high temp</span><div class="switch" data-toggle="autoVent"></div></div>
+            <div class="switch-row"><span>Auto‑probe deployment</span><div class="switch" data-toggle="autoProbe"></div></div>
+            <div class="switch-row"><span>Continuous leaf scanning</span><div class="switch on" data-toggle="autoScan"></div></div>
         </div>
-
         <div class="settings-section">
             <h3>Thresholds</h3>
-            <div class="settings-field">
-                <label>Low moisture alert (%)</label>
-                <input type="number" id="setLowMoisture" value="25" />
-            </div>
-            <div class="settings-field">
-                <label>High temperature alert (°C)</label>
-                <input type="number" id="setHighTemp" value="31" />
-            </div>
+            <div class="settings-field"><label>Low moisture alert (%)</label><input type="number" id="setLowMoisture" value="25" /></div>
+            <div class="settings-field"><label>High temperature alert (°C)</label><input type="number" id="setHighTemp" value="31" /></div>
         </div>
     </div>
     <div class="settings-footer">
@@ -1030,6 +992,10 @@
         tempHistory: [],
         humidityHistory: [],
         timeLabels: [],
+        // consumables + leaf history (for second chart)
+        consumHistory: [],
+        leafHist: [],
+        consumLabels: [],
         packets: 0,
         startTime: Date.now(),
         events: [],
@@ -1067,8 +1033,8 @@
         kpiTemp: $('kpiTemp'), kpiTempTrend: $('kpiTempTrend'),
         kpiHumidity: $('kpiHumidity'), kpiHumidityTrend: $('kpiHumidityTrend'),
         kpiLeaf: $('kpiLeaf'), kpiLeafTrend: $('kpiLeafTrend'), kpiLeafSub: $('kpiLeafSub'),
-        kpiPower: $('kpiPower'), kpiPowerTrend: $('kpiPowerTrend'), kpiPowerSub: $('kpiPowerSub'),
-        kpiWater: $('kpiWater'), kpiWaterTrend: $('kpiWaterTrend'), kpiWaterSub: $('kpiWaterSub'),
+        kpiPower: $('kpiPower'), kpiPowerTrend: $('kpiPowerTrend'), kpiPowerSub: $('kpiPowerSub'), kpiPowerBar: $('kpiPowerBar'),
+        kpiWater: $('kpiWater'), kpiWaterTrend: $('kpiWaterTrend'), kpiWaterSub: $('kpiWaterSub'), kpiWaterBar: $('kpiWaterBar'),
 
         hwPower12v: $('hwPower12v'), hwPower5v: $('hwPower5v'), hwDraw: $('hwDraw'), hwCells: $('hwCells'),
         hwPump: $('hwPump'), hwSolenoid: $('hwSolenoid'), hwRelay: $('hwRelay'), hwTank: $('hwTank'), hwTankBar: $('hwTankBar'),
@@ -1092,6 +1058,8 @@
 
         ledWs: $('ledWs'), ledSensors: $('ledSensors'), ledDisease: $('ledDisease'),
         modeLabel: $('modeLabel'),
+
+        toastStack: $('toastStack'),
     };
 
     /* ============================================================
@@ -1106,18 +1074,41 @@
     function fmt(v, dec = 1) { return Number(v).toFixed(dec); }
 
     /* ============================================================
+       TOAST NOTIFICATIONS
+       ============================================================ */
+    function showToast(message, level = 'success') {
+        const el = document.createElement('div');
+        el.className = `toast ${level}`;
+        el.innerHTML = message;
+        dom.toastStack.appendChild(el);
+        setTimeout(() => el.remove(), 4200);
+    }
+
+    /* ============================================================
+       KPI PULSE
+       ============================================================ */
+    function pulseKPI(cardSelector, danger = false) {
+        const card = document.querySelector(cardSelector);
+        if (!card) return;
+        card.classList.remove('pulse', 'pulse-danger');
+        void card.offsetWidth;
+        card.classList.add(danger ? 'pulse-danger' : 'pulse');
+        setTimeout(() => card.classList.remove('pulse', 'pulse-danger'), 1000);
+    }
+
+    /* ============================================================
        EVENT LOG
        ============================================================ */
     function pushEvent(message, level = 'info') {
         const evt = { time: localTime(), message, level };
         state.events.unshift(evt);
-        if (state.events.length > 50) state.events.pop();
+        if (state.events.length > 60) state.events.pop();
 
         const el = document.createElement('div');
         el.className = `log-entry ${level}`;
         el.innerHTML = `<span class="time">${evt.time}</span><span class="msg">${message}</span>`;
         dom.logList.prepend(el);
-        while (dom.logList.children.length > 50) dom.logList.removeChild(dom.logList.lastChild);
+        while (dom.logList.children.length > 60) dom.logList.removeChild(dom.logList.lastChild);
         dom.logCount.textContent = `${state.events.length} events`;
     }
 
@@ -1133,6 +1124,12 @@
             state.tempHistory.push(clamp(CONFIG.TEMP_BASELINE + Math.cos(i * 0.5) * 1.2 + rand(-0.4, 0.4), CONFIG.TEMP_MIN, CONFIG.TEMP_MAX));
             state.humidityHistory.push(clamp(CONFIG.HUMIDITY_BASELINE + Math.sin(i * 0.4) * 3 + rand(-1, 1), CONFIG.HUMIDITY_MIN, CONFIG.HUMIDITY_MAX));
         }
+        // seed consumables history (mirror last N tank levels)
+        for (let i = 0; i < 30; i++) {
+            state.consumLabels.push(localTime(new Date(now - (30 - i) * 5000)));
+            state.consumHistory.push(78 + rand(-1, 1));
+            state.leafHist.push(0);
+        }
         state.soilMoisture = state.moistureHistory[state.moistureHistory.length - 1];
         state.ambientTemp = state.tempHistory[state.tempHistory.length - 1];
         state.airHumidity = state.humidityHistory[state.humidityHistory.length - 1];
@@ -1141,7 +1138,7 @@
     seedHistory();
 
     /* ============================================================
-       CHART
+       MAIN CHART
        ============================================================ */
     const ctx = document.getElementById('telemetryChart').getContext('2d');
     function makeGradient(ctx, colorTop, colorBottom) {
@@ -1202,8 +1199,6 @@
                     padding: 12, cornerRadius: 10,
                     borderColor: 'rgba(116,198,157,0.4)', borderWidth: 1,
                     usePointStyle: true,
-                    titleFont: { size: 12, weight: '600' },
-                    bodyFont: { size: 12, family: "'JetBrains Mono', monospace" },
                     callbacks: {
                         title: (items) => `⏱ ${items[0].label}`,
                         label: (c) => {
@@ -1220,14 +1215,15 @@
                     grid: { color: 'rgba(150,190,160,0.18)', drawTicks: false },
                     border: { display: false },
                     ticks: { color: '#40916c', font: { size: 11, family: "'JetBrains Mono', monospace", weight: '600' }, padding: 8, callback: (v) => v + '%' },
-                    title: { display: true, text: 'SOIL MOISTURE', color: '#1e88e5', font: { size: 10, weight: '700' }, padding: { bottom: 6 } },
+                    title: { display: true, text: 'SOIL MOISTURE', color: '#1e88e5', font: { size: 10, weight: '700' } },
                 },
                 y1: {
                     position: 'right',
                     suggestedMin: 15, suggestedMax: 35,
-                    grid: { drawOnChartArea: false }, border: { display: false },
+                    grid: { drawOnChartArea: false },
+                    border: { display: false },
                     ticks: { color: '#e8590c', font: { size: 11, family: "'JetBrains Mono', monospace", weight: '600' }, padding: 8, callback: (v) => v + '°' },
-                    title: { display: true, text: 'TEMP', color: '#e8590c', font: { size: 10, weight: '700' }, padding: { bottom: 6 } },
+                    title: { display: true, text: 'TEMP', color: '#e8590c', font: { size: 10, weight: '700' } },
                 },
                 x: {
                     grid: { display: false }, border: { display: false },
@@ -1236,6 +1232,100 @@
             },
         },
     });
+
+    /* ============================================================
+       CONSUMABLES CHART (Tank + Infection)
+       ============================================================ */
+    const consCtx = document.getElementById('consumablesChart').getContext('2d');
+
+    const consumablesChart = new Chart(consCtx, {
+        type: 'line',
+        data: {
+            labels: state.consumLabels.slice(),
+            datasets: [
+                {
+                    label: 'Tank level (%)',
+                    data: state.consumHistory.slice(),
+                    borderColor: '#0ca678',
+                    backgroundColor: 'rgba(12,166,120,0.12)',
+                    borderWidth: 2.4,
+                    pointRadius: 0,
+                    pointHoverRadius: 5,
+                    tension: 0.3,
+                    fill: true,
+                    yAxisID: 'yA',
+                },
+                {
+                    label: 'Leaf infection (%)',
+                    data: state.leafHist.slice(),
+                    borderColor: '#d00000',
+                    backgroundColor: 'rgba(208,0,0,0.10)',
+                    borderWidth: 2.4,
+                    pointRadius: 0,
+                    pointHoverRadius: 5,
+                    tension: 0.3,
+                    fill: true,
+                    yAxisID: 'yA',
+                },
+            ],
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            animation: { duration: 400 },
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                    align: 'end',
+                    labels: {
+                        boxWidth: 10, boxHeight: 10,
+                        usePointStyle: true, pointStyle: 'rectRounded',
+                        color: '#2d6a4f',
+                        font: { size: 11, weight: '700' },
+                    },
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(15,46,31,0.94)',
+                    titleColor: '#95d5b2', bodyColor: '#e9f5e9',
+                    padding: 10, cornerRadius: 8,
+                    usePointStyle: true,
+                    callbacks: {
+                        label: (c) => `  ${c.dataset.label}: ${c.parsed.y.toFixed(1)}%`,
+                    },
+                },
+            },
+            scales: {
+                yA: {
+                    suggestedMin: 0, suggestedMax: 100,
+                    grid: { color: 'rgba(150,190,160,0.15)', drawTicks: false },
+                    border: { display: false },
+                    ticks: { color: '#40916c', font: { size: 10, family: "'JetBrains Mono', monospace" }, callback: (v) => v + '%' },
+                },
+                x: {
+                    grid: { display: false }, border: { display: false },
+                    ticks: { color: '#2d6a4f', font: { size: 9.5, family: "'JetBrains Mono', monospace" }, maxRotation: 0, autoSkip: true, maxTicksLimit: 8 },
+                },
+            },
+        },
+    });
+
+    function pushConsumablesPoint() {
+        const label = localTime();
+        state.consumLabels.push(label);
+        state.consumHistory.push(state.tankLevel);
+        state.leafHist.push(state.leafInfection * 100);
+
+        while (state.consumLabels.length > 30) {
+            state.consumLabels.shift();
+            state.consumHistory.shift();
+            state.leafHist.shift();
+        }
+        consumablesChart.data.labels = state.consumLabels.slice();
+        consumablesChart.data.datasets[0].data = state.consumHistory.slice();
+        consumablesChart.data.datasets[1].data = state.leafHist.slice();
+        consumablesChart.update();
+    }
 
     /* ============================================================
        TELEMETRY TICK
@@ -1258,10 +1348,12 @@
             state.airHumidity = clamp(state.airHumidity + pull + rand(-1.2, 1.2), CONFIG.HUMIDITY_MIN, CONFIG.HUMIDITY_MAX);
         } else state.airHumidity = clamp(forcedHumidity, CONFIG.HUMIDITY_MIN, CONFIG.HUMIDITY_MAX);
 
-        // battery slowly drains, tank slowly depletes (only in demo mode)
+        // passive drains (only in demo mode)
         if (CONFIG.MODE === 'demo') {
             state.batteryVoltage = clamp(state.batteryVoltage - rand(0, 0.005), 9.0, 12.8);
-            state.tankLevel = clamp(state.tankLevel - rand(0, 0.05), 0, 100);
+            if (!state.actuators.pump) {
+                state.tankLevel = clamp(state.tankLevel - rand(0, 0.03), 0, 100);
+            }
         }
 
         const label = localTime();
@@ -1282,6 +1374,7 @@
         chart.data.datasets[1].data = state.tempHistory.slice();
         chart.update();
 
+        pushConsumablesPoint();
         updateKPIs(); updateHardware();
         if (!silent) checkAlerts();
     }
@@ -1304,7 +1397,10 @@
         dom.kpiHumidity.innerHTML = `${fmt(state.airHumidity, 0)}<small>%</small>`;
         dom.kpiLeaf.innerHTML     = `${fmt(state.leafHealthPct, 0)}<small>%</small>`;
         dom.kpiPower.innerHTML    = `${fmt(state.batteryVoltage, 2)}<small>V</small>`;
-        dom.kpiWater.innerHTML    = `${fmt(state.tankLevel, 0)}<small>%</small>`;
+        dom.kpiWater.innerHTML    = `${fmt(state.tankLevel, 1)}<small>%</small>`;
+
+        dom.kpiPowerBar.style.width = clamp((state.batteryVoltage / 12.6) * 100, 0, 100) + '%';
+        dom.kpiWaterBar.style.width = state.tankLevel + '%';
 
         setTrend(dom.kpiMoistureTrend, trendFor(state.moistureHistory));
         setTrend(dom.kpiTempTrend,     trendFor(state.tempHistory));
@@ -1352,36 +1448,30 @@
        HARDWARE PANEL UPDATE
        ============================================================ */
     function updateHardware() {
-        // Power
         dom.hwPower12v.textContent = fmt(state.batteryVoltage + rand(-0.05, 0.05), 2) + ' V';
         dom.hwPower5v.textContent  = fmt(5.00 + rand(-0.02, 0.02), 2) + ' V';
         dom.hwDraw.textContent     = Math.round(220 + rand(-20, 40)) + ' mA';
         dom.hwCells.textContent    = '3 × 18650 · ' + (state.batteryVoltage > 11 ? 'OK' : 'LOW');
 
-        // Actuation
         dom.hwPump.textContent = state.actuators.pump ? 'RUNNING' : 'IDLE';
         dom.hwPump.className = 'val ' + (state.actuators.pump ? 'good' : '');
         dom.hwSolenoid.textContent = state.actuators.solenoid ? 'OPEN' : 'CLOSED';
         dom.hwSolenoid.className = 'val ' + (state.actuators.solenoid ? 'good' : '');
         dom.hwRelay.textContent = 'OK';
-        dom.hwTank.textContent = fmt(state.tankLevel, 0) + '%';
+        dom.hwTank.textContent = fmt(state.tankLevel, 1) + '%';
         dom.hwTankBar.style.width = state.tankLevel + '%';
 
-        // Probe
         dom.hwServo.textContent = state.actuators.probe ? 'DEPLOYED' : 'RETRACTED';
         dom.hwServo.className = 'val ' + (state.actuators.probe ? 'good' : '');
         dom.hwAngle.textContent = state.actuators.probe ? '90°' : '0°';
         dom.hwProbeState.textContent = state.actuators.probe ? 'Active' : 'Standby';
 
-        // Connection
         dom.hwRssi.textContent = (Math.round(-55 + rand(-5, 5))) + ' dBm';
         dom.hwLatency.textContent = Math.round(20 + rand(-5, 15)) + ' ms';
         dom.hwPackets.textContent = state.packets.toLocaleString();
 
-        // Uptime
         const secs = Math.floor((Date.now() - state.startTime) / 1000);
-        const up = `${pad(Math.floor(secs / 60))}:${pad(secs % 60)}`;
-        dom.hwUptime.textContent = up;
+        dom.hwUptime.textContent = `${pad(Math.floor(secs / 60))}:${pad(secs % 60)}`;
     }
 
     /* ============================================================
@@ -1392,11 +1482,11 @@
         const now = Date.now();
         if (now - lastAlertTime < 8000) return;
         if (state.soilMoisture < CONFIG.ALERT_MOISTURE_LOW) {
-            pushEvent(`⚠ Low soil moisture (${fmt(state.soilMoisture, 1)}%) — consider irrigation`, 'alert');
+            pushEvent(`⚠ Low soil moisture (${fmt(state.soilMoisture, 1)}%)`, 'alert');
             lastAlertTime = now;
             if (state.auto.autoSpray) triggerActuator('pump', true, 3000);
         } else if (state.ambientTemp > CONFIG.ALERT_TEMP_HIGH) {
-            pushEvent(`⚠ High temperature (${fmt(state.ambientTemp, 1)}°C) — consider ventilation`, 'warn');
+            pushEvent(`⚠ High temperature (${fmt(state.ambientTemp, 1)}°C)`, 'warn');
             lastAlertTime = now;
             if (state.auto.autoVent) triggerActuator('vent', true, 3000);
         } else if (state.batteryVoltage < 10.5) {
@@ -1406,16 +1496,14 @@
     }
 
     /* ============================================================
-       ============================================================
-       LEAF HEALTH · SIMULATED ESP32-CAM + HSV DETECTION
-       ============================================================
+       LEAF HEALTH (simulated ESP32-CAM)
        ============================================================ */
     const DISEASE_PROFILES = [
-        { name: 'Early Blight',       type: 'necrosis',  spotColor: 'rgba(80, 40, 10, 0.85)',  hsv: { h:[10,40], s:[0.4,0.9], v:[0.2,0.55] }, severityRange:[0.08, 0.22] },
-        { name: 'Bacterial Spot',     type: 'necrosis',  spotColor: 'rgba(40, 25, 10, 0.9)',   hsv: { h:[15,35], s:[0.5,0.95], v:[0.15,0.4] }, severityRange:[0.05, 0.18] },
-        { name: 'Chlorosis',          type: 'chlorosis', spotColor: 'rgba(230, 210, 80, 0.75)', hsv: { h:[40,75], s:[0.4,0.85], v:[0.55,0.95] }, severityRange:[0.10, 0.35] },
-        { name: 'Powdery Mildew',     type: 'chlorosis', spotColor: 'rgba(240, 240, 225, 0.8)', hsv: { h:[0,60],  s:[0.0,0.25], v:[0.75,1.0] }, severityRange:[0.15, 0.40] },
-        { name: 'Healthy',            type: 'healthy',   spotColor: 'rgba(30, 100, 40, 0.4)',   hsv: { h:[80,150],s:[0.4,0.9], v:[0.25,0.75] }, severityRange:[0, 0.03] },
+        { name: 'Early Blight',   type: 'necrosis',  spotColor: 'rgba(80, 40, 10, 0.85)',  severityRange: [0.08, 0.22] },
+        { name: 'Bacterial Spot', type: 'necrosis',  spotColor: 'rgba(40, 25, 10, 0.9)',   severityRange: [0.05, 0.18] },
+        { name: 'Chlorosis',      type: 'chlorosis', spotColor: 'rgba(230, 210, 80, 0.75)', severityRange: [0.10, 0.35] },
+        { name: 'Powdery Mildew', type: 'chlorosis', spotColor: 'rgba(240, 240, 225, 0.8)', severityRange: [0.15, 0.40] },
+        { name: 'Healthy',        type: 'healthy',   spotColor: 'rgba(30, 100, 40, 0.4)',   severityRange: [0, 0.03] },
     ];
 
     const leafCanvas = dom.leafCanvas;
@@ -1491,7 +1579,6 @@
         });
         c.restore();
 
-        // Detection overlays
         spots.forEach((s) => {
             c.strokeStyle = profile.type === 'healthy' ? 'rgba(120,220,140,0.5)'
                           : profile.type === 'chlorosis' ? 'rgba(250,200,60,0.9)'
@@ -1504,7 +1591,6 @@
         c.fillStyle = 'rgba(180,240,200,0.7)';
         c.fillText(`HSV MASK · ${profile.name.toUpperCase()}`, 10, LEAF_H - 12);
 
-        // HSV histogram bar
         const barW = 120, barH = 8, barX = LEAF_W - barW - 10, barY = LEAF_H - 16;
         c.fillStyle = 'rgba(0,0,0,0.5)';
         c.fillRect(barX, barY, barW, barH);
@@ -1516,14 +1602,19 @@
     }
 
     function simulateLeafScan(options = {}) {
-        const { silent = false } = options;
-        const roll = Math.random();
+        const { silent = false, forceDisease = null } = options;
+
         let profile;
-        if (roll < 0.45)      profile = DISEASE_PROFILES[4];
-        else if (roll < 0.65) profile = DISEASE_PROFILES[2];
-        else if (roll < 0.78) profile = DISEASE_PROFILES[3];
-        else if (roll < 0.90) profile = DISEASE_PROFILES[0];
-        else                  profile = DISEASE_PROFILES[1];
+        if (forceDisease !== null) {
+            profile = DISEASE_PROFILES[forceDisease];
+        } else {
+            const roll = Math.random();
+            if (roll < 0.45)      profile = DISEASE_PROFILES[4];
+            else if (roll < 0.65) profile = DISEASE_PROFILES[2];
+            else if (roll < 0.78) profile = DISEASE_PROFILES[3];
+            else if (roll < 0.90) profile = DISEASE_PROFILES[0];
+            else                  profile = DISEASE_PROFILES[1];
+        }
 
         const infectionLevel = rand(profile.severityRange[0], profile.severityRange[1]);
         const spotCount = profile.type === 'healthy' ? Math.floor(rand(0, 3)) : Math.floor(rand(6, 22));
@@ -1551,10 +1642,17 @@
 
         if (!silent) {
             const pct = (totalInfection * 100).toFixed(1);
-            if (severity === 'high') pushEvent(`🦠 ${profile.name} detected — ${pct}% infection (HIGH)`, 'alert');
-            else if (severity === 'moderate') pushEvent(`⚠ ${profile.name} — ${pct}% infection`, 'warn');
-            else if (severity === 'low') pushEvent(`🍃 Mild ${profile.name.toLowerCase()} (${pct}%)`, 'info');
-            else pushEvent(`✓ Leaf scan complete — healthy`, 'success');
+            if (severity === 'high') {
+                pushEvent(`🦠 ${profile.name} detected — ${pct}% infection (HIGH)`, 'alert');
+                showToast(`🦠 <strong>${profile.name}</strong><br>Infection: ${pct}% (HIGH)`, 'alert');
+            } else if (severity === 'moderate') {
+                pushEvent(`⚠ ${profile.name} — ${pct}% infection`, 'warn');
+                showToast(`⚠ <strong>${profile.name}</strong><br>Infection: ${pct}%`, 'warn');
+            } else if (severity === 'low') {
+                pushEvent(`🍃 Mild ${profile.name.toLowerCase()} (${pct}%)`, 'info');
+            } else {
+                pushEvent(`✓ Leaf scan complete — healthy`, 'success');
+            }
         }
     }
 
@@ -1592,102 +1690,180 @@
     }
 
     /* ============================================================
-       ACTUATOR CONTROLS
+       ACTUATOR CONTROLS — with visible feedback
        ============================================================ */
     function updateActuatorButton(btn, on, onLabel, offLabel) {
         if (on) btn.classList.add('on'); else btn.classList.remove('on');
-        const badge = btn.querySelector('.state-badge');
-        badge.textContent = on ? onLabel : offLabel;
+        btn.querySelector('.state-badge').textContent = on ? onLabel : offLabel;
     }
 
     function triggerActuator(name, on, autoOffMs = null) {
         state.actuators[name] = on;
         updateHardware();
 
-        const labels = {
-            pump:      { on: 'RUNNING', off: 'OFF',    btn: dom.btnPump,      onL: 'RUNNING', offL: 'OFF' },
-            solenoid:  { on: 'OPEN',    off: 'CLOSED', btn: dom.btnSolenoid,  onL: 'OPEN',    offL: 'CLOSED' },
-            fungicide: { on: 'DOSING',  off: 'OFF',    btn: dom.btnFungicide, onL: 'DOSING',  offL: 'OFF' },
-            probe:     { on: 'DEPLOYED',off: 'RETRACT',btn: dom.btnProbe,     onL: 'DEPLOYED',offL: 'RETRACTED' },
-            vent:      { on: 'ON',      off: 'OFF',    btn: dom.btnVent,      onL: 'ON',      offL: 'OFF' },
+        const meta = {
+            pump:      { btn: dom.btnPump,      onL: 'RUNNING',  offL: 'OFF' },
+            solenoid:  { btn: dom.btnSolenoid,  onL: 'OPEN',     offL: 'CLOSED' },
+            fungicide: { btn: dom.btnFungicide, onL: 'DOSING',   offL: 'OFF' },
+            probe:     { btn: dom.btnProbe,     onL: 'DEPLOYED', offL: 'RETRACTED' },
+            vent:      { btn: dom.btnVent,      onL: 'ON',       offL: 'OFF' },
         };
-        if (labels[name]) {
-            updateActuatorButton(labels[name].btn, on, labels[name].onL, labels[name].offL);
+        if (meta[name]) {
+            updateActuatorButton(meta[name].btn, on, meta[name].onL, meta[name].offL);
         }
 
-        // Physical side-effects on telemetry
+        /* ---------- PUMP ---------- */
         if (name === 'pump' && on) {
+            const beforeM    = state.soilMoisture;
+            const beforeT    = state.ambientTemp;
+            const beforeH    = state.airHumidity;
+            const beforeTank = state.tankLevel;
+
+            const moistureGain = rand(8, 14);
+            const tempDrop     = rand(0.6, 1.6);
+            const humidityGain = rand(4, 9);
+            const tankDrop     = rand(2, 4);
+
             tick({
-                forcedMoisture: clamp(state.soilMoisture + rand(8, 14), CONFIG.MOISTURE_MIN, CONFIG.MOISTURE_MAX),
-                forcedTemp: clamp(state.ambientTemp - rand(0.6, 1.6), CONFIG.TEMP_MIN, CONFIG.TEMP_MAX),
-                forcedHumidity: clamp(state.airHumidity + rand(4, 9), CONFIG.HUMIDITY_MIN, CONFIG.HUMIDITY_MAX),
+                forcedMoisture: clamp(state.soilMoisture + moistureGain, CONFIG.MOISTURE_MIN, CONFIG.MOISTURE_MAX),
+                forcedTemp:     clamp(state.ambientTemp - tempDrop,      CONFIG.TEMP_MIN,     CONFIG.TEMP_MAX),
+                forcedHumidity: clamp(state.airHumidity + humidityGain,  CONFIG.HUMIDITY_MIN, CONFIG.HUMIDITY_MAX),
             });
-            state.tankLevel = clamp(state.tankLevel - rand(2, 4), 0, 100);
+            state.tankLevel = clamp(state.tankLevel - tankDrop, 0, 100);
+
+            pulseKPI('.kpi.moisture');
+            setTimeout(() => pulseKPI('.kpi.water'), 200);
+            showToast(
+                `💦 <strong>Spray Pump ON</strong><br>` +
+                `Moisture +${moistureGain.toFixed(1)}% · Tank −${tankDrop.toFixed(1)}%`,
+                'success'
+            );
+            pushEvent(
+                `💦 Spray ON — moisture ${beforeM.toFixed(1)}% → ${state.soilMoisture.toFixed(1)}% · ` +
+                `temp ${beforeT.toFixed(1)}°C → ${state.ambientTemp.toFixed(1)}°C · ` +
+                `tank ${beforeTank.toFixed(1)}% → ${state.tankLevel.toFixed(1)}%`,
+                'success'
+            );
         }
+
+        /* ---------- SOLENOID ---------- */
         if (name === 'solenoid' && on) {
+            const beforeH = state.airHumidity;
+            const humidityGain = rand(2, 5);
+            const tankDrop = rand(1, 2);
             tick({
-                forcedHumidity: clamp(state.airHumidity + rand(2, 5), CONFIG.HUMIDITY_MIN, CONFIG.HUMIDITY_MAX),
+                forcedHumidity: clamp(state.airHumidity + humidityGain, CONFIG.HUMIDITY_MIN, CONFIG.HUMIDITY_MAX),
             });
+            state.tankLevel = clamp(state.tankLevel - tankDrop, 0, 100);
+
+            pulseKPI('.kpi.humidity');
+            showToast(`🚰 <strong>Valve OPEN</strong><br>RH +${humidityGain.toFixed(1)}% · Tank −${tankDrop.toFixed(1)}%`, 'success');
+            pushEvent(`🚰 Valve OPEN — RH ${beforeH.toFixed(0)}% → ${state.airHumidity.toFixed(0)}%`, 'info');
         }
+
+        /* ---------- VENT ---------- */
         if (name === 'vent' && on) {
+            const beforeT = state.ambientTemp;
+            const tempDrop     = rand(1.5, 3.0);
+            const humidityDrop = rand(6, 12);
             tick({
-                forcedTemp: clamp(state.ambientTemp - rand(1.5, 3.0), CONFIG.TEMP_MIN, CONFIG.TEMP_MAX),
-                forcedHumidity: clamp(state.airHumidity - rand(6, 12), CONFIG.HUMIDITY_MIN, CONFIG.HUMIDITY_MAX),
+                forcedTemp:     clamp(state.ambientTemp - tempDrop,     CONFIG.TEMP_MIN,     CONFIG.TEMP_MAX),
+                forcedHumidity: clamp(state.airHumidity - humidityDrop, CONFIG.HUMIDITY_MIN, CONFIG.HUMIDITY_MAX),
             });
+
+            pulseKPI('.kpi.temp');
+            showToast(`🌀 <strong>Ventilation ON</strong><br>Temp −${tempDrop.toFixed(1)}°C · RH −${humidityDrop.toFixed(0)}%`, 'info');
+            pushEvent(`🌀 Vent ON — temp ${beforeT.toFixed(1)}°C → ${state.ambientTemp.toFixed(1)}°C`, 'info');
         }
+
+        /* ---------- FUNGICIDE ---------- */
         if (name === 'fungicide' && on) {
-            if (state.leafSeverity !== 'none') {
+            const before = state.leafInfection * 100;
+
+            if (state.leafSeverity === 'none' || state.leafInfection < 0.01) {
+                showToast('🧪 <strong>Fungicide skipped</strong><br>Leaf is healthy — no action needed', 'info');
+                pushEvent('🧪 Fungicide skipped — no active infection', 'info');
+            } else {
                 state.leafInfection = Math.max(0, state.leafInfection * 0.35);
-                state.leafChlorosis = Math.max(0, state.leafChlorosis * 0.4);
-                state.leafNecrosis  = Math.max(0, state.leafNecrosis  * 0.4);
+                state.leafChlorosis = Math.max(0, state.leafChlorosis * 0.40);
+                state.leafNecrosis  = Math.max(0, state.leafNecrosis  * 0.40);
                 const totalAfter = state.leafChlorosis + state.leafNecrosis;
                 state.leafSeverity =
                     totalAfter > 0.30 ? 'high' :
                     totalAfter > 0.15 ? 'moderate' :
                     totalAfter > 0.05 ? 'low' : 'none';
                 state.leafHealthPct = clamp(100 - totalAfter * 200, 0, 100);
+
+                // Reduce visible spots proportionally
+                const keep = Math.max(0, Math.round(currentSpots.length * 0.35));
+                currentSpots = currentSpots.slice(0, keep);
+
                 updateLeafUI();
                 drawLeafFrame(currentProfile, currentSpots);
+                pushConsumablesPoint();
+
+                pulseKPI('.kpi.leaf');
+                const after = state.leafInfection * 100;
+                showToast(
+                    `🧪 <strong>Fungicide Applied</strong><br>` +
+                    `Infection ${before.toFixed(1)}% → ${after.toFixed(1)}%`,
+                    'success'
+                );
+                pushEvent(
+                    `🧪 Fungicide applied — infection ${before.toFixed(1)}% → ${after.toFixed(1)}% · severity → ${state.leafSeverity.toUpperCase()}`,
+                    'success'
+                );
             }
         }
 
-        // auto-off for momentary actions
+        /* ---------- PROBE ---------- */
+        if (name === 'probe') {
+            const angle = on ? '90°' : '0°';
+            showToast(`🦾 <strong>Probe ${on ? 'DEPLOYED' : 'RETRACTED'}</strong><br>Servo at ${angle}`, 'info');
+            pushEvent(`🦾 Probe ${on ? 'deployed' : 'retracted'} (${angle})`, on ? 'success' : 'info');
+        }
+
         if (on && autoOffMs) {
             setTimeout(() => triggerActuator(name, false), autoOffMs);
         }
+
+        updateKPIs();
+        updateHardware();
     }
 
-    function attachToggle(btn, name, onLabel, offLabel) {
-        btn.addEventListener('click', () => {
-            const newState = !state.actuators[name];
-            triggerActuator(name, newState);
-            if (newState) {
-                pushEvent(`▶ Manual: ${name.toUpperCase()} → ${onLabel}`, 'info');
-            } else {
-                pushEvent(`⏹ Manual: ${name.toUpperCase()} → ${offLabel}`, 'info');
-            }
-        });
-    }
+    /* ============================================================
+       BUTTON HANDLERS
+       ============================================================ */
+    dom.btnPump.addEventListener('click', () => {
+        const s = !state.actuators.pump;
+        triggerActuator('pump', s);
+    });
 
-    attachToggle(dom.btnPump, 'pump', 'RUNNING', 'OFF');
-    attachToggle(dom.btnSolenoid, 'solenoid', 'OPEN', 'CLOSED');
-    attachToggle(dom.btnVent, 'vent', 'ON', 'OFF');
+    dom.btnSolenoid.addEventListener('click', () => {
+        const s = !state.actuators.solenoid;
+        triggerActuator('solenoid', s);
+    });
 
     dom.btnFungicide.addEventListener('click', () => {
-        const wasOn = state.actuators.fungicide;
-        triggerActuator('fungicide', !wasOn, 2500);
-        pushEvent(`🧪 Fungicide dose triggered`, 'success');
+        // momentary dose — auto-off 2.5s
+        triggerActuator('fungicide', true, 2500);
+    });
+
+    dom.btnVent.addEventListener('click', () => {
+        const s = !state.actuators.vent;
+        triggerActuator('vent', s);
     });
 
     dom.btnProbe.addEventListener('click', () => {
-        const newState = !state.actuators.probe;
-        triggerActuator('probe', newState);
-        pushEvent(`🦾 Probe ${newState ? 'deployed' : 'retracted'}`, newState ? 'success' : 'info');
+        const s = !state.actuators.probe;
+        triggerActuator('probe', s);
     });
 
     dom.btnScan.addEventListener('click', () => {
-        pushEvent(`📷 Manual leaf scan triggered`, 'info');
-        simulateLeafScan();
+        pushEvent('📷 Manual leaf scan triggered', 'info');
+        showToast('📷 <strong>Leaf scan</strong><br>Capturing & analyzing…', 'info');
+        // Slight delay to feel like a real capture
+        setTimeout(() => simulateLeafScan(), 500);
     });
 
     /* ============================================================
@@ -1700,14 +1876,15 @@
             CONFIG.MODE = btn.dataset.mode;
             dom.modeLabel.textContent = CONFIG.MODE.toUpperCase();
             pushEvent(`🔄 Mode switched to ${CONFIG.MODE.toUpperCase()}`, 'info');
+            showToast(`🔄 Mode: <strong>${CONFIG.MODE.toUpperCase()}</strong>`, 'info');
 
             if (CONFIG.MODE === 'live') {
-                dom.connWs.className = 'conn-pill offline';
-                dom.connWs.innerHTML = '<span class="dot"></span> WS · offline';
-                pushEvent('⚠ Live mode selected — connect ESP32 at 192.168.1.42:81', 'warn');
+                dom.connWs.className = 'conn-pill warn';
+                dom.connWs.innerHTML = '<span class="dot"></span> MQTT · connect';
+                pushEvent('⚠ Live mode — waiting for real ESP32 telemetry', 'warn');
             } else {
                 dom.connWs.className = 'conn-pill online';
-                dom.connWs.innerHTML = '<span class="dot"></span> WS · 81';
+                dom.connWs.innerHTML = '<span class="dot"></span> MQTT · 8884';
             }
         });
     });
@@ -1745,18 +1922,20 @@
         CONFIG.ALERT_MOISTURE_LOW = parseInt($('setLowMoisture').value, 10) || 25;
         CONFIG.ALERT_TEMP_HIGH = parseInt($('setHighTemp').value, 10) || 31;
         pushEvent('⚙ Settings applied', 'success');
+        showToast('⚙ <strong>Settings applied</strong>', 'success');
         closeSettings();
     });
 
     $('resetSettings').addEventListener('click', () => {
         $('setIp').value = '192.168.1.42';
-        $('setPort').value = '81';
+        $('setPort').value = '8884';
         $('setSsid').value = 'NIPAS-Field';
         $('setInterval').value = 3000;
         $('setWindow').value = 15;
         $('setLowMoisture').value = 25;
         $('setHighTemp').value = 31;
         pushEvent('⚙ Settings reset to defaults', 'info');
+        showToast('⚙ <strong>Settings reset</strong>', 'info');
     });
 
     /* ============================================================
@@ -1778,13 +1957,19 @@
     updateKPIs();
     updateLeafUI();
     updateHardware();
-    simulateLeafScan({ silent: true });
+
+    // Initial demo state: start with a moderate infection so fungicide
+    // has something to reduce when the user first clicks it.
+    simulateLeafScan({ silent: true, forceDisease: 2 });   // Chlorosis, moderate
     drawLeafFrame(currentProfile, currentSpots);
 
     pushEvent('🟢 NIPAS control center initialised', 'success');
-    pushEvent('📡 ESP32 · WebSocket server on :81', 'info');
+    pushEvent('📡 MQTT broker · wss://hivemq:8884', 'info');
     pushEvent('📷 ESP32‑CAM · HSV disease detection active', 'info');
     pushEvent('🔌 Power system nominal · 12V → 5V buck OK', 'info');
+    pushEvent('⚠ Chlorosis detected on sample leaf — awaiting action', 'warn');
+
+    showToast('🌱 <strong>NIPAS online</strong><br>5 subsystems ready', 'success');
 
 })();
 </script>
