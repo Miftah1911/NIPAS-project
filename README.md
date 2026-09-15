@@ -934,8 +934,8 @@ See the [LICENSE](LICENSE) file for the full text.
 For questions, issues, or collaboration:
 
 - Open an issue on [GitHub](https://github.com/Miftah1911/NIPAS-project/issues)
-- Email: *(add your email)*
-- LinkedIn: *(add your profile)*
+- Email: *(miftahurrahman187@gmail.com)*
+- LinkedIn: *(https://www.linkedin.com/in/miftah-ur-rahman-08488a407/)`*
 
 ---
 
