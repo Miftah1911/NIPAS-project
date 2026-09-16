@@ -16,7 +16,6 @@
         --green-300: #b8e3c4;
         --green-200: #d4efdb;
         --green-100: #e7f7ec;
-
         --amber-500: #d99a1c;
         --amber-400: #f0b83c;
         --orange-500: #d9702c;
@@ -26,14 +25,9 @@
         --blue-400: #78b3dd;
         --purple-500: #8a70d9;
         --purple-400: #ab94e8;
-
-        --bg-1: #eef7f0;
-        --bg-2: #dcefe1;
-
         --text-dark: #0d2a1c;
         --text-body: #1c5738;
         --text-muted: #4d7a61;
-
         --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -45,12 +39,8 @@
         -webkit-font-smoothing: antialiased;
         font-feature-settings: 'tnum';
     }
-
-    /* ═══════════════ BACKGROUND ═══════════════ */
     .bg {
-        position: fixed; inset: 0;
-        z-index: 0;
-        overflow: hidden;
+        position: fixed; inset: 0; z-index: 0; overflow: hidden;
         background:
             radial-gradient(ellipse 80% 60% at 15% 10%, rgba(95, 184, 125, 0.22), transparent 55%),
             radial-gradient(ellipse 70% 60% at 90% 85%, rgba(58, 145, 96, 0.16), transparent 55%),
@@ -58,9 +48,7 @@
             linear-gradient(160deg, #eef7f0 0%, #dcefe1 100%);
     }
     .bg::before {
-        content: '';
-        position: absolute;
-        inset: -20%;
+        content: ''; position: absolute; inset: -20%;
         background-image:
             linear-gradient(rgba(58, 145, 96, 0.08) 1px, transparent 1px),
             linear-gradient(90deg, rgba(58, 145, 96, 0.08) 1px, transparent 1px);
@@ -68,1207 +56,248 @@
         animation: gridPan 80s linear infinite;
         opacity: 0.7;
     }
-    @keyframes gridPan {
-        from { transform: translate(0, 0); }
-        to   { transform: translate(64px, 64px); }
-    }
+    @keyframes gridPan { from { transform: translate(0, 0); } to { transform: translate(64px, 64px); } }
     .bg::after {
-        content: '';
-        position: absolute;
-        inset: 0;
+        content: ''; position: absolute; inset: 0;
         background: radial-gradient(circle at center, transparent 45%, rgba(255, 255, 255, 0.55) 100%);
         pointer-events: none;
     }
-    .orb {
-        position: absolute;
-        border-radius: 50%;
-        filter: blur(100px);
-        opacity: 0.4;
-        animation: orbFloat 24s ease-in-out infinite;
-    }
+    .orb { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.4; animation: orbFloat 24s ease-in-out infinite; }
     .orb.o1 { width: 520px; height: 520px; background: #8fd0a4; top: -12%; left: -8%; }
     .orb.o2 { width: 460px; height: 460px; background: #b8e3c4; bottom: -14%; right: -8%; animation-delay: -8s; }
     .orb.o3 { width: 400px; height: 400px; background: #d4efdb; top: 42%; left: 58%; opacity: 0.5; animation-delay: -16s; }
     .orb.o4 { width: 320px; height: 320px; background: #f0b83c; top: 12%; right: 15%; opacity: 0.12; animation-delay: -12s; }
-    @keyframes orbFloat {
-        0%, 100% { transform: translate(0, 0) scale(1); }
-        50%      { transform: translate(48px, -36px) scale(1.1); }
-    }
-    .leaf-particle {
-        position: absolute;
-        font-size: 1.6rem;
-        opacity: 0.18;
-        animation: drift 28s linear infinite;
-        pointer-events: none;
-        filter: saturate(0.7);
-    }
+    @keyframes orbFloat { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(48px, -36px) scale(1.1); } }
+    .leaf-particle { position: absolute; font-size: 1.6rem; opacity: 0.18; animation: drift 28s linear infinite; pointer-events: none; filter: saturate(0.7); }
     @keyframes drift {
         0%   { transform: translate(0, 110vh) rotate(0deg); opacity: 0; }
-        12%  { opacity: 0.22; }
-        88%  { opacity: 0.22; }
+        12%  { opacity: 0.22; } 88% { opacity: 0.22; }
         100% { transform: translate(80px, -12vh) rotate(400deg); opacity: 0; }
     }
-
-    /* ═══════════════ SLIDE LAYOUT ═══════════════ */
-    .deck {
-        position: relative;
-        z-index: 1;
-        width: 100vw;
-        height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+    .deck { position: relative; z-index: 1; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; }
     .slide {
-        position: absolute;
-        inset: 0;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
+        position: absolute; inset: 0;
+        display: flex; flex-direction: column; justify-content: center;
         padding: 3.5rem 5rem;
-        opacity: 0;
-        transform: translateY(28px);
-        pointer-events: none;
+        opacity: 0; transform: translateY(28px); pointer-events: none;
         transition: opacity 0.75s ease, transform 0.75s cubic-bezier(0.4, 0, 0.2, 1);
-        max-width: 1700px;
-        margin: 0 auto;
-        overflow-y: auto;
-        scrollbar-width: thin;
+        max-width: 1700px; margin: 0 auto;
+        overflow-y: auto; scrollbar-width: thin;
         scrollbar-color: rgba(58, 145, 96, 0.4) transparent;
     }
     .slide::-webkit-scrollbar { width: 6px; }
     .slide::-webkit-scrollbar-thumb { background: rgba(58, 145, 96, 0.4); border-radius: 6px; }
-    .slide.active {
-        opacity: 1;
-        transform: translateY(0);
-        pointer-events: auto;
-    }
-
-    /* ═══════════════ HEADERS ═══════════════ */
+    .slide.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
     .slide-tag {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.75rem;
+        display: inline-flex; align-items: center; gap: 0.75rem;
         padding: 0.6rem 1.35rem;
         background: rgba(95, 184, 125, 0.16);
         border: 1px solid rgba(58, 145, 96, 0.4);
         border-radius: 999px;
-        font-size: 0.95rem;
-        font-weight: 800;
-        letter-spacing: 0.2em;
-        text-transform: uppercase;
+        font-size: 0.95rem; font-weight: 800;
+        letter-spacing: 0.2em; text-transform: uppercase;
         color: var(--green-800);
-        width: fit-content;
-        margin-bottom: 1.5rem;
+        width: fit-content; margin-bottom: 1.5rem;
         backdrop-filter: blur(8px);
     }
-    .slide-tag .dot {
-        width: 10px; height: 10px;
-        border-radius: 50%;
-        background: var(--green-600);
-        box-shadow: 0 0 16px var(--green-600);
-        animation: tagPulse 2s ease-in-out infinite;
-    }
-    @keyframes tagPulse {
-        0%, 100% { opacity: 1; transform: scale(1); }
-        50%      { opacity: 0.55; transform: scale(0.85); }
-    }
-    h1.title {
-        font-size: clamp(3rem, 6.5vw, 5.5rem);
-        font-weight: 900;
-        line-height: 1.02;
-        letter-spacing: -0.035em;
-        color: var(--green-900);
-        margin-bottom: 1.3rem;
-    }
-    h2.slide-title {
-        font-size: clamp(2.2rem, 4.2vw, 3.4rem);
-        font-weight: 800;
-        line-height: 1.12;
-        letter-spacing: -0.025em;
-        color: var(--green-900);
-        margin-bottom: 1.6rem;
-        max-width: 1300px;
-    }
-    h2.slide-title .accent {
-        background: linear-gradient(120deg, #267347, #5fb87d);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-    h2.slide-title .accent-amber {
-        background: linear-gradient(120deg, #d99a1c, #f0b83c);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-    h2.slide-title .accent-blue {
-        background: linear-gradient(120deg, #4a90c7, #78b3dd);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-    h2.slide-title .accent-purple {
-        background: linear-gradient(120deg, #8a70d9, #ab94e8);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-    h2.slide-title .accent-red {
-        background: linear-gradient(120deg, #c74440, #e57368);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-    .lead {
-        font-size: 1.4rem;
-        line-height: 1.65;
-        color: var(--text-body);
-        max-width: 1050px;
-        font-weight: 500;
-    }
+    .slide-tag .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green-600); box-shadow: 0 0 16px var(--green-600); animation: tagPulse 2s ease-in-out infinite; }
+    @keyframes tagPulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.55; transform: scale(0.85); } }
+    h1.title { font-size: clamp(3rem, 6.5vw, 5.5rem); font-weight: 900; line-height: 1.02; letter-spacing: -0.035em; color: var(--green-900); margin-bottom: 1.3rem; }
+    h2.slide-title { font-size: clamp(2.2rem, 4.2vw, 3.4rem); font-weight: 800; line-height: 1.12; letter-spacing: -0.025em; color: var(--green-900); margin-bottom: 1.6rem; max-width: 1300px; }
+    h2.slide-title .accent { background: linear-gradient(120deg, #267347, #5fb87d); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    h2.slide-title .accent-amber { background: linear-gradient(120deg, #d99a1c, #f0b83c); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    h2.slide-title .accent-blue { background: linear-gradient(120deg, #4a90c7, #78b3dd); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    h2.slide-title .accent-purple { background: linear-gradient(120deg, #8a70d9, #ab94e8); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    h2.slide-title .accent-red { background: linear-gradient(120deg, #c74440, #e57368); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .lead { font-size: 1.4rem; line-height: 1.65; color: var(--text-body); max-width: 1050px; font-weight: 500; }
     .lead strong { color: var(--green-800); font-weight: 700; }
     .lead em { color: var(--amber-500); font-style: normal; font-weight: 700; }
-
-    /* ═══════════════ TITLE SLIDE ═══════════════ */
     .title-slide { align-items: center; text-align: center; }
     .title-slide .slide-tag { margin-left: auto; margin-right: auto; }
-    .title-slide .lead { margin: 0 auto; }
-
     .logo-badge {
-        width: 120px; height: 120px;
-        border-radius: 32px;
+        width: 120px; height: 120px; border-radius: 32px;
         background: linear-gradient(135deg, #3a9160 0%, #1c5738 100%);
-        display: grid; place-items: center;
-        font-size: 4rem;
+        display: grid; place-items: center; font-size: 4rem;
         margin: 0 auto 1.8rem;
-        box-shadow:
-            0 35px 70px -25px rgba(58, 145, 96, 0.55),
-            0 0 0 1px rgba(95, 184, 125, 0.4),
-            inset 0 0 50px rgba(255, 255, 255, 0.15);
-        animation: logoFloat 4.5s ease-in-out infinite;
-        position: relative;
+        box-shadow: 0 35px 70px -25px rgba(58, 145, 96, 0.55), 0 0 0 1px rgba(95, 184, 125, 0.4), inset 0 0 50px rgba(255, 255, 255, 0.15);
+        animation: logoFloat 4.5s ease-in-out infinite; position: relative;
     }
     .logo-badge::after {
-        content: '';
-        position: absolute;
-        inset: -14px;
-        border-radius: 46px;
-        border: 1px solid rgba(58, 145, 96, 0.25);
+        content: ''; position: absolute; inset: -14px;
+        border-radius: 46px; border: 1px solid rgba(58, 145, 96, 0.25);
         animation: ringPulse 3s ease-in-out infinite;
     }
-    @keyframes ringPulse {
-        0%, 100% { transform: scale(1); opacity: 0.7; }
-        50%      { transform: scale(1.06); opacity: 0.3; }
-    }
-    @keyframes logoFloat {
-        0%, 100% { transform: translateY(0); }
-        50%      { transform: translateY(-12px); }
-    }
-
-    .big-nipas {
-        font-size: clamp(5rem, 12vw, 10rem);
-        font-weight: 900;
-        line-height: 0.95;
-        letter-spacing: -0.055em;
-        background: linear-gradient(120deg, #14402a 0%, #3a9160 50%, #5fb87d 100%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 0.7rem;
-    }
-    .full-form {
-        font-size: clamp(1.3rem, 2.4vw, 1.9rem);
-        font-weight: 700;
-        color: var(--green-700);
-        letter-spacing: 0.01em;
-        margin-bottom: 2.5rem;
-        line-height: 1.35;
-    }
+    @keyframes ringPulse { 0%, 100% { transform: scale(1); opacity: 0.7; } 50% { transform: scale(1.06); opacity: 0.3; } }
+    @keyframes logoFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+    .big-nipas { font-size: clamp(5rem, 12vw, 10rem); font-weight: 900; line-height: 0.95; letter-spacing: -0.055em; background: linear-gradient(120deg, #14402a 0%, #3a9160 50%, #5fb87d 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.7rem; }
+    .full-form { font-size: clamp(1.3rem, 2.4vw, 1.9rem); font-weight: 700; color: var(--green-700); letter-spacing: 0.01em; margin-bottom: 2.5rem; line-height: 1.35; }
     .team-block { margin-top: 0.5rem; }
-    .team-label {
-        font-size: 0.95rem;
-        text-transform: uppercase;
-        letter-spacing: 0.25em;
-        color: var(--text-muted);
-        font-weight: 800;
-        margin-bottom: 1.2rem;
-    }
-    .team-list {
-        display: flex;
-        flex-direction: column;
-        gap: 0.9rem;
-        align-items: center;
-    }
-    .team-member {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.9rem;
-        padding: 0.85rem 1.7rem;
-        background: rgba(255, 255, 255, 0.75);
-        border: 1px solid rgba(58, 145, 96, 0.35);
-        border-radius: 999px;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 8px 20px -10px rgba(58, 145, 96, 0.25);
-        transition: all 0.3s ease;
-    }
-    .team-member:hover {
-        border-color: rgba(58, 145, 96, 0.7);
-        background: rgba(212, 239, 219, 0.85);
-        transform: translateY(-2px);
-    }
-    .team-member .avatar {
-        width: 44px; height: 44px;
-        border-radius: 50%;
-        display: grid; place-items: center;
-        font-size: 1.05rem;
-        font-weight: 800;
-        color: #ffffff;
-        background: linear-gradient(135deg, #3a9160, #14402a);
-        box-shadow: 0 6px 14px -4px rgba(58, 145, 96, 0.55);
-        flex-shrink: 0;
-    }
-    .team-member .name {
-        font-size: 1.4rem;
-        font-weight: 700;
-        color: var(--green-900);
-    }
-    .team-member .role {
-        font-size: 0.9rem;
-        color: var(--green-600);
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        padding-left: 0.7rem;
-        border-left: 1px solid rgba(58, 145, 96, 0.35);
-        margin-left: 0.5rem;
-    }
-
-    /* ═══════════════ STAT GRID ═══════════════ */
-    .stat-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1.2rem;
-        margin-top: 1.7rem;
-    }
-    .stat {
-        background: rgba(255, 255, 255, 0.75);
-        border: 1px solid rgba(58, 145, 96, 0.25);
-        border-radius: 20px;
-        padding: 1.6rem 1.4rem;
-        backdrop-filter: blur(12px);
-        box-shadow: 0 8px 24px -12px rgba(58, 145, 96, 0.3);
-        transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
-        position: relative;
-        overflow: hidden;
-    }
-    .stat::before {
-        content: '';
-        position: absolute;
-        top: 0; left: 0; right: 0;
-        height: 3px;
-        background: linear-gradient(90deg, #3a9160, #8fd0a4);
-        opacity: 0.7;
-    }
-    .stat:hover {
-        transform: translateY(-7px);
-        border-color: rgba(58, 145, 96, 0.6);
-        box-shadow: 0 20px 40px -18px rgba(58, 145, 96, 0.45);
-    }
-    .stat .num {
-        font-family: var(--font-mono);
-        font-size: 2.5rem;
-        font-weight: 800;
-        color: var(--green-700);
-        line-height: 1;
-        letter-spacing: -0.03em;
-    }
-    .stat .num.amber  { color: var(--amber-500); }
-    .stat .num.blue   { color: var(--blue-500); }
+    .team-label { font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.25em; color: var(--text-muted); font-weight: 800; margin-bottom: 1.2rem; }
+    .team-list { display: flex; flex-direction: column; gap: 0.9rem; align-items: center; }
+    .team-member { display: inline-flex; align-items: center; gap: 0.9rem; padding: 0.85rem 1.7rem; background: rgba(255, 255, 255, 0.75); border: 1px solid rgba(58, 145, 96, 0.35); border-radius: 999px; backdrop-filter: blur(10px); box-shadow: 0 8px 20px -10px rgba(58, 145, 96, 0.25); transition: all 0.3s ease; }
+    .team-member:hover { border-color: rgba(58, 145, 96, 0.7); background: rgba(212, 239, 219, 0.85); transform: translateY(-2px); }
+    .team-member .avatar { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-size: 1.05rem; font-weight: 800; color: #ffffff; background: linear-gradient(135deg, #3a9160, #14402a); box-shadow: 0 6px 14px -4px rgba(58, 145, 96, 0.55); flex-shrink: 0; }
+    .team-member .name { font-size: 1.4rem; font-weight: 700; color: var(--green-900); }
+    .team-member .role { font-size: 0.9rem; color: var(--green-600); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding-left: 0.7rem; border-left: 1px solid rgba(58, 145, 96, 0.35); margin-left: 0.5rem; }
+    .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; margin-top: 1.7rem; }
+    .stat { background: rgba(255, 255, 255, 0.75); border: 1px solid rgba(58, 145, 96, 0.25); border-radius: 20px; padding: 1.6rem 1.4rem; backdrop-filter: blur(12px); box-shadow: 0 8px 24px -12px rgba(58, 145, 96, 0.3); transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease; position: relative; overflow: hidden; }
+    .stat::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #3a9160, #8fd0a4); opacity: 0.7; }
+    .stat:hover { transform: translateY(-7px); border-color: rgba(58, 145, 96, 0.6); box-shadow: 0 20px 40px -18px rgba(58, 145, 96, 0.45); }
+    .stat .num { font-family: var(--font-mono); font-size: 2.5rem; font-weight: 800; color: var(--green-700); line-height: 1; letter-spacing: -0.03em; }
+    .stat .num.amber { color: var(--amber-500); }
+    .stat .num.blue  { color: var(--blue-500); }
     .stat .num.purple { color: var(--purple-500); }
-    .stat .num.red    { color: var(--red-500); }
-    .stat .lbl {
-        font-size: 0.85rem;
-        text-transform: uppercase;
-        letter-spacing: 0.16em;
-        color: var(--text-muted);
-        margin-top: 0.9rem;
-        font-weight: 800;
-    }
-    .stat .sub {
-        font-size: 1rem;
-        color: var(--text-body);
-        margin-top: 0.5rem;
-        line-height: 1.45;
-        font-weight: 500;
-    }
-
-    /* ═══════════════ TWO COLUMN ═══════════════ */
-    .two-col {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 2.5rem;
-        align-items: center;
-    }
+    .stat .num.red { color: var(--red-500); }
+    .stat .lbl { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.16em; color: var(--text-muted); margin-top: 0.9rem; font-weight: 800; }
+    .stat .sub { font-size: 1rem; color: var(--text-body); margin-top: 0.5rem; line-height: 1.45; font-weight: 500; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: center; }
     .two-col.tight { gap: 1.5rem; }
     .two-col.wide { grid-template-columns: 1.4fr 1fr; }
-
-    /* ═══════════════ FEATURE LIST ═══════════════ */
-    .feature-list {
-        display: flex; flex-direction: column; gap: 1rem;
-    }
-    .feature {
-        display: flex;
-        gap: 1.1rem;
-        align-items: flex-start;
-        padding: 1.15rem 1.4rem;
-        background: rgba(255, 255, 255, 0.78);
-        border: 1px solid rgba(58, 145, 96, 0.22);
-        border-left: 4px solid var(--green-600);
-        border-radius: 14px;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 6px 16px -10px rgba(58, 145, 96, 0.25);
-        transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
-    }
-    .feature:hover {
-        transform: translateX(7px);
-        background: rgba(212, 239, 219, 0.75);
-        border-left-color: var(--green-500);
-    }
+    .feature-list { display: flex; flex-direction: column; gap: 1rem; }
+    .feature { display: flex; gap: 1.1rem; align-items: flex-start; padding: 1.15rem 1.4rem; background: rgba(255, 255, 255, 0.78); border: 1px solid rgba(58, 145, 96, 0.22); border-left: 4px solid var(--green-600); border-radius: 14px; backdrop-filter: blur(10px); box-shadow: 0 6px 16px -10px rgba(58, 145, 96, 0.25); transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease; }
+    .feature:hover { transform: translateX(7px); background: rgba(212, 239, 219, 0.75); border-left-color: var(--green-500); }
     .feature.amber { border-left-color: var(--amber-500); }
-    .feature.amber:hover { border-left-color: var(--amber-400); }
     .feature.red { border-left-color: var(--red-500); }
-    .feature.red:hover { border-left-color: var(--red-400); }
     .feature.blue { border-left-color: var(--blue-500); }
-    .feature.blue:hover { border-left-color: var(--blue-400); }
     .feature.purple { border-left-color: var(--purple-500); }
-    .feature.purple:hover { border-left-color: var(--purple-400); }
-    .feature .emoji {
-        font-size: 1.8rem;
-        line-height: 1;
-        flex-shrink: 0;
-        margin-top: 2px;
-    }
-    .feature h4 {
-        font-size: 1.25rem;
-        font-weight: 800;
-        color: var(--green-900);
-        margin-bottom: 0.35rem;
-    }
-    .feature p {
-        font-size: 1rem;
-        color: var(--text-body);
-        line-height: 1.55;
-        font-weight: 500;
-    }
+    .feature .emoji { font-size: 1.8rem; line-height: 1; flex-shrink: 0; margin-top: 2px; }
+    .feature h4 { font-size: 1.25rem; font-weight: 800; color: var(--green-900); margin-bottom: 0.35rem; }
+    .feature p { font-size: 1rem; color: var(--text-body); line-height: 1.55; font-weight: 500; }
     .feature p strong { color: var(--green-800); font-weight: 800; }
-
-    /* ═══════════════ PROBLEM-SOLUTION CARDS ═══════════════ */
-    .ps-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        gap: 1.1rem;
-        margin-top: 1.2rem;
-    }
-    .ps-card {
-        background: rgba(255, 255, 255, 0.82);
-        border: 1px solid rgba(58, 145, 96, 0.25);
-        border-radius: 20px;
-        padding: 1.4rem 1.5rem;
-        backdrop-filter: blur(12px);
-        box-shadow: 0 10px 26px -14px rgba(58, 145, 96, 0.35);
-        position: relative;
-        overflow: hidden;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .ps-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 20px 40px -18px rgba(58, 145, 96, 0.5);
-    }
-    .ps-card::before {
-        content: '';
-        position: absolute;
-        top: 0; left: 0; right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, #c74440, #d99a1c, #3a9160);
-    }
-    .ps-card .ps-number {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 40px;
-        height: 40px;
-        border-radius: 12px;
-        background: linear-gradient(135deg, #3a9160, #1c5738);
-        color: #ffffff;
-        font-family: var(--font-mono);
-        font-weight: 800;
-        font-size: 1.1rem;
-        margin-bottom: 1rem;
-        box-shadow: 0 6px 14px -6px rgba(58, 145, 96, 0.6);
-    }
-    .ps-card .ps-problem {
-        font-size: 1.05rem;
-        font-weight: 700;
-        color: #8b2f2b;
-        margin-bottom: 0.65rem;
-        line-height: 1.35;
-    }
-    .ps-card .ps-problem::before {
-        content: '✕ ';
-        color: var(--red-500);
-        font-weight: 800;
-    }
-    .ps-card .ps-solution {
-        font-size: 1rem;
-        color: var(--green-800);
-        line-height: 1.55;
-        font-weight: 500;
-        padding: 0.85rem 1rem;
-        background: rgba(95, 184, 125, 0.14);
-        border-radius: 10px;
-        border-left: 3px solid var(--green-500);
-    }
-    .ps-card .ps-solution::before {
-        content: '✓ ';
-        color: var(--green-600);
-        font-weight: 800;
-        margin-right: 0.15rem;
-    }
-
-    /* ═══════════════ BIG PROBLEM STATS ═══════════════ */
-    .problem-stats {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1.1rem;
-        margin-top: 1.6rem;
-    }
-    .problem-stat {
-        background: rgba(255, 255, 255, 0.78);
-        border: 1px solid rgba(199, 68, 64, 0.3);
-        border-radius: 18px;
-        padding: 1.4rem 1.2rem;
-        text-align: center;
-        position: relative;
-        overflow: hidden;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 8px 20px -14px rgba(199, 68, 64, 0.35);
-    }
-    .problem-stat::before {
-        content: '';
-        position: absolute;
-        top: 0; left: 0; right: 0;
-        height: 3px;
-        background: linear-gradient(90deg, #c74440, #d99a1c);
-    }
-    .problem-stat .big-num {
-        font-family: var(--font-mono);
-        font-size: 2.2rem;
-        font-weight: 800;
-        color: var(--red-500);
-        line-height: 1;
-        letter-spacing: -0.02em;
-    }
-    .problem-stat .big-lbl {
-        font-size: 0.85rem;
-        color: var(--text-body);
-        margin-top: 0.7rem;
-        line-height: 1.4;
-        font-weight: 600;
-    }
-
-    /* ═══════════════ COST TABLES ═══════════════ */
-    .cost-table {
-        margin-top: 1.2rem;
-        border: 1px solid rgba(58, 145, 96, 0.25);
-        border-radius: 18px;
-        overflow: hidden;
-        backdrop-filter: blur(10px);
-        background: rgba(255, 255, 255, 0.72);
-        box-shadow: 0 8px 24px -14px rgba(58, 145, 96, 0.3);
-    }
-    .cost-row {
-        display: grid;
-        grid-template-columns: 1.3fr 2fr 0.9fr;
-        border-bottom: 1px solid rgba(58, 145, 96, 0.14);
-        transition: background 0.2s ease;
-    }
+    .modes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.3rem; margin-top: 1.5rem; }
+    .mode-card { background: rgba(255, 255, 255, 0.82); border: 2px solid rgba(58, 145, 96, 0.25); border-radius: 20px; padding: 1.6rem 1.5rem; backdrop-filter: blur(12px); box-shadow: 0 10px 26px -14px rgba(58, 145, 96, 0.35); position: relative; overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .mode-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px -18px rgba(58, 145, 96, 0.5); }
+    .mode-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; }
+    .mode-card.offline::before { background: linear-gradient(90deg, #c74440, #e57368); }
+    .mode-card.sync::before    { background: linear-gradient(90deg, #d99a1c, #f0b83c); }
+    .mode-card.live::before    { background: linear-gradient(90deg, #3a9160, #8fd0a4); }
+    .mode-card .mode-icon { font-size: 2.4rem; margin-bottom: 0.8rem; display: block; }
+    .mode-card .mode-label { font-family: var(--font-mono); font-size: 0.85rem; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.5rem; }
+    .mode-card.offline .mode-label { color: var(--red-500); }
+    .mode-card.sync .mode-label    { color: var(--amber-500); }
+    .mode-card.live .mode-label    { color: var(--green-700); }
+    .mode-card h4 { font-size: 1.35rem; font-weight: 800; color: var(--green-900); margin-bottom: 0.75rem; line-height: 1.2; }
+    .mode-card p { font-size: 1rem; color: var(--text-body); line-height: 1.6; font-weight: 500; }
+    .mode-card p strong { color: var(--green-800); font-weight: 800; }
+    .ps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.1rem; margin-top: 1.2rem; }
+    .ps-card { background: rgba(255, 255, 255, 0.82); border: 1px solid rgba(58, 145, 96, 0.25); border-radius: 20px; padding: 1.4rem 1.5rem; backdrop-filter: blur(12px); box-shadow: 0 10px 26px -14px rgba(58, 145, 96, 0.35); position: relative; overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .ps-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px -18px rgba(58, 145, 96, 0.5); }
+    .ps-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #c74440, #d99a1c, #3a9160); }
+    .ps-card .ps-number { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg, #3a9160, #1c5738); color: #ffffff; font-family: var(--font-mono); font-weight: 800; font-size: 1.1rem; margin-bottom: 1rem; box-shadow: 0 6px 14px -6px rgba(58, 145, 96, 0.6); }
+    .ps-card .ps-problem { font-size: 1.05rem; font-weight: 700; color: #8b2f2b; margin-bottom: 0.65rem; line-height: 1.35; }
+    .ps-card .ps-problem::before { content: '✕ '; color: var(--red-500); font-weight: 800; }
+    .ps-card .ps-solution { font-size: 1rem; color: var(--green-800); line-height: 1.55; font-weight: 500; padding: 0.85rem 1rem; background: rgba(95, 184, 125, 0.14); border-radius: 10px; border-left: 3px solid var(--green-500); }
+    .ps-card .ps-solution::before { content: '✓ '; color: var(--green-600); font-weight: 800; margin-right: 0.15rem; }
+    .problem-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.1rem; margin-top: 1.6rem; }
+    .problem-stat { background: rgba(255, 255, 255, 0.78); border: 1px solid rgba(199, 68, 64, 0.3); border-radius: 18px; padding: 1.4rem 1.2rem; text-align: center; position: relative; overflow: hidden; backdrop-filter: blur(10px); box-shadow: 0 8px 20px -14px rgba(199, 68, 64, 0.35); }
+    .problem-stat::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #c74440, #d99a1c); }
+    .problem-stat .big-num { font-family: var(--font-mono); font-size: 2.2rem; font-weight: 800; color: var(--red-500); line-height: 1; letter-spacing: -0.02em; }
+    .problem-stat .big-lbl { font-size: 0.85rem; color: var(--text-body); margin-top: 0.7rem; line-height: 1.4; font-weight: 600; }
+    .cost-table { margin-top: 1.2rem; border: 1px solid rgba(58, 145, 96, 0.25); border-radius: 18px; overflow: hidden; backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.72); box-shadow: 0 8px 24px -14px rgba(58, 145, 96, 0.3); }
+    .cost-row { display: grid; grid-template-columns: 1.3fr 2fr 0.9fr; border-bottom: 1px solid rgba(58, 145, 96, 0.14); transition: background 0.2s ease; }
     .cost-row:last-child { border-bottom: none; }
-    .cost-row.header {
-        background: rgba(58, 145, 96, 0.14);
-        font-weight: 800;
-        font-size: 0.85rem;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        color: var(--green-800);
-    }
+    .cost-row.header { background: rgba(58, 145, 96, 0.14); font-weight: 800; font-size: 0.85rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--green-800); }
     .cost-row:not(.header):hover { background: rgba(212, 239, 219, 0.55); }
-    .cost-row > div {
-        padding: 0.8rem 1.2rem;
-        font-size: 0.98rem;
-        color: var(--text-body);
-        border-right: 1px solid rgba(58, 145, 96, 0.1);
-        display: flex;
-        align-items: center;
-        font-weight: 500;
-    }
+    .cost-row > div { padding: 0.8rem 1.2rem; font-size: 0.98rem; color: var(--text-body); border-right: 1px solid rgba(58, 145, 96, 0.1); display: flex; align-items: center; font-weight: 500; }
     .cost-row > div:last-child { border-right: none; }
     .cost-row .name { font-weight: 700; color: var(--green-900); }
     .cost-row .purpose { font-size: 0.88rem; color: var(--text-muted); line-height: 1.4; }
-    .cost-row .price {
-        font-family: var(--font-mono);
-        font-weight: 700;
-        color: var(--green-700);
-        justify-content: flex-end;
-        text-align: right;
-        font-size: 1rem;
-    }
-    .cost-row.total {
-        background: linear-gradient(90deg, rgba(58, 145, 96, 0.2), rgba(58, 145, 96, 0.06));
-        font-weight: 800;
-    }
+    .cost-row .price { font-family: var(--font-mono); font-weight: 700; color: var(--green-700); justify-content: flex-end; text-align: right; font-size: 1rem; }
+    .cost-row.total { background: linear-gradient(90deg, rgba(58, 145, 96, 0.2), rgba(58, 145, 96, 0.06)); font-weight: 800; }
     .cost-row.total .name { color: var(--green-800); font-size: 1rem; letter-spacing: 0.05em; }
     .cost-row.total .price { color: var(--amber-500); font-size: 1.15rem; }
-
-    /* ═══════════════ TIER COMPARISON ═══════════════ */
-    .tier-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1.5rem;
-        margin-top: 1.5rem;
-    }
-    .tier-card {
-        background: rgba(255, 255, 255, 0.82);
-        border: 2px solid rgba(58, 145, 96, 0.25);
-        border-radius: 22px;
-        padding: 1.8rem 1.7rem;
-        backdrop-filter: blur(12px);
-        box-shadow: 0 12px 32px -16px rgba(58, 145, 96, 0.35);
-        position: relative;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .tier-card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 20px 44px -18px rgba(58, 145, 96, 0.5);
-    }
+    .tier-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem; }
+    .tier-card { background: rgba(255, 255, 255, 0.82); border: 2px solid rgba(58, 145, 96, 0.25); border-radius: 22px; padding: 1.8rem 1.7rem; backdrop-filter: blur(12px); box-shadow: 0 12px 32px -16px rgba(58, 145, 96, 0.35); position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 1rem; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .tier-card:hover { transform: translateY(-6px); box-shadow: 0 20px 44px -18px rgba(58, 145, 96, 0.5); }
     .tier-card.demo { border-color: rgba(74, 144, 199, 0.5); }
-    .tier-card.demo::before {
-        content: '';
-        position: absolute;
-        top: 0; left: 0; right: 0;
-        height: 5px;
-        background: linear-gradient(90deg, #4a90c7, #78b3dd);
-    }
+    .tier-card.demo::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg, #4a90c7, #78b3dd); }
     .tier-card.production { border-color: rgba(58, 145, 96, 0.6); }
-    .tier-card.production::before {
-        content: '';
-        position: absolute;
-        top: 0; left: 0; right: 0;
-        height: 5px;
-        background: linear-gradient(90deg, #3a9160, #8fd0a4);
-    }
-    .tier-card .tier-label {
-        font-family: var(--font-mono);
-        font-size: 0.85rem;
-        font-weight: 800;
-        letter-spacing: 0.2em;
-        text-transform: uppercase;
-    }
+    .tier-card.production::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg, #3a9160, #8fd0a4); }
+    .tier-card .tier-label { font-family: var(--font-mono); font-size: 0.85rem; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; }
     .tier-card.demo .tier-label { color: var(--blue-500); }
     .tier-card.production .tier-label { color: var(--green-700); }
-    .tier-card .tier-title {
-        font-size: 1.85rem;
-        font-weight: 900;
-        color: var(--green-900);
-        line-height: 1.1;
-        letter-spacing: -0.02em;
-    }
-    .tier-card .tier-desc {
-        font-size: 1rem;
-        color: var(--text-body);
-        line-height: 1.55;
-        font-weight: 500;
-    }
-    .tier-card .tier-price {
-        font-family: var(--font-mono);
-        font-size: 2.4rem;
-        font-weight: 900;
-        line-height: 1;
-        letter-spacing: -0.03em;
-        margin: 0.5rem 0 0.3rem;
-    }
+    .tier-card .tier-title { font-size: 1.85rem; font-weight: 900; color: var(--green-900); line-height: 1.1; letter-spacing: -0.02em; }
+    .tier-card .tier-desc { font-size: 1rem; color: var(--text-body); line-height: 1.55; font-weight: 500; }
+    .tier-card .tier-price { font-family: var(--font-mono); font-size: 2.4rem; font-weight: 900; line-height: 1; letter-spacing: -0.03em; margin: 0.5rem 0 0.3rem; }
     .tier-card.demo .tier-price { color: var(--blue-500); }
     .tier-card.production .tier-price { color: var(--green-700); }
-    .tier-card .tier-price-note {
-        font-size: 0.9rem;
-        color: var(--text-muted);
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-    }
-    .tier-card ul {
-        list-style: none;
-        display: flex;
-        flex-direction: column;
-        gap: 0.55rem;
-        margin-top: 0.4rem;
-    }
-    .tier-card li {
-        font-size: 0.98rem;
-        color: var(--text-body);
-        padding-left: 1.4rem;
-        position: relative;
-        line-height: 1.5;
-        font-weight: 500;
-    }
-    .tier-card li::before {
-        content: '✓';
-        position: absolute;
-        left: 0;
-        color: var(--green-600);
-        font-weight: 800;
-        font-size: 1.05rem;
-    }
+    .tier-card .tier-price-note { font-size: 0.9rem; color: var(--text-muted); font-weight: 600; margin-bottom: 0.5rem; }
+    .tier-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.55rem; margin-top: 0.4rem; }
+    .tier-card li { font-size: 0.98rem; color: var(--text-body); padding-left: 1.4rem; position: relative; line-height: 1.5; font-weight: 500; }
+    .tier-card li::before { content: '✓'; position: absolute; left: 0; color: var(--green-600); font-weight: 800; font-size: 1.05rem; }
     .tier-card.demo li::before { content: '▸'; color: var(--blue-500); }
-
-    /* ═══════════════ PROCESS GRID ═══════════════ */
-    .process-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1.2rem;
-        margin-top: 1.7rem;
-    }
-    .phase {
-        background: rgba(255, 255, 255, 0.78);
-        border: 1px solid rgba(58, 145, 96, 0.25);
-        border-radius: 18px;
-        padding: 1.5rem 1.4rem;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 8px 20px -12px rgba(58, 145, 96, 0.3);
-        position: relative;
-        overflow: hidden;
-        transition: all 0.3s ease;
-    }
-    .phase:hover {
-        transform: translateY(-6px);
-        border-color: rgba(58, 145, 96, 0.55);
-        box-shadow: 0 18px 36px -16px rgba(58, 145, 96, 0.45);
-    }
-    .phase .phase-num {
-        font-family: var(--font-mono);
-        font-size: 0.8rem;
-        font-weight: 800;
-        letter-spacing: 0.2em;
-        color: var(--green-600);
-        margin-bottom: 0.7rem;
-        display: flex;
-        align-items: center;
-        gap: 0.6rem;
-    }
-    .phase .phase-num::before {
-        content: '';
-        width: 28px; height: 2px;
-        background: var(--green-500);
-    }
-    .phase .phase-icon {
-        width: 54px; height: 54px;
-        border-radius: 14px;
-        display: grid; place-items: center;
-        font-size: 1.6rem;
-        background: linear-gradient(135deg, rgba(95, 184, 125, 0.28), rgba(58, 145, 96, 0.16));
-        border: 1px solid rgba(58, 145, 96, 0.3);
-        margin-bottom: 1rem;
-    }
-    .phase h4 {
-        font-size: 1.2rem;
-        font-weight: 800;
-        color: var(--green-900);
-        margin-bottom: 0.6rem;
-        line-height: 1.25;
-    }
-    .phase p {
-        font-size: 0.95rem;
-        color: var(--text-body);
-        line-height: 1.55;
-        font-weight: 500;
-    }
-    .phase code {
-        font-family: var(--font-mono);
-        font-size: 0.82rem;
-        color: var(--green-700);
-        background: rgba(95, 184, 125, 0.16);
-        padding: 0.12rem 0.5rem;
-        border-radius: 5px;
-    }
-
-    /* ═══════════════ PROBLEM → SOLUTION TABLE ═══════════════ */
-    .ps-row {
-        display: grid;
-        grid-template-columns: 1fr auto 1fr;
-        gap: 1rem;
-        align-items: stretch;
-        padding: 1rem 0;
-        border-bottom: 1px solid rgba(58, 145, 96, 0.14);
-    }
-    .ps-row:last-child { border-bottom: none; }
-    .ps-problem-cell, .ps-solution-cell {
-        padding: 1.1rem 1.3rem;
-        border-radius: 14px;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        font-size: 1.02rem;
-        line-height: 1.5;
-        font-weight: 600;
-    }
-    .ps-problem-cell {
-        background: rgba(199, 68, 64, 0.1);
-        border: 1px solid rgba(199, 68, 64, 0.32);
-        color: #8b2f2b;
-    }
-    .ps-solution-cell {
-        background: rgba(95, 184, 125, 0.16);
-        border: 1px solid rgba(58, 145, 96, 0.36);
-        color: var(--green-800);
-    }
-    .ps-problem-cell .ico, .ps-solution-cell .ico {
-        font-size: 1.5rem;
-        flex-shrink: 0;
-    }
-    .ps-arrow {
-        display: grid;
-        place-items: center;
-        color: var(--green-600);
-        font-size: 1.5rem;
-        font-weight: 800;
-        min-width: 32px;
-    }
-
-    /* ═══════════════ COMPONENT CARDS ═══════════════ */
-    .component-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
-        margin-top: 1.4rem;
-    }
-    .component {
-        display: grid;
-        grid-template-columns: 58px 1fr;
-        gap: 1rem;
-        padding: 1.1rem 1.2rem;
-        background: rgba(255, 255, 255, 0.78);
-        border: 1px solid rgba(58, 145, 96, 0.22);
-        border-radius: 16px;
-        box-shadow: 0 6px 16px -12px rgba(58, 145, 96, 0.3);
-        transition: all 0.3s ease;
-    }
-    .component:hover {
-        border-color: rgba(58, 145, 96, 0.55);
-        background: rgba(212, 239, 219, 0.7);
-        transform: translateY(-3px);
-    }
-    .component .ico {
-        width: 58px; height: 58px;
-        border-radius: 14px;
-        display: grid; place-items: center;
-        font-size: 1.55rem;
-        background: linear-gradient(135deg, rgba(95, 184, 125, 0.26), rgba(58, 145, 96, 0.14));
-        border: 1px solid rgba(58, 145, 96, 0.3);
-    }
-    .component h5 {
-        font-size: 1.1rem;
-        font-weight: 800;
-        color: var(--green-900);
-        margin-bottom: 0.2rem;
-    }
-    .component .role {
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 0.14em;
-        color: var(--green-600);
-        font-weight: 800;
-        margin-bottom: 0.45rem;
-    }
-    .component p {
-        font-size: 0.95rem;
-        color: var(--text-body);
-        line-height: 1.55;
-        font-weight: 500;
-    }
-
-    /* ═══════════════ STATE GRID ═══════════════ */
-    .state-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1rem;
-        margin-top: 1.6rem;
-    }
-    .state-node {
-        padding: 1.2rem 1.1rem;
-        background: rgba(255, 255, 255, 0.78);
-        border: 1px solid rgba(58, 145, 96, 0.25);
-        border-radius: 16px;
-        text-align: center;
-        transition: all 0.3s ease;
-        box-shadow: 0 6px 16px -12px rgba(58, 145, 96, 0.3);
-    }
-    .state-node:hover {
-        transform: translateY(-5px);
-        border-color: rgba(58, 145, 96, 0.6);
-        box-shadow: 0 16px 32px -16px rgba(58, 145, 96, 0.45);
-    }
-    .state-node .ico {
-        font-size: 2rem;
-        margin-bottom: 0.6rem;
-        display: block;
-    }
-    .state-node .name {
-        font-family: var(--font-mono);
-        font-size: 0.85rem;
-        font-weight: 800;
-        letter-spacing: 0.1em;
-        color: var(--green-700);
-        margin-bottom: 0.45rem;
-    }
-    .state-node .desc {
-        font-size: 0.88rem;
-        color: var(--text-body);
-        line-height: 1.45;
-        font-weight: 500;
-    }
-
-    /* ═══════════════ AUTONOMY GRID ═══════════════ */
-    .autonomy-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1rem;
-        margin-top: 1.6rem;
-    }
-    .auto-card {
-        padding: 1.4rem 1.3rem;
-        background: rgba(255, 255, 255, 0.78);
-        border: 1px solid rgba(58, 145, 96, 0.25);
-        border-radius: 18px;
-        box-shadow: 0 8px 20px -12px rgba(58, 145, 96, 0.3);
-        position: relative;
-        overflow: hidden;
-        transition: all 0.3s ease;
-    }
-    .auto-card:hover {
-        transform: translateY(-5px);
-        border-color: rgba(58, 145, 96, 0.55);
-        box-shadow: 0 18px 36px -16px rgba(58, 145, 96, 0.45);
-    }
-    .auto-card::before {
-        content: '';
-        position: absolute;
-        top: 0; left: 0;
-        width: 100%; height: 3px;
-        background: linear-gradient(90deg, var(--green-600), transparent);
-    }
-    .auto-card .icon-lg {
-        font-size: 2.2rem;
-        margin-bottom: 0.9rem;
-        display: block;
-    }
-    .auto-card h4 {
-        font-size: 1.15rem;
-        font-weight: 800;
-        color: var(--green-900);
-        margin-bottom: 0.55rem;
-    }
-    .auto-card p {
-        font-size: 0.95rem;
-        color: var(--text-body);
-        line-height: 1.55;
-        margin-bottom: 0.8rem;
-        font-weight: 500;
-    }
-    .auto-card ul {
-        list-style: none;
-        padding-left: 0;
-        display: flex; flex-direction: column; gap: 0.4rem;
-    }
-    .auto-card li {
-        font-size: 0.88rem;
-        color: var(--green-800);
-        padding-left: 1.2rem;
-        position: relative;
-        line-height: 1.5;
-        font-weight: 500;
-    }
-    .auto-card li::before {
-        content: '▸';
-        position: absolute;
-        left: 0;
-        color: var(--green-600);
-        font-weight: 800;
-    }
-
-    /* ═══════════════ DATA FLOW ═══════════════ */
-    .flow {
-        display: flex;
-        flex-direction: column;
-        gap: 0.7rem;
-        margin-top: 1.5rem;
-        padding: 1.6rem;
-        background: rgba(255, 255, 255, 0.72);
-        border: 1px solid rgba(58, 145, 96, 0.25);
-        border-radius: 20px;
-        backdrop-filter: blur(12px);
-    }
-    .flow-row {
-        display: grid;
-        grid-template-columns: 100px 1fr auto 1fr;
-        gap: 1rem;
-        align-items: center;
-        padding: 0.85rem 0.5rem;
-        border-bottom: 1px solid rgba(58, 145, 96, 0.14);
-    }
+    .process-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; margin-top: 1.7rem; }
+    .phase { background: rgba(255, 255, 255, 0.78); border: 1px solid rgba(58, 145, 96, 0.25); border-radius: 18px; padding: 1.5rem 1.4rem; backdrop-filter: blur(10px); box-shadow: 0 8px 20px -12px rgba(58, 145, 96, 0.3); position: relative; overflow: hidden; transition: all 0.3s ease; }
+    .phase:hover { transform: translateY(-6px); border-color: rgba(58, 145, 96, 0.55); box-shadow: 0 18px 36px -16px rgba(58, 145, 96, 0.45); }
+    .phase .phase-num { font-family: var(--font-mono); font-size: 0.8rem; font-weight: 800; letter-spacing: 0.2em; color: var(--green-600); margin-bottom: 0.7rem; display: flex; align-items: center; gap: 0.6rem; }
+    .phase .phase-num::before { content: ''; width: 28px; height: 2px; background: var(--green-500); }
+    .phase .phase-icon { width: 54px; height: 54px; border-radius: 14px; display: grid; place-items: center; font-size: 1.6rem; background: linear-gradient(135deg, rgba(95, 184, 125, 0.28), rgba(58, 145, 96, 0.16)); border: 1px solid rgba(58, 145, 96, 0.3); margin-bottom: 1rem; }
+    .phase h4 { font-size: 1.2rem; font-weight: 800; color: var(--green-900); margin-bottom: 0.6rem; line-height: 1.25; }
+    .phase p { font-size: 0.95rem; color: var(--text-body); line-height: 1.55; font-weight: 500; }
+    .component-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1.4rem; }
+    .component { display: grid; grid-template-columns: 58px 1fr; gap: 1rem; padding: 1.1rem 1.2rem; background: rgba(255, 255, 255, 0.78); border: 1px solid rgba(58, 145, 96, 0.22); border-radius: 16px; box-shadow: 0 6px 16px -12px rgba(58, 145, 96, 0.3); transition: all 0.3s ease; }
+    .component:hover { border-color: rgba(58, 145, 96, 0.55); background: rgba(212, 239, 219, 0.7); transform: translateY(-3px); }
+    .component .ico { width: 58px; height: 58px; border-radius: 14px; display: grid; place-items: center; font-size: 1.55rem; background: linear-gradient(135deg, rgba(95, 184, 125, 0.26), rgba(58, 145, 96, 0.14)); border: 1px solid rgba(58, 145, 96, 0.3); }
+    .component h5 { font-size: 1.1rem; font-weight: 800; color: var(--green-900); margin-bottom: 0.2rem; }
+    .component .role { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--green-600); font-weight: 800; margin-bottom: 0.45rem; }
+    .component p { font-size: 0.95rem; color: var(--text-body); line-height: 1.55; font-weight: 500; }
+    .state-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 1.6rem; }
+    .state-node { padding: 1.2rem 1.1rem; background: rgba(255, 255, 255, 0.78); border: 1px solid rgba(58, 145, 96, 0.25); border-radius: 16px; text-align: center; transition: all 0.3s ease; box-shadow: 0 6px 16px -12px rgba(58, 145, 96, 0.3); }
+    .state-node:hover { transform: translateY(-5px); border-color: rgba(58, 145, 96, 0.6); box-shadow: 0 16px 32px -16px rgba(58, 145, 96, 0.45); }
+    .state-node .ico { font-size: 2rem; margin-bottom: 0.6rem; display: block; }
+    .state-node .name { font-family: var(--font-mono); font-size: 0.85rem; font-weight: 800; letter-spacing: 0.1em; color: var(--green-700); margin-bottom: 0.45rem; }
+    .state-node .desc { font-size: 0.88rem; color: var(--text-body); line-height: 1.45; font-weight: 500; }
+    .autonomy-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1.6rem; }
+    .auto-card { padding: 1.4rem 1.3rem; background: rgba(255, 255, 255, 0.78); border: 1px solid rgba(58, 145, 96, 0.25); border-radius: 18px; box-shadow: 0 8px 20px -12px rgba(58, 145, 96, 0.3); position: relative; overflow: hidden; transition: all 0.3s ease; }
+    .auto-card:hover { transform: translateY(-5px); border-color: rgba(58, 145, 96, 0.55); box-shadow: 0 18px 36px -16px rgba(58, 145, 96, 0.45); }
+    .auto-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, var(--green-600), transparent); }
+    .auto-card .icon-lg { font-size: 2.2rem; margin-bottom: 0.9rem; display: block; }
+    .auto-card h4 { font-size: 1.15rem; font-weight: 800; color: var(--green-900); margin-bottom: 0.55rem; }
+    .auto-card p { font-size: 0.95rem; color: var(--text-body); line-height: 1.55; margin-bottom: 0.8rem; font-weight: 500; }
+    .auto-card ul { list-style: none; padding-left: 0; display: flex; flex-direction: column; gap: 0.4rem; }
+    .auto-card li { font-size: 0.88rem; color: var(--green-800); padding-left: 1.2rem; position: relative; line-height: 1.5; font-weight: 500; }
+    .auto-card li::before { content: '▸'; position: absolute; left: 0; color: var(--green-600); font-weight: 800; }
+    .flow { display: flex; flex-direction: column; gap: 0.7rem; margin-top: 1.5rem; padding: 1.6rem; background: rgba(255, 255, 255, 0.72); border: 1px solid rgba(58, 145, 96, 0.25); border-radius: 20px; backdrop-filter: blur(12px); }
+    .flow-row { display: grid; grid-template-columns: 100px 1fr auto 1fr; gap: 1rem; align-items: center; padding: 0.85rem 0.5rem; border-bottom: 1px solid rgba(58, 145, 96, 0.14); }
     .flow-row:last-child { border-bottom: none; }
-    .flow-num {
-        font-family: var(--font-mono);
-        font-size: 0.85rem;
-        font-weight: 800;
-        color: var(--green-600);
-        letter-spacing: 0.1em;
-        display: flex;
-        align-items: center;
-        gap: 0.6rem;
-    }
-    .flow-num::before {
-        content: '';
-        width: 28px; height: 2px;
-        background: var(--green-500);
-    }
-    .flow-source, .flow-dest {
-        padding: 0.7rem 1rem;
-        border-radius: 10px;
-        font-size: 1rem;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-    .flow-source {
-        background: rgba(74, 144, 199, 0.14);
-        border: 1px solid rgba(74, 144, 199, 0.35);
-        color: #2c5c80;
-    }
-    .flow-dest {
-        background: rgba(95, 184, 125, 0.16);
-        border: 1px solid rgba(58, 145, 96, 0.36);
-        color: var(--green-800);
-    }
-    .flow-arrow {
-        color: var(--green-600);
-        font-size: 1.3rem;
-        font-weight: 800;
-    }
-
-    /* ═══════════════ TIMELINE ═══════════════ */
-    .future-timeline {
-        position: relative;
-        margin-top: 1.5rem;
-        padding-left: 2.7rem;
-    }
-    .future-timeline::before {
-        content: '';
-        position: absolute;
-        left: 12px; top: 0.4rem; bottom: 0;
-        width: 3px;
-        background: linear-gradient(180deg, var(--green-500), var(--amber-500), var(--purple-500), transparent);
-    }
-    .ftl-item {
-        position: relative;
-        margin-bottom: 1.4rem;
-        padding-left: 0.6rem;
-    }
-    .ftl-item::before {
-        content: '';
-        position: absolute;
-        left: -2.6rem; top: 0.6rem;
-        width: 26px; height: 26px;
-        border-radius: 50%;
-        background: #ffffff;
-        border: 3px solid var(--green-500);
-        box-shadow: 0 0 0 4px rgba(95, 184, 125, 0.2);
-    }
+    .flow-num { font-family: var(--font-mono); font-size: 0.85rem; font-weight: 800; color: var(--green-600); letter-spacing: 0.1em; display: flex; align-items: center; gap: 0.6rem; }
+    .flow-num::before { content: ''; width: 28px; height: 2px; background: var(--green-500); }
+    .flow-source, .flow-dest { padding: 0.7rem 1rem; border-radius: 10px; font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; }
+    .flow-source { background: rgba(74, 144, 199, 0.14); border: 1px solid rgba(74, 144, 199, 0.35); color: #2c5c80; }
+    .flow-dest { background: rgba(95, 184, 125, 0.16); border: 1px solid rgba(58, 145, 96, 0.36); color: var(--green-800); }
+    .flow-arrow { color: var(--green-600); font-size: 1.3rem; font-weight: 800; }
+    .future-timeline { position: relative; margin-top: 1.5rem; padding-left: 2.7rem; }
+    .future-timeline::before { content: ''; position: absolute; left: 12px; top: 0.4rem; bottom: 0; width: 3px; background: linear-gradient(180deg, var(--green-500), var(--amber-500), var(--purple-500), transparent); }
+    .ftl-item { position: relative; margin-bottom: 1.4rem; padding-left: 0.6rem; }
+    .ftl-item::before { content: ''; position: absolute; left: -2.6rem; top: 0.6rem; width: 26px; height: 26px; border-radius: 50%; background: #ffffff; border: 3px solid var(--green-500); box-shadow: 0 0 0 4px rgba(95, 184, 125, 0.2); }
     .ftl-item.amber::before { border-color: var(--amber-500); box-shadow: 0 0 0 4px rgba(217, 154, 28, 0.2); }
     .ftl-item.purple::before { border-color: var(--purple-500); box-shadow: 0 0 0 4px rgba(138, 112, 217, 0.2); }
-    .ftl-item .phase {
-        font-family: var(--font-mono);
-        font-size: 0.82rem;
-        color: var(--green-600);
-        font-weight: 800;
-        letter-spacing: 0.14em;
-        margin-bottom: 0.3rem;
-    }
+    .ftl-item .phase { font-family: var(--font-mono); font-size: 0.82rem; color: var(--green-600); font-weight: 800; letter-spacing: 0.14em; margin-bottom: 0.3rem; }
     .ftl-item.amber .phase { color: var(--amber-500); }
     .ftl-item.purple .phase { color: var(--purple-500); }
-    .ftl-item h4 {
-        font-size: 1.2rem;
-        font-weight: 800;
-        color: var(--green-900);
-        margin-bottom: 0.35rem;
-    }
-    .ftl-item p {
-        font-size: 0.98rem;
-        color: var(--text-body);
-        line-height: 1.55;
-        font-weight: 500;
-    }
-
-    /* ═══════════════ Q&A ═══════════════ */
+    .ftl-item h4 { font-size: 1.2rem; font-weight: 800; color: var(--green-900); margin-bottom: 0.35rem; }
+    .ftl-item p { font-size: 0.98rem; color: var(--text-body); line-height: 1.55; font-weight: 500; }
     .cta-slide { text-align: center; align-items: center; }
     .cta-slide .slide-tag { margin-left: auto; margin-right: auto; }
     .cta-slide .lead { margin: 0 auto; }
-
-    .qa-heading {
-        font-size: clamp(4rem, 9vw, 8rem);
-        font-weight: 900;
-        line-height: 1;
-        letter-spacing: -0.045em;
-        background: linear-gradient(120deg, #14402a 0%, #3a9160 50%, #5fb87d 100%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 1rem;
-    }
-    .qa-subtitle {
-        font-size: clamp(1.3rem, 2.4vw, 1.9rem);
-        font-weight: 700;
-        color: var(--green-700);
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        margin-bottom: 2rem;
-    }
-
-    .cta-links {
-        display: flex;
-        gap: 1rem;
-        justify-content: center;
-        margin-top: 2rem;
-        flex-wrap: wrap;
-    }
-    .cta-link {
-        display: inline-flex; align-items: center; gap: 0.7rem;
-        padding: 1rem 1.9rem;
-        background: rgba(95, 184, 125, 0.16);
-        border: 1px solid rgba(58, 145, 96, 0.45);
-        border-radius: 12px;
-        color: var(--green-800);
-        text-decoration: none;
-        font-weight: 700;
-        font-size: 1.05rem;
-        transition: all 0.25s ease;
-        backdrop-filter: blur(8px);
-    }
-    .cta-link:hover {
-        background: rgba(95, 184, 125, 0.28);
-        border-color: var(--green-500);
-        transform: translateY(-3px);
-        box-shadow: 0 15px 30px -12px rgba(58, 145, 96, 0.4);
-    }
-
-    /* ═══════════════ NAV ═══════════════ */
-    .nav {
-        position: fixed;
-        bottom: 1.5rem;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 10;
-        display: flex;
-        align-items: center;
-        gap: 1.5rem;
-        padding: 0.7rem 1.4rem;
-        background: rgba(255, 255, 255, 0.88);
-        border: 1px solid rgba(58, 145, 96, 0.3);
-        border-radius: 999px;
-        backdrop-filter: blur(16px);
-        box-shadow: 0 22px 45px -18px rgba(58, 145, 96, 0.4);
-    }
-    .nav-btn {
-        width: 40px; height: 40px;
-        border-radius: 50%;
-        border: none;
-        cursor: pointer;
-        display: grid; place-items: center;
-        background: rgba(95, 184, 125, 0.18);
-        color: var(--green-700);
-        font-size: 1.2rem;
-        transition: all 0.2s ease;
-    }
+    .qa-heading { font-size: clamp(4rem, 9vw, 8rem); font-weight: 900; line-height: 1; letter-spacing: -0.045em; background: linear-gradient(120deg, #14402a 0%, #3a9160 50%, #5fb87d 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem; }
+    .qa-subtitle { font-size: clamp(1.3rem, 2.4vw, 1.9rem); font-weight: 700; color: var(--green-700); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 2rem; }
+    .cta-links { display: flex; gap: 1rem; justify-content: center; margin-top: 2rem; flex-wrap: wrap; }
+    .cta-link { display: inline-flex; align-items: center; gap: 0.7rem; padding: 1rem 1.9rem; background: rgba(95, 184, 125, 0.16); border: 1px solid rgba(58, 145, 96, 0.45); border-radius: 12px; color: var(--green-800); text-decoration: none; font-weight: 700; font-size: 1.05rem; transition: all 0.25s ease; backdrop-filter: blur(8px); }
+    .cta-link:hover { background: rgba(95, 184, 125, 0.28); border-color: var(--green-500); transform: translateY(-3px); box-shadow: 0 15px 30px -12px rgba(58, 145, 96, 0.4); }
+    .nav { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%); z-index: 10; display: flex; align-items: center; gap: 1.5rem; padding: 0.7rem 1.4rem; background: rgba(255, 255, 255, 0.88); border: 1px solid rgba(58, 145, 96, 0.3); border-radius: 999px; backdrop-filter: blur(16px); box-shadow: 0 22px 45px -18px rgba(58, 145, 96, 0.4); }
+    .nav-btn { width: 40px; height: 40px; border-radius: 50%; border: none; cursor: pointer; display: grid; place-items: center; background: rgba(95, 184, 125, 0.18); color: var(--green-700); font-size: 1.2rem; transition: all 0.2s ease; }
     .nav-btn:hover { background: var(--green-600); color: white; transform: scale(1.05); }
     .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-    .dots {
-        display: flex; gap: 0.5rem;
-        align-items: center;
-        flex-wrap: wrap;
-        max-width: 500px;
-        justify-content: center;
-    }
-    .dot-btn {
-        width: 9px; height: 9px;
-        border-radius: 50%;
-        border: none;
-        cursor: pointer;
-        background: rgba(58, 145, 96, 0.3);
-        transition: all 0.3s ease;
-        padding: 0;
-    }
+    .dots { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; max-width: 500px; justify-content: center; }
+    .dot-btn { width: 9px; height: 9px; border-radius: 50%; border: none; cursor: pointer; background: rgba(58, 145, 96, 0.3); transition: all 0.3s ease; padding: 0; }
     .dot-btn:hover { background: rgba(58, 145, 96, 0.6); }
-    .dot-btn.active {
-        width: 26px;
-        border-radius: 999px;
-        background: var(--green-600);
-        box-shadow: 0 0 14px rgba(58, 145, 96, 0.7);
-    }
-    .progress-text {
-        font-family: var(--font-mono);
-        font-size: 0.85rem;
-        color: var(--text-muted);
-        font-weight: 700;
-        min-width: 60px;
-        text-align: center;
-    }
-
-    /* ═══════════════ HUD ═══════════════ */
-    .slide-num {
-        position: fixed;
-        top: 1.6rem; right: 2rem;
-        font-family: var(--font-mono);
-        font-size: 0.9rem;
-        color: var(--text-muted);
-        letter-spacing: 0.14em;
-        z-index: 10;
-        font-weight: 700;
-    }
+    .dot-btn.active { width: 26px; border-radius: 999px; background: var(--green-600); box-shadow: 0 0 14px rgba(58, 145, 96, 0.7); }
+    .progress-text { font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-muted); font-weight: 700; min-width: 60px; text-align: center; }
+    .slide-num { position: fixed; top: 1.6rem; right: 2rem; font-family: var(--font-mono); font-size: 0.9rem; color: var(--text-muted); letter-spacing: 0.14em; z-index: 10; font-weight: 700; }
     .slide-num strong { color: var(--green-700); font-weight: 800; }
-    .watermark {
-        position: fixed;
-        top: 1.6rem; left: 2rem;
-        display: flex; align-items: center; gap: 0.75rem;
-        z-index: 10;
-        font-size: 0.9rem;
-        font-weight: 800;
-        letter-spacing: 0.16em;
-        color: var(--text-muted);
-        text-transform: uppercase;
-    }
-    .watermark .mark {
-        width: 34px; height: 34px;
-        border-radius: 9px;
-        background: linear-gradient(135deg, #3a9160, #1c5738);
-        display: grid; place-items: center;
-        font-size: 1.05rem;
-        box-shadow: 0 6px 14px -4px rgba(58, 145, 96, 0.5);
-    }
-
-    /* ═══════════════ RESPONSIVE ═══════════════ */
+    .watermark { position: fixed; top: 1.6rem; left: 2rem; display: flex; align-items: center; gap: 0.75rem; z-index: 10; font-size: 0.9rem; font-weight: 800; letter-spacing: 0.16em; color: var(--text-muted); text-transform: uppercase; }
+    .watermark .mark { width: 34px; height: 34px; border-radius: 9px; background: linear-gradient(135deg, #3a9160, #1c5738); display: grid; place-items: center; font-size: 1.05rem; box-shadow: 0 6px 14px -4px rgba(58, 145, 96, 0.5); }
     @media (max-width: 1200px) {
         .slide { padding: 3rem 2.5rem; }
         .stat-grid { grid-template-columns: 1fr 1fr; }
@@ -1278,11 +307,10 @@
         .component-grid { grid-template-columns: 1fr; }
         .autonomy-grid { grid-template-columns: 1fr; }
         .tier-grid { grid-template-columns: 1fr; }
+        .modes-grid { grid-template-columns: 1fr; }
         .process-grid { grid-template-columns: 1fr 1fr; }
         .flow-row { grid-template-columns: 1fr; gap: 0.5rem; }
         .flow-arrow { transform: rotate(90deg); text-align: center; }
-        .ps-row { grid-template-columns: 1fr; gap: 0.5rem; }
-        .ps-arrow { transform: rotate(90deg); padding: 0.5rem 0; }
     }
     @media (max-width: 700px) {
         .slide { padding: 2rem 1.25rem; }
@@ -1296,7 +324,6 @@
 </head>
 <body>
 
-<!-- ═══════════════ BACKGROUND ═══════════════ -->
 <div class="bg">
     <div class="orb o1"></div>
     <div class="orb o2"></div>
@@ -1311,205 +338,93 @@
 </div>
 
 <div class="watermark"><div class="mark">🌱</div> NIPAS</div>
-<div class="slide-num"><strong id="curSlide">01</strong> / <span id="totSlides">21</span></div>
+<div class="slide-num"><strong id="curSlide">01</strong> / <span id="totSlides">20</span></div>
 
-<!-- ═══════════════ SLIDES ═══════════════ -->
 <div class="deck" id="deck">
 
-    <!-- ═════════ 01 — TITLE ═════════ -->
+    <!-- 01 — TITLE -->
     <section class="slide title-slide active">
         <div class="logo-badge">🌱</div>
         <div class="slide-tag"><span class="dot"></span> Precision Agriculture · Bangladesh</div>
-
         <h1 class="big-nipas">NIPAS</h1>
         <p class="full-form">Non-Invasive Precision Agriculture System</p>
-
         <div class="team-block">
             <div class="team-label">Team Members</div>
             <div class="team-list">
-                <div class="team-member">
-                    <div class="avatar">MR</div>
-                    <div class="name">Miftah Ur Rahman</div>
-                    <div class="role">Lead Engineer</div>
-                </div>
-                <div class="team-member">
-                    <div class="avatar">DH</div>
-                    <div class="name">Dishar Haider Engel</div>
-                    <div class="role">Co-Developer</div>
-                </div>
+                <div class="team-member"><div class="avatar">MR</div><div class="name">Miftah Ur Rahman</div><div class="role">Lead Engineer</div></div>
+                <div class="team-member"><div class="avatar">DH</div><div class="name">Dishar Haider Engel</div><div class="role">Co-Developer</div></div>
             </div>
         </div>
     </section>
 
-    <!-- ═════════ 02 — THE PROBLEM (BD CONTEXT) ═════════ -->
+    <!-- 02 — PROBLEM -->
     <section class="slide">
         <div class="slide-tag"><span class="dot"></span> The Problem · Bangladesh</div>
         <h2 class="slide-title">Bangladeshi smallholders face <span class="accent-red">five compounding crises</span></h2>
-        <p class="lead" style="margin-bottom: 0.5rem;">
-            These aren't abstract challenges — they are specific, measurable problems in Bangladesh today.
-        </p>
         <div class="feature-list">
-            <div class="feature red">
-                <div class="emoji">🚱</div>
-                <div>
-                    <h4>Groundwater depletion from flood irrigation</h4>
-                    <p>Northern districts (Rajshahi, Rangpur, Dinajpur) sit over aquifers that are being pumped dry. Water tables are dropping <strong>meters per decade</strong>. Tube wells now go 300+ feet deep.</p>
-                </div>
-            </div>
-            <div class="feature red">
-                <div class="emoji">💸</div>
-                <div>
-                    <h4>Over-fertilization &amp; chemical waste</h4>
-                    <p>A smallholder spends <strong>30–40% of total input cost</strong> on fertilizer and pesticide. Most is broadcast over the whole field — where <strong>60–70% never reaches the plant</strong>. Runoff contaminates canals and kills soil biology.</p>
-                </div>
-            </div>
-            <div class="feature red">
-                <div class="emoji">🌱</div>
-                <div>
-                    <h4>Root zone damage from manual soil testing</h4>
-                    <p>Traditional digging with a spade cuts through the <strong>fine root hairs</strong> that absorb nutrients. Every cut is an infection entry point — a common cause of root rot in tomato and chili.</p>
-                </div>
-            </div>
-            <div class="feature red">
-                <div class="emoji">🍂</div>
-                <div>
-                    <h4>Diseases spread before they're visible</h4>
-                    <p>By the time a farmer <em>sees</em> chlorosis or necrosis, the disease has spread through the plant's vascular system. The window between invisible and unrecoverable is <strong>3–5 days</strong>.</p>
-                </div>
-            </div>
-            <div class="feature red">
-                <div class="emoji">👴</div>
-                <div>
-                    <h4>Labor shortage &amp; aging farmer population</h4>
-                    <p>Bangladesh's average farmer is <strong>over 50</strong>, and young people are migrating to cities for garment factory work. There aren't enough hands to walk every field every day.</p>
-                </div>
-            </div>
+            <div class="feature red"><div class="emoji">🚱</div><div><h4>Groundwater depletion</h4><p>Northern districts (Rajshahi, Rangpur, Dinajpur) sit over aquifers being pumped dry. Water tables drop <strong>meters per decade</strong>. Tube wells now go 300+ feet deep.</p></div></div>
+            <div class="feature red"><div class="emoji">💸</div><div><h4>Over-fertilization &amp; chemical waste</h4><p>Farmers spend <strong>30–40% of income</strong> on chemicals. Most is broadcast — where <strong>60–70% never reaches the plant</strong>. Runoff contaminates canals and kills soil biology.</p></div></div>
+            <div class="feature red"><div class="emoji">🌱</div><div><h4>Root zone damage from manual testing</h4><p>Traditional digging cuts through <strong>fine root hairs</strong> that absorb nutrients. Every cut is an infection entry point.</p></div></div>
+            <div class="feature red"><div class="emoji">🍂</div><div><h4>Diseases spread before they're visible</h4><p>By the time a farmer <em>sees</em> yellowing, the disease has spread. The window between invisible and unrecoverable is <strong>3–5 days</strong>.</p></div></div>
+            <div class="feature red"><div class="emoji">👴</div><div><h4>Labor shortage &amp; aging farmers</h4><p>Average farmer is <strong>over 50</strong>; young people migrate to cities. Not enough hands to walk every field every day.</p></div></div>
         </div>
     </section>
 
-    <!-- ═════════ 03 — PROBLEM IN NUMBERS ═════════ -->
+    <!-- 03 — PROBLEM IN NUMBERS -->
     <section class="slide">
         <div class="slide-tag"><span class="dot"></span> The Problem · By the Numbers</div>
         <h2 class="slide-title">Five problems, <span class="accent-red">measured in real figures</span></h2>
         <div class="problem-stats">
-            <div class="problem-stat">
-                <div class="big-num">70%</div>
-                <div class="big-lbl">Water wasted by flood irrigation</div>
-            </div>
-            <div class="problem-stat">
-                <div class="big-num">30–40%</div>
-                <div class="big-lbl">Of farm income spent on chemicals</div>
-            </div>
-            <div class="problem-stat">
-                <div class="big-num">60–70%</div>
-                <div class="big-lbl">Chemical lost to runoff, not absorbed</div>
-            </div>
-            <div class="problem-stat">
-                <div class="big-num">3–5</div>
-                <div class="big-lbl">Days between invisible and unrecoverable disease</div>
-            </div>
+            <div class="problem-stat"><div class="big-num">70%</div><div class="big-lbl">Water wasted by flood irrigation</div></div>
+            <div class="problem-stat"><div class="big-num">30–40%</div><div class="big-lbl">Farm income spent on chemicals</div></div>
+            <div class="problem-stat"><div class="big-num">60–70%</div><div class="big-lbl">Chemical lost to runoff</div></div>
+            <div class="problem-stat"><div class="big-num">3–5</div><div class="big-lbl">Days between invisible and unrecoverable</div></div>
         </div>
-        <p class="lead" style="margin-top: 2rem;">
-            Each of these numbers represents real income lost — <strong>every single season</strong> — for millions of smallholder families across Bangladesh.
-        </p>
+        <p class="lead" style="margin-top: 2rem;">Each number represents real income lost — <strong>every single season</strong> — for millions of smallholder families.</p>
     </section>
 
-    <!-- ═════════ 04 — HOW NIPAS SOLVES IT ═════════ -->
+    <!-- 04 — HOW NIPAS SOLVES IT -->
     <section class="slide">
         <div class="slide-tag"><span class="dot"></span> The Solution · Problem by Problem</div>
         <h2 class="slide-title">Every problem, <span class="accent">a specific engineering fix</span></h2>
-        <p class="lead" style="margin-bottom: 0.5rem;">
-            NIPAS was designed around these five problems — not around technology looking for a use case.
-        </p>
         <div class="ps-grid">
-            <div class="ps-card">
-                <div class="ps-number">01</div>
-                <div class="ps-problem">Groundwater depletion</div>
-                <div class="ps-solution"><strong>Targeted micro-misting</strong> — delivers water only to each plant's root zone, only when soil moisture drops below threshold. Saves up to <strong>70% of water</strong>.</div>
-            </div>
-            <div class="ps-card">
-                <div class="ps-number">02</div>
-                <div class="ps-problem">Chemical overuse &amp; waste</div>
-                <div class="ps-solution"><strong>Spray only infected plants</strong> — ESP32-CAM scans every leaf, then doses only what's needed, at the exact amount required for that severity. <strong>50% less chemical</strong>.</div>
-            </div>
-            <div class="ps-card">
-                <div class="ps-number">03</div>
-                <div class="ps-problem">Root zone damage</div>
-                <div class="ps-solution"><strong>Servo-deployed probe</strong> — capacitive sensor is lowered gently into soil by a metal-gear servo, then retracted. <strong>No digging, no cutting, no root damage</strong>.</div>
-            </div>
-            <div class="ps-card">
-                <div class="ps-number">04</div>
-                <div class="ps-problem">Disease spreading undetected</div>
-                <div class="ps-solution"><strong>HSV color analysis</strong> — the camera detects the color signature of infection at <strong>5% ratio</strong>, well before the human eye can see yellowing or browning.</div>
-            </div>
-            <div class="ps-card">
-                <div class="ps-number">05</div>
-                <div class="ps-problem">Labor shortage</div>
-                <div class="ps-solution"><strong>Fully autonomous robot</strong> — scans every plant, every row, every 40 centimeters. <strong>2–3 hours of work per charge</strong>, no human walking required.</div>
-            </div>
-            <div class="ps-card">
-                <div class="ps-number">06</div>
-                <div class="ps-problem">No actionable farm data</div>
-                <div class="ps-solution"><strong>Live web dashboard</strong> — every reading, every spray, every scan logged and streamed to the farmer's phone. <strong>Replaces guesswork with exact numbers</strong>.</div>
-            </div>
+            <div class="ps-card"><div class="ps-number">01</div><div class="ps-problem">Groundwater depletion</div><div class="ps-solution"><strong>Targeted micro-misting</strong> — water delivered only to each plant's root zone. Up to <strong>70% water savings</strong>.</div></div>
+            <div class="ps-card"><div class="ps-number">02</div><div class="ps-problem">Chemical overuse</div><div class="ps-solution"><strong>Spray only infected plants</strong> — camera scans every leaf, doses only what's needed. <strong>50% less chemical</strong>.</div></div>
+            <div class="ps-card"><div class="ps-number">03</div><div class="ps-problem">Root zone damage</div><div class="ps-solution"><strong>Servo-deployed probe</strong> — lowered gently by metal-gear servo. <strong>No digging, no cutting, no root damage</strong>.</div></div>
+            <div class="ps-card"><div class="ps-number">04</div><div class="ps-problem">Disease undetected</div><div class="ps-solution"><strong>HSV color analysis</strong> — detects infection at <strong>5% ratio</strong>, well before visible symptoms.</div></div>
+            <div class="ps-card"><div class="ps-number">05</div><div class="ps-problem">Labor shortage</div><div class="ps-solution"><strong>Fully autonomous robot</strong> — scans every plant, every row, every 40 cm. <strong>2–3 hrs per charge</strong>.</div></div>
+            <div class="ps-card"><div class="ps-number">06</div><div class="ps-problem">No actionable data</div><div class="ps-solution"><strong>Live web dashboard</strong> — every reading, spray, and scan logged. <strong>Replaces guesswork with numbers</strong>.</div></div>
         </div>
     </section>
 
-    <!-- ═════════ 05 — CORE PURPOSES ═════════ -->
+    <!-- 05 — CORE PURPOSES -->
     <section class="slide">
         <div class="slide-tag"><span class="dot"></span> Core Purposes</div>
-        <h2 class="slide-title">Four missions that drive <span class="accent">every design decision</span></h2>
+        <h2 class="slide-title">Four missions drive <span class="accent">every design decision</span></h2>
         <div class="feature-list">
-            <div class="feature">
-                <div class="emoji">💧</div>
-                <div>
-                    <h4>Precision Resource Management</h4>
-                    <p>Deliver targeted micro-doses of water and chemicals instead of broadcast irrigation — saving every drop and every taka.</p>
-                </div>
-            </div>
-            <div class="feature">
-                <div class="emoji">🦾</div>
-                <div>
-                    <h4>Non-Invasive Subterranean Monitoring</h4>
-                    <p>Retract-and-extend probe samples root-zone soil without cutting into delicate plant architecture.</p>
-                </div>
-            </div>
-            <div class="feature">
-                <div class="emoji">📷</div>
-                <div>
-                    <h4>Autonomous Disease Detection</h4>
-                    <p>HSV color analysis on every plant, at every row — before symptoms become visible to the human eye.</p>
-                </div>
-            </div>
-            <div class="feature">
-                <div class="emoji">📡</div>
-                <div>
-                    <h4>Local-First IoT Control</h4>
-                    <p>The robot runs its own WebSocket server. Farmers control it from a phone browser — no cloud subscription, no SIM required.</p>
-                </div>
-            </div>
+            <div class="feature"><div class="emoji">💧</div><div><h4>Precision Resource Management</h4><p>Deliver targeted micro-doses of water and chemicals instead of broadcast irrigation.</p></div></div>
+            <div class="feature"><div class="emoji">🦾</div><div><h4>Non-Invasive Subterranean Monitoring</h4><p>Retract-and-extend probe samples root-zone soil without cutting into plant architecture.</p></div></div>
+            <div class="feature"><div class="emoji">📷</div><div><h4>Autonomous Disease Detection</h4><p>HSV color analysis on every plant — before symptoms become visible.</p></div></div>
+            <div class="feature"><div class="emoji">📡</div><div><h4>Local-First IoT Control</h4><p>The robot runs its own WebSocket server. Farmers control it from a phone browser — no cloud subscription.</p></div></div>
         </div>
     </section>
 
-    <!-- ═════════ 06 — TWO TIERS OVERVIEW ═════════ -->
+    <!-- 06 — TWO TIERS -->
     <section class="slide">
         <div class="slide-tag"><span class="dot"></span> Two Tiers · One System</div>
         <h2 class="slide-title">A <span class="accent-blue">demo prototype</span> for building · a <span class="accent">commercial robot</span> for farmers</h2>
-        <p class="lead" style="margin-bottom: 1rem;">
-            NIPAS exists in two deliberate versions. The <strong>Demo Prototype</strong> proves the technology. The <strong>Commercial Mid-Tier</strong> is the field-ready unit for real deployment.
-        </p>
+        <p class="lead" style="margin-bottom: 1rem;">NIPAS exists in two deliberate versions. The <strong>Demo Prototype</strong> proves the technology. The <strong>Commercial Mid-Tier</strong> is the field-ready unit.</p>
         <div class="tier-grid">
             <div class="tier-card demo">
                 <div class="tier-label">◈ Version 1</div>
                 <div class="tier-title">Demo Prototype</div>
-                <div class="tier-desc">Built for academic demonstration and engineering validation. Standard hobby-grade modules on a breadboard.</div>
+                <div class="tier-desc">Built for academic demonstration and engineering validation.</div>
                 <div class="tier-price">৳3,440 – ৳4,000</div>
                 <div class="tier-price-note">≈ $30 USD · prototyping BOM</div>
                 <ul>
-                    <li>2WD plastic car chassis kit</li>
+                    <li>2WD plastic car chassis</li>
                     <li>Standard plastic-gear TT motors</li>
                     <li>Exposed wiring, no weatherproofing</li>
-                    <li>HC-SR04 sensor (not waterproof)</li>
                     <li>Full functionality — but fragile</li>
                     <li>Perfect for classroom demo</li>
                 </ul>
@@ -1517,572 +432,228 @@
             <div class="tier-card production">
                 <div class="tier-label">◈ Version 2</div>
                 <div class="tier-title">Commercial Mid-Tier</div>
-                <div class="tier-desc">The field-ready unit for real deployment. Weather-sealed, vibration-resistant, built with locally available commercial parts.</div>
+                <div class="tier-desc">Field-ready unit. Weather-sealed, vibration-resistant, locally sourced.</div>
                 <div class="tier-price">৳7,500 – ৳8,000</div>
-                <div class="tier-price-note">≈ $65 – $70 USD · retail price to farmer</div>
+                <div class="tier-price-note">≈ $65 – $70 USD · retail</div>
                 <ul>
-                    <li>Laser-cut aluminum/acrylic hybrid frame</li>
-                    <li>37GB metal-gear high-torque motors</li>
-                    <li>Custom PCB shield — no loose wires</li>
-                    <li>IP67 JSN-SR04T waterproof ultrasonic</li>
+                    <li>Laser-cut aluminum/acrylic frame</li>
+                    <li>37GB metal-gear motors</li>
+                    <li>Custom PCB shield</li>
+                    <li>IP67 waterproof ultrasonic</li>
                     <li>MG90S metal-gear probe servo</li>
                     <li>Sealed lens hood, mud shielding</li>
+                    <li><strong>Optional 4G module (+৳2,500)</strong></li>
                 </ul>
             </div>
         </div>
     </section>
 
-    <!-- ═════════ 07 — WHY TWO TIERS ═════════ -->
+    <!-- 07 — OFFLINE-FIRST DESIGN -->
+    <section class="slide">
+        <div class="slide-tag"><span class="dot"></span> Offline-First Design</div>
+        <h2 class="slide-title">Rural villages have <span class="accent-red">no reliable WiFi</span> — so the robot <span class="accent">doesn't need it</span></h2>
+        <p class="lead" style="margin-bottom: 1rem;">
+            WiFi in Bangladeshi fields is rare. Even 4G is patchy. So we designed NIPAS to work in three modes — and the default is <strong>no network at all.</strong>
+        </p>
+        <div class="modes-grid">
+            <div class="mode-card offline">
+                <span class="mode-icon">📴</span>
+                <div class="mode-label">◈ Mode 01 · Default</div>
+                <h4>Fully Offline</h4>
+                <p>Robot drives, scans, and sprays autonomously. <strong>No network required.</strong> Every reading is buffered to ESP32 flash memory — up to <strong>45 days of data</strong>.</p>
+            </div>
+            <div class="mode-card sync">
+                <span class="mode-icon">🔄</span>
+                <div class="mode-label">◈ Mode 02 · Auto</div>
+                <h4>Local Sync</h4>
+                <p>When the robot reaches any network — home WiFi, phone hotspot, or 4G — the buffer <strong>auto-flushes to the dashboard</strong>. 1,000 readings upload in ~3 seconds.</p>
+            </div>
+            <div class="mode-card live">
+                <span class="mode-icon">📡</span>
+                <div class="mode-label">◈ Mode 03 · Bonus</div>
+                <h4>Live Stream</h4>
+                <p>If the farmer has a phone hotspot on, they can watch the mission in <strong>real time</strong>. This is a bonus — not a requirement.</p>
+            </div>
+        </div>
+        <p class="lead" style="margin-top: 1.5rem; font-size: 1.05rem; color: var(--text-muted);">
+            <strong style="color: var(--green-800);">The architectural principle:</strong> the network is a nice-to-have, not a dependency. Core autonomy never requires connectivity.
+        </p>
+    </section>
+
+    <!-- 08 — WHY TWO TIERS -->
     <section class="slide">
         <div class="slide-tag"><span class="dot"></span> Why Two Tiers?</div>
         <h2 class="slide-title">A prototype proves the idea. <span class="accent">A product survives the field.</span></h2>
         <div class="two-col wide">
             <div class="feature-list">
-                <div class="feature blue">
-                    <div class="emoji">🧪</div>
-                    <div>
-                        <h4>Demo Prototype exists to prove technology</h4>
-                        <p>Standard hobby modules let us iterate quickly, keep cost minimal, and demonstrate every subsystem works. Perfect for academic submission and pitching.</p>
-                    </div>
-                </div>
-                <div class="feature">
-                    <div class="emoji">🌾</div>
-                    <div>
-                        <h4>Commercial Mid-Tier exists to survive farms</h4>
-                        <p>Fields are dusty, wet, hot, and bumpy. Plastic gears strip, jumper wires vibrate loose, non-waterproof sensors fail after the first rain. The commercial version fixes all of this.</p>
-                    </div>
-                </div>
-                <div class="feature amber">
-                    <div class="emoji">💰</div>
-                    <div>
-                        <h4>Price difference reflects real engineering</h4>
-                        <p>The demo costs ৳4,000 because it uses the cheapest functional parts. The commercial costs ৳8,000 because it uses metal gears, custom PCB, waterproof sensors, and a protective frame.</p>
-                    </div>
-                </div>
-                <div class="feature purple">
-                    <div class="emoji">🎯</div>
-                    <div>
-                        <h4>Both are affordable for their audience</h4>
-                        <p>The demo is affordable for a student or researcher. The commercial is affordable for a farmer, financed against the cost of a single lost crop.</p>
-                    </div>
-                </div>
+                <div class="feature blue"><div class="emoji">🧪</div><div><h4>Demo exists to prove technology</h4><p>Standard hobby modules let us iterate fast, keep cost minimal, and demonstrate every subsystem. Perfect for academic submission.</p></div></div>
+                <div class="feature"><div class="emoji">🌾</div><div><h4>Commercial exists to survive farms</h4><p>Fields are dusty, wet, hot. Plastic gears strip, jumper wires vibrate loose, non-waterproof sensors fail after first rain. The commercial version fixes all of this.</p></div></div>
+                <div class="feature amber"><div class="emoji">💰</div><div><h4>Price difference reflects engineering</h4><p>Demo = ৳4,000 with cheapest functional parts. Commercial = ৳8,000 with metal gears, custom PCB, waterproof sensors, protective frame.</p></div></div>
+                <div class="feature purple"><div class="emoji">🎯</div><div><h4>Both are affordable for their audience</h4><p>Demo for students. Commercial for farmers — pays back within one protected crop cycle.</p></div></div>
             </div>
             <div class="stat-grid" style="grid-template-columns: 1fr 1fr; margin-top: 0;">
-                <div class="stat">
-                    <div class="num blue">৳4K</div>
-                    <div class="lbl">Demo Prototype</div>
-                    <div class="sub">Hobby-grade parts</div>
-                </div>
-                <div class="stat">
-                    <div class="num">৳8K</div>
-                    <div class="lbl">Commercial Mid-Tier</div>
-                    <div class="sub">Field-ready build</div>
-                </div>
-                <div class="stat">
-                    <div class="num amber">2×</div>
-                    <div class="lbl">Cost Multiplier</div>
-                    <div class="sub">For 3–4× longer field life</div>
-                </div>
-                <div class="stat">
-                    <div class="num purple">$30 vs $70</div>
-                    <div class="lbl">USD Equivalent</div>
-                    <div class="sub">Both under $100</div>
-                </div>
+                <div class="stat"><div class="num blue">৳4K</div><div class="lbl">Demo Prototype</div><div class="sub">Hobby-grade parts</div></div>
+                <div class="stat"><div class="num">৳8K</div><div class="lbl">Commercial Mid-Tier</div><div class="sub">Field-ready build</div></div>
+                <div class="stat"><div class="num amber">2×</div><div class="lbl">Cost Multiplier</div><div class="sub">For 3–4× longer field life</div></div>
+                <div class="stat"><div class="num purple">$30 vs $70</div><div class="lbl">USD Equivalent</div><div class="sub">Both under $100</div></div>
             </div>
         </div>
     </section>
 
-    <!-- ═════════ 08 — COMMERCIAL BOM ═════════ -->
+    <!-- 09 — COMMERCIAL BOM -->
     <section class="slide">
         <div class="slide-tag"><span class="dot"></span> Commercial Mid-Tier · BOM</div>
-        <h2 class="slide-title">Field-ready build · <span class="accent-amber">৳7,180 total manufacturing cost</span></h2>
-        <p class="lead" style="margin-bottom: 0.6rem;">
-            Every component is upgraded over the demo tier. Real, locally-sourced parts chosen for durability in Bangladeshi field conditions.
-        </p>
+        <h2 class="slide-title">Field-ready build · <span class="accent-amber">৳7,180 manufacturing cost</span></h2>
         <div class="cost-table">
-            <div class="cost-row header">
-                <div>Component</div>
-                <div>Upgrade / Role</div>
-                <div>Cost (৳)</div>
-            </div>
-            <div class="cost-row">
-                <div class="name">Hybrid Frame Chassis</div>
-                <div class="purpose">Laser-cut aluminum/acrylic with mud shields</div>
-                <div class="price">1,000</div>
-            </div>
-            <div class="cost-row">
-                <div class="name">12V Metal Gear Motors ×2</div>
-                <div class="purpose">37GB / JGB37 high-torque metal gearboxes</div>
-                <div class="price">1,200</div>
-            </div>
-            <div class="cost-row">
-                <div class="name">Heavy-Tread Wheels + Castor</div>
-                <div class="purpose">Rubber field tires + heavy swivel castor</div>
-                <div class="price">350</div>
-            </div>
-            <div class="cost-row">
-                <div class="name">Motor Driver</div>
-                <div class="purpose">Reinforced L298N with heatsink</div>
-                <div class="price">180</div>
-            </div>
-            <div class="cost-row">
-                <div class="name">ESP32 + Custom PCB Shield</div>
-                <div class="purpose">No loose jumper wires — vibration-proof</div>
-                <div class="price">700</div>
-            </div>
-            <div class="cost-row">
-                <div class="name">12V Diaphragm Misting Pump</div>
-                <div class="purpose">Self-priming micro pump for pressurized misting</div>
-                <div class="price">500</div>
-            </div>
-            <div class="cost-row">
-                <div class="name">JSN-SR04T Waterproof Ultrasonic</div>
-                <div class="purpose">IP67-rated — works in rain and dust</div>
-                <div class="price">450</div>
-            </div>
-            <div class="cost-row">
-                <div class="name">Probe Unit</div>
-                <div class="purpose">Capacitive soil sensor + MG90S metal servo</div>
-                <div class="price">300</div>
-            </div>
-            <div class="cost-row">
-                <div class="name">ESP32-CAM + Lens Hood</div>
-                <div class="purpose">Camera inside protective recessed hood</div>
-                <div class="price">750</div>
-            </div>
-            <div class="cost-row">
-                <div class="name">Battery Bank</div>
-                <div class="purpose">12V (3× 18650) high-drain pack + BMS</div>
-                <div class="price">600</div>
-            </div>
-            <div class="cost-row">
-                <div class="name">Hardware Accessories</div>
-                <div class="purpose">Industrial wiring, waterproof switches, tubing</div>
-                <div class="price">350</div>
-            </div>
-            <div class="cost-row">
-                <div class="name">Labor &amp; Assembly</div>
-                <div class="purpose">Soldering, sealing, flashing, stress testing</div>
-                <div class="price">800</div>
-            </div>
-            <div class="cost-row total">
-                <div class="name">TOTAL MANUFACTURING COST</div>
-                <div class="purpose">Before 12–15% retailer margin</div>
-                <div class="price">৳7,180</div>
-            </div>
-            <div class="cost-row total" style="background: linear-gradient(90deg, rgba(240, 184, 60, 0.22), rgba(240, 184, 60, 0.05));">
-                <div class="name">TARGET RETAIL PRICE</div>
-                <div class="purpose">≈ $65 – $70 USD · affordable for smallholders</div>
-                <div class="price">৳7,500 – ৳8,000</div>
-            </div>
+            <div class="cost-row header"><div>Component</div><div>Upgrade / Role</div><div>Cost (৳)</div></div>
+            <div class="cost-row"><div class="name">Hybrid Frame Chassis</div><div class="purpose">Laser-cut aluminum/acrylic with mud shields</div><div class="price">1,000</div></div>
+            <div class="cost-row"><div class="name">12V Metal Gear Motors ×2</div><div class="purpose">37GB / JGB37 high-torque metal gearboxes</div><div class="price">1,200</div></div>
+            <div class="cost-row"><div class="name">Heavy-Tread Wheels + Castor</div><div class="purpose">Rubber field tires + heavy swivel castor</div><div class="price">350</div></div>
+            <div class="cost-row"><div class="name">Motor Driver</div><div class="purpose">Reinforced L298N with heatsink</div><div class="price">180</div></div>
+            <div class="cost-row"><div class="name">ESP32 + Custom PCB Shield</div><div class="purpose">No loose jumper wires — vibration-proof</div><div class="price">700</div></div>
+            <div class="cost-row"><div class="name">12V Diaphragm Misting Pump</div><div class="purpose">Self-priming micro pump for pressurized misting</div><div class="price">500</div></div>
+            <div class="cost-row"><div class="name">JSN-SR04T Waterproof Ultrasonic</div><div class="purpose">IP67-rated — works in rain and dust</div><div class="price">450</div></div>
+            <div class="cost-row"><div class="name">Probe Unit</div><div class="purpose">Capacitive soil sensor + MG90S metal servo</div><div class="price">300</div></div>
+            <div class="cost-row"><div class="name">ESP32-CAM + Lens Hood</div><div class="purpose">Camera inside protective recessed hood</div><div class="price">750</div></div>
+            <div class="cost-row"><div class="name">Battery Bank</div><div class="purpose">12V (3× 18650) high-drain pack + BMS</div><div class="price">600</div></div>
+            <div class="cost-row"><div class="name">Hardware Accessories</div><div class="purpose">Industrial wiring, waterproof switches, tubing</div><div class="price">350</div></div>
+            <div class="cost-row"><div class="name">Labor &amp; Assembly</div><div class="purpose">Soldering, sealing, flashing, stress testing</div><div class="price">800</div></div>
+            <div class="cost-row total"><div class="name">TOTAL MANUFACTURING COST</div><div class="purpose">Before 12–15% retailer margin</div><div class="price">৳7,180</div></div>
+            <div class="cost-row total" style="background: linear-gradient(90deg, rgba(240, 184, 60, 0.22), rgba(240, 184, 60, 0.05));"><div class="name">TARGET RETAIL PRICE</div><div class="purpose">≈ $65 – $70 USD</div><div class="price">৳7,500 – ৳8,000</div></div>
         </div>
     </section>
 
-    <!-- ═════════ 09 — WHAT'S UPGRADED ═════════ -->
+    <!-- 10 — WHAT'S UPGRADED -->
     <section class="slide">
         <div class="slide-tag"><span class="dot"></span> What's Upgraded?</div>
-        <h2 class="slide-title">Every component that fails in the field · <span class="accent">is upgraded in the commercial build</span></h2>
+        <h2 class="slide-title">Every field-failing part · <span class="accent">is upgraded</span></h2>
         <div class="component-grid">
-            <div class="component">
-                <div class="ico">🛞</div>
-                <div>
-                    <h5>Chassis &amp; Drive</h5>
-                    <div class="role">Replaces plastic kit · +৳900</div>
-                    <p>Laser-cut aluminum/acrylic hybrid frame with mud shielding. 37GB metal-gear motors replace plastic TT motors — no more gear stripping in wet soil.</p>
-                </div>
-            </div>
-            <div class="component">
-                <div class="ico">🔌</div>
-                <div>
-                    <h5>Electronics</h5>
-                    <div class="role">Replaces breadboard · +৳250</div>
-                    <p>ESP32 mounted on a custom PCB terminal shield. Every connection is soldered — motor vibrations can no longer disconnect jumper wires mid-field.</p>
-                </div>
-            </div>
-            <div class="component">
-                <div class="ico">📡</div>
-                <div>
-                    <h5>Obstacle Sensing</h5>
-                    <div class="role">Replaces HC-SR04 · +৳370</div>
-                    <p>JSN-SR04T IP67 waterproof ultrasonic replaces the standard HC-SR04. Dust, rain, and mud spray no longer blind the sensor.</p>
-                </div>
-            </div>
-            <div class="component">
-                <div class="ico">💦</div>
-                <div>
-                    <h5>Misting System</h5>
-                    <div class="role">Replaces gravity feed · +৳250</div>
-                    <p>Self-priming 12V diaphragm pump builds proper hydraulic pressure for precise micro-misting nozzles — finer droplets, less chemical waste.</p>
-                </div>
-            </div>
-            <div class="component">
-                <div class="ico">🦾</div>
-                <div>
-                    <h5>Probe Servo</h5>
-                    <div class="role">Replaces SG90 · +৳150</div>
-                    <p>MG90S metal-gear servo replaces the plastic-gear SG90. No more stripped gears after 100+ probe deployments.</p>
-                </div>
-            </div>
-            <div class="component">
-                <div class="ico">📷</div>
-                <div>
-                    <h5>Vision Protection</h5>
-                    <div class="role">Replaces exposed lens · +৳100</div>
-                    <p>Recessed forward lens hood protects the ESP32-CAM from direct mud splatter. Camera survives wet-season operations.</p>
-                </div>
-            </div>
+            <div class="component"><div class="ico">🛞</div><div><h5>Chassis &amp; Drive</h5><div class="role">+৳900</div><p>Laser-cut frame with mud shielding. 37GB metal-gear motors — no more gear stripping in wet soil.</p></div></div>
+            <div class="component"><div class="ico">🔌</div><div><h5>Electronics</h5><div class="role">+৳250</div><p>ESP32 on a custom PCB shield. Every connection soldered — no jumpers vibrating loose.</p></div></div>
+            <div class="component"><div class="ico">📡</div><div><h5>Obstacle Sensing</h5><div class="role">+৳370</div><p>JSN-SR04T IP67 waterproof ultrasonic — dust and rain no longer blind the sensor.</p></div></div>
+            <div class="component"><div class="ico">💦</div><div><h5>Misting System</h5><div class="role">+৳250</div><p>Self-priming 12V diaphragm pump — finer droplets, less waste.</p></div></div>
+            <div class="component"><div class="ico">🦾</div><div><h5>Probe Servo</h5><div class="role">+৳150</div><p>MG90S metal-gear servo — no stripped gears after 100+ deployments.</p></div></div>
+            <div class="component"><div class="ico">📷</div><div><h5>Vision Protection</h5><div class="role">+৳100</div><p>Recessed lens hood — camera survives wet-season operations.</p></div></div>
         </div>
     </section>
 
-    <!-- ═════════ 10 — DATA FLOW ═════════ -->
+    <!-- 11 — DATA FLOW -->
     <section class="slide">
         <div class="slide-tag"><span class="dot"></span> Data Flow</div>
         <h2 class="slide-title">How information travels from <span class="accent-blue">soil to screen</span></h2>
         <div class="flow">
-            <div class="flow-row">
-                <div class="flow-num">STEP 01</div>
-                <div class="flow-source">🌾 Sensor reads</div>
-                <div class="flow-arrow">→</div>
-                <div class="flow-dest">🧠 ESP32 converts to JSON</div>
-            </div>
-            <div class="flow-row">
-                <div class="flow-num">STEP 02</div>
-                <div class="flow-source">🧠 ESP32 state machine</div>
-                <div class="flow-arrow">→</div>
-                <div class="flow-dest">📡 MQTT publish on telemetry topic</div>
-            </div>
-            <div class="flow-row">
-                <div class="flow-num">STEP 03</div>
-                <div class="flow-source">☁️ MQTT broker</div>
-                <div class="flow-arrow">→</div>
-                <div class="flow-dest">📶 Forwards to all subscribers (QoS 1)</div>
-            </div>
-            <div class="flow-row">
-                <div class="flow-num">STEP 04</div>
-                <div class="flow-source">💻 Browser (MQTT.js)</div>
-                <div class="flow-arrow">→</div>
-                <div class="flow-dest">📊 Dashboard updates chart + KPIs</div>
-            </div>
-            <div class="flow-row">
-                <div class="flow-num">STEP 05</div>
-                <div class="flow-source">🖱️ Farmer taps Spray</div>
-                <div class="flow-arrow">→</div>
-                <div class="flow-dest">📤 MQTT publish on cmd topic</div>
-            </div>
-            <div class="flow-row">
-                <div class="flow-num">STEP 06</div>
-                <div class="flow-source">📡 Robot receives command</div>
-                <div class="flow-arrow">→</div>
-                <div class="flow-dest">🔌 Relay fires → pump runs → spray done</div>
-            </div>
+            <div class="flow-row"><div class="flow-num">STEP 01</div><div class="flow-source">🌾 Sensor reads</div><div class="flow-arrow">→</div><div class="flow-dest">🧠 ESP32 converts to JSON</div></div>
+            <div class="flow-row"><div class="flow-num">STEP 02</div><div class="flow-source">🧠 ESP32 state machine</div><div class="flow-arrow">→</div><div class="flow-dest">📡 Publish or buffer to flash</div></div>
+            <div class="flow-row"><div class="flow-num">STEP 03</div><div class="flow-source">☁️ MQTT broker (when online)</div><div class="flow-arrow">→</div><div class="flow-dest">📶 Forwards to subscribers (QoS 1)</div></div>
+            <div class="flow-row"><div class="flow-num">STEP 04</div><div class="flow-source">💻 Browser (MQTT.js)</div><div class="flow-arrow">→</div><div class="flow-dest">📊 Dashboard updates chart + KPIs</div></div>
+            <div class="flow-row"><div class="flow-num">STEP 05</div><div class="flow-source">🖱️ Farmer taps Spray</div><div class="flow-arrow">→</div><div class="flow-dest">📤 Publish to cmd topic</div></div>
+            <div class="flow-row"><div class="flow-num">STEP 06</div><div class="flow-source">📡 Robot receives command</div><div class="flow-arrow">→</div><div class="flow-dest">🔌 Relay fires → spray done</div></div>
         </div>
-        <p class="lead" style="margin-top: 1.5rem; font-size: 1.1rem;">
-            <strong>Round-trip time:</strong> ~150–400 ms over 4G · <strong>Payload size:</strong> ~180 bytes per frame · <strong>Data used:</strong> ~2 MB/month
-        </p>
+        <p class="lead" style="margin-top: 1.5rem; font-size: 1.1rem;"><strong>Offline:</strong> Steps 3–6 skipped — readings buffer to flash. <strong>Online:</strong> Full round-trip in 150–400 ms over 4G.</p>
     </section>
 
-    <!-- ═════════ 11 — STATE MACHINE ═════════ -->
+    <!-- 12 — STATE MACHINE -->
     <section class="slide">
         <div class="slide-tag"><span class="dot"></span> Autonomy · The Brain</div>
         <h2 class="slide-title">A <span class="accent">state machine</span> that drives the entire field mission</h2>
-        <p class="lead" style="margin-bottom: 0.5rem;">
-            The robot cycles through 8 states autonomously. Every transition is published to the dashboard in real time.
-        </p>
+        <p class="lead" style="margin-bottom: 0.5rem;">The robot cycles through 8 states autonomously. Works with or without network.</p>
         <div class="state-grid">
-            <div class="state-node">
-                <span class="ico">⏸️</span>
-                <div class="name">IDLE</div>
-                <div class="desc">Motors stopped. Waiting for START command.</div>
-            </div>
-            <div class="state-node">
-                <span class="ico">➡️</span>
-                <div class="name">MOVING</div>
-                <div class="desc">Driving forward. Watching encoder ticks + ultrasonic.</div>
-            </div>
-            <div class="state-node">
-                <span class="ico">📷</span>
-                <div class="name">SCANNING</div>
-                <div class="desc">Stop. Ask CAM for a sweep. Wait for HSV result.</div>
-            </div>
-            <div class="state-node">
-                <span class="ico">💦</span>
-                <div class="name">SPRAYING</div>
-                <div class="desc">Fire relay for duration proportional to infection severity.</div>
-            </div>
-            <div class="state-node">
-                <span class="ico">🚧</span>
-                <div class="name">OBSTACLE_AVOID</div>
-                <div class="desc">Back up, turn, retry. Escalate to ERROR if stuck.</div>
-            </div>
-            <div class="state-node">
-                <span class="ico">↻</span>
-                <div class="name">TURNING</div>
-                <div class="desc">Timed 180° spin at end of row. Self-corrects next pass.</div>
-            </div>
-            <div class="state-node">
-                <span class="ico">✅</span>
-                <div class="name">ROW_COMPLETE</div>
-                <div class="desc">Increment row counter. Move to TURNING or FINISHED.</div>
-            </div>
-            <div class="state-node">
-                <span class="ico">🏁</span>
-                <div class="name">FINISHED</div>
-                <div class="desc">All rows done. Slow LED blink. Awaiting reset.</div>
-            </div>
+            <div class="state-node"><span class="ico">⏸️</span><div class="name">IDLE</div><div class="desc">Motors stopped. Waiting for START.</div></div>
+            <div class="state-node"><span class="ico">➡️</span><div class="name">MOVING</div><div class="desc">Driving forward. Watching encoders + ultrasonic.</div></div>
+            <div class="state-node"><span class="ico">📷</span><div class="name">SCANNING</div><div class="desc">Stop. Ask CAM for a sweep. Wait for HSV result.</div></div>
+            <div class="state-node"><span class="ico">💦</span><div class="name">SPRAYING</div><div class="desc">Relay fires for duration ∝ infection severity.</div></div>
+            <div class="state-node"><span class="ico">🚧</span><div class="name">OBSTACLE_AVOID</div><div class="desc">Back up, turn, retry. ERROR if stuck.</div></div>
+            <div class="state-node"><span class="ico">↻</span><div class="name">TURNING</div><div class="desc">Timed 180° spin at end of row.</div></div>
+            <div class="state-node"><span class="ico">✅</span><div class="name">ROW_COMPLETE</div><div class="desc">Increment row counter. Move to next.</div></div>
+            <div class="state-node"><span class="ico">🏁</span><div class="name">FINISHED</div><div class="desc">All rows done. Slow LED blink.</div></div>
         </div>
     </section>
 
-    <!-- ═════════ 12 — AUTONOMY FACTORS ═════════ -->
+    <!-- 13 — AUTONOMY FACTORS -->
     <section class="slide">
         <div class="slide-tag"><span class="dot"></span> Autonomy Factors</div>
         <h2 class="slide-title">What makes the robot <span class="accent">run on its own</span></h2>
         <div class="autonomy-grid">
-            <div class="auto-card">
-                <span class="icon-lg">📏</span>
-                <h4>Odometry via Encoders</h4>
-                <p>Distance tracked by wheel rotations. Every 20 ticks = one wheel revolution ≈ 20 cm.</p>
-                <ul>
-                    <li>Knows exact row position</li>
-                    <li>Triggers scan at correct spacing</li>
-                    <li>Detects row end without GPS</li>
-                </ul>
-            </div>
-            <div class="auto-card">
-                <span class="icon-lg">🚧</span>
-                <h4>Reactive Obstacle Avoidance</h4>
-                <p>Ultrasonic sensor continuously samples the path ahead. Any barrier within 15 cm triggers a state change.</p>
-                <ul>
-                    <li>Back up + turn sequence</li>
-                    <li>Retries path after obstacle clears</li>
-                    <li>Escalates to ERROR if stuck</li>
-                </ul>
-            </div>
-            <div class="auto-card">
-                <span class="icon-lg">🔄</span>
-                <h4>Row-End Detection</h4>
-                <p>Encoder ticks since row start compared against configured row length.</p>
-                <ul>
-                    <li>Auto turn on reaching end</li>
-                    <li>Row counter increments</li>
-                    <li>Field finish when all rows done</li>
-                </ul>
-            </div>
-            <div class="auto-card">
-                <span class="icon-lg">🎯</span>
-                <h4>Adaptive Spray Dosing</h4>
-                <p>Spray duration computed from infection severity — not fixed.</p>
-                <ul>
-                    <li>Healthy leaf → 0 ms spray</li>
-                    <li>Mild infection → 800 ms</li>
-                    <li>Severe infection → up to 2500 ms</li>
-                </ul>
-            </div>
-            <div class="auto-card">
-                <span class="icon-lg">🔗</span>
-                <h4>UART Handshake with CAM</h4>
-                <p>The CAM responds within a 3-second timeout. If it fails, robot assumes healthy and continues.</p>
-                <ul>
-                    <li>Never blocks indefinitely</li>
-                    <li>Fails safe on CAM crash</li>
-                    <li>Retries next plant</li>
-                </ul>
-            </div>
-            <div class="auto-card">
-                <span class="icon-lg">📡</span>
-                <h4>MQTT Resilience</h4>
-                <p>State published continuously. If WiFi drops, robot keeps working — messages queue for reconnect.</p>
-                <ul>
-                    <li>Offline-first design</li>
-                    <li>QoS 1 guarantees delivery</li>
-                    <li>Last Will announces disconnect</li>
-                </ul>
-            </div>
+            <div class="auto-card"><span class="icon-lg">📏</span><h4>Odometry via Encoders</h4><p>Distance tracked by wheel rotations. Every 20 ticks ≈ 20 cm.</p><ul><li>Knows exact row position</li><li>Triggers scan at correct spacing</li><li>Detects row end without GPS</li></ul></div>
+            <div class="auto-card"><span class="icon-lg">🚧</span><h4>Reactive Obstacle Avoidance</h4><p>Ultrasonic continuously samples the path ahead.</p><ul><li>Back up + turn sequence</li><li>Retries after obstacle clears</li><li>Escalates to ERROR if stuck</li></ul></div>
+            <div class="auto-card"><span class="icon-lg">🔄</span><h4>Row-End Detection</h4><p>Encoder ticks compared against configured row length.</p><ul><li>Auto turn on reaching end</li><li>Row counter increments</li><li>Field finish when all rows done</li></ul></div>
+            <div class="auto-card"><span class="icon-lg">🎯</span><h4>Adaptive Spray Dosing</h4><p>Spray duration computed from infection severity.</p><ul><li>Healthy → 0 ms</li><li>Mild → 800 ms</li><li>Severe → up to 2500 ms</li></ul></div>
+            <div class="auto-card"><span class="icon-lg">🔗</span><h4>UART CAM Handshake</h4><p>The CAM responds within a 3-second timeout.</p><ul><li>Never blocks indefinitely</li><li>Fails safe on CAM crash</li><li>Retries next plant</li></ul></div>
+            <div class="auto-card"><span class="icon-lg">📴</span><h4>Offline-First Buffer</h4><p>Every reading stored in flash when network absent.</p><ul><li>~45 days storage capacity</li><li>Auto-flush when reconnected</li><li>Survives power cycles</li></ul></div>
         </div>
     </section>
 
-    <!-- ═════════ 13 — HSV VISION ═════════ -->
+    <!-- 14 — HSV VISION -->
     <section class="slide">
         <div class="slide-tag"><span class="dot"></span> Computer Vision</div>
         <h2 class="slide-title">Color is a <span class="accent">diagnostic signal</span></h2>
         <div class="two-col">
             <div>
-                <p class="lead">
-                    Every pixel is converted to the HSV color space. The CAM counts pixels falling
-                    into disease-specific ranges. Runs <strong>entirely on-device</strong> — no GPU, no cloud AI, no monthly fee.
-                </p>
+                <p class="lead">Every pixel converted to HSV. The CAM counts pixels in disease ranges. Runs <strong>entirely on-device</strong> — no GPU, no cloud, no fee.</p>
                 <div class="feature-list" style="margin-top: 1.5rem;">
-                    <div class="feature" style="border-left-color: #5fb87d;">
-                        <div class="emoji">💚</div>
-                        <div>
-                            <h4>Healthy Leaf</h4>
-                            <p style="font-family: var(--font-mono); color: var(--green-700); font-size: 1rem;">H 80–150 · S &gt; 0.30 · V &gt; 0.20</p>
-                        </div>
-                    </div>
-                    <div class="feature" style="border-left-color: #d99a1c;">
-                        <div class="emoji">💛</div>
-                        <div>
-                            <h4>Chlorosis (Yellowing)</h4>
-                            <p style="font-family: var(--font-mono); color: var(--amber-500); font-size: 1rem;">H 40–75 · S &gt; 0.35 · V &gt; 0.35</p>
-                        </div>
-                    </div>
-                    <div class="feature" style="border-left-color: #c74440;">
-                        <div class="emoji">🤎</div>
-                        <div>
-                            <h4>Necrosis (Brown Spots)</h4>
-                            <p style="font-family: var(--font-mono); color: var(--red-500); font-size: 1rem;">H 10–40 · V &lt; 0.55 · S &lt; 0.40</p>
-                        </div>
-                    </div>
+                    <div class="feature" style="border-left-color: #5fb87d;"><div class="emoji">💚</div><div><h4>Healthy Leaf</h4><p style="font-family: var(--font-mono); color: var(--green-700); font-size: 1rem;">H 80–150 · S &gt; 0.30 · V &gt; 0.20</p></div></div>
+                    <div class="feature" style="border-left-color: #d99a1c;"><div class="emoji">💛</div><div><h4>Chlorosis</h4><p style="font-family: var(--font-mono); color: var(--amber-500); font-size: 1rem;">H 40–75 · S &gt; 0.35 · V &gt; 0.35</p></div></div>
+                    <div class="feature" style="border-left-color: #c74440;"><div class="emoji">🤎</div><div><h4>Necrosis</h4><p style="font-family: var(--font-mono); color: var(--red-500); font-size: 1rem;">H 10–40 · V &lt; 0.55 · S &lt; 0.40</p></div></div>
                 </div>
             </div>
             <div class="stat" style="padding: 2rem;">
-                <div class="lbl" style="margin-bottom: 1.2rem; font-size: 0.85rem;">Diseases detected on small vegetables</div>
+                <div class="lbl" style="margin-bottom: 1.2rem; font-size: 0.85rem;">Diseases detected</div>
                 <div style="display: flex; flex-direction: column; gap: 1rem;">
-                    <div style="display: flex; justify-content: space-between; font-size: 1.05rem; padding-bottom: 0.8rem; border-bottom: 1px solid rgba(58,145,96,0.15);">
-                        <span style="color: var(--text-body); font-weight: 600;">Early Blight (tomato)</span>
-                        <span style="color: var(--amber-500); font-family: var(--font-mono); font-weight: 800;">H 10–40</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 1.05rem; padding-bottom: 0.8rem; border-bottom: 1px solid rgba(58,145,96,0.15);">
-                        <span style="color: var(--text-body); font-weight: 600;">Bacterial Spot (chili, brinjal)</span>
-                        <span style="color: var(--amber-500); font-family: var(--font-mono); font-weight: 800;">H 15–35</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 1.05rem; padding-bottom: 0.8rem; border-bottom: 1px solid rgba(58,145,96,0.15);">
-                        <span style="color: var(--text-body); font-weight: 600;">Chlorosis (yellowing)</span>
-                        <span style="color: var(--amber-500); font-family: var(--font-mono); font-weight: 800;">H 40–75</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 1.05rem;">
-                        <span style="color: var(--text-body); font-weight: 600;">Powdery Mildew</span>
-                        <span style="color: var(--amber-500); font-family: var(--font-mono); font-weight: 800;">H 0–60</span>
-                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 1.05rem; padding-bottom: 0.8rem; border-bottom: 1px solid rgba(58,145,96,0.15);"><span style="color: var(--text-body); font-weight: 600;">Early Blight (tomato)</span><span style="color: var(--amber-500); font-family: var(--font-mono); font-weight: 800;">H 10–40</span></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 1.05rem; padding-bottom: 0.8rem; border-bottom: 1px solid rgba(58,145,96,0.15);"><span style="color: var(--text-body); font-weight: 600;">Bacterial Spot</span><span style="color: var(--amber-500); font-family: var(--font-mono); font-weight: 800;">H 15–35</span></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 1.05rem; padding-bottom: 0.8rem; border-bottom: 1px solid rgba(58,145,96,0.15);"><span style="color: var(--text-body); font-weight: 600;">Chlorosis</span><span style="color: var(--amber-500); font-family: var(--font-mono); font-weight: 800;">H 40–75</span></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 1.05rem;"><span style="color: var(--text-body); font-weight: 600;">Powdery Mildew</span><span style="color: var(--amber-500); font-family: var(--font-mono); font-weight: 800;">H 0–60</span></div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ═════════ 14 — THE DASHBOARD ═════════ -->
+    <!-- 15 — DASHBOARD -->
     <section class="slide">
         <div class="slide-tag"><span class="dot"></span> The Dashboard</div>
         <h2 class="slide-title">The farmer's <span class="accent">mission control</span></h2>
         <div class="two-col tight">
             <div class="feature-list">
-                <div class="feature">
-                    <div class="emoji">📊</div>
-                    <div>
-                        <h4>Live telemetry</h4>
-                        <p>Rolling soil moisture + temperature charts updating continuously.</p>
-                    </div>
-                </div>
-                <div class="feature">
-                    <div class="emoji">🤖</div>
-                    <div>
-                        <h4>Robot status panel</h4>
-                        <p>Current state, row number, plants scanned/sprayed, distance, battery.</p>
-                    </div>
-                </div>
-                <div class="feature">
-                    <div class="emoji">🎛️</div>
-                    <div>
-                        <h4>Remote commands</h4>
-                        <p>Start · Stop · Next Row · Scan Now · Spray Now — all with instant feedback.</p>
-                    </div>
-                </div>
-                <div class="feature">
-                    <div class="emoji">⚙️</div>
-                    <div>
-                        <h4>Field configuration</h4>
-                        <p>Change plant spacing, row length, total rows — sent to robot over MQTT.</p>
-                    </div>
-                </div>
-                <div class="feature">
-                    <div class="emoji">📝</div>
-                    <div>
-                        <h4>Spray audit log</h4>
-                        <p>Every auto-spray recorded with dose, severity, and chemical usage.</p>
-                    </div>
-                </div>
+                <div class="feature"><div class="emoji">📊</div><div><h4>Live telemetry</h4><p>Rolling soil moisture + temperature charts updating continuously.</p></div></div>
+                <div class="feature"><div class="emoji">🤖</div><div><h4>Robot status panel</h4><p>Current state, row, plants scanned/sprayed, distance, battery.</p></div></div>
+                <div class="feature"><div class="emoji">🎛️</div><div><h4>Remote commands</h4><p>Start · Stop · Next Row · Scan Now · Spray Now.</p></div></div>
+                <div class="feature"><div class="emoji">⚙️</div><div><h4>Field configuration</h4><p>Change plant spacing, row length, total rows over MQTT.</p></div></div>
+                <div class="feature"><div class="emoji">📝</div><div><h4>Spray audit log</h4><p>Every auto-spray recorded with dose and chemical usage.</p></div></div>
             </div>
             <div class="stat-grid" style="grid-template-columns: 1fr 1fr; margin-top: 0;">
-                <div class="stat">
-                    <div class="num">0৳</div>
-                    <div class="lbl">Cloud cost</div>
-                    <div class="sub">Local WebSocket + MQTT</div>
-                </div>
-                <div class="stat">
-                    <div class="num amber">4G</div>
-                    <div class="lbl">Works on cellular</div>
-                    <div class="sub">Optional modem module</div>
-                </div>
-                <div class="stat">
-                    <div class="num blue">100%</div>
-                    <div class="lbl">Offline fallback</div>
-                    <div class="sub">Local AP when no net</div>
-                </div>
-                <div class="stat">
-                    <div class="num purple">2 MB</div>
-                    <div class="lbl">Monthly data</div>
-                    <div class="sub">≈৳25 SIM plan</div>
-                </div>
+                <div class="stat"><div class="num">0৳</div><div class="lbl">Cloud cost</div><div class="sub">Local WebSocket + MQTT</div></div>
+                <div class="stat"><div class="num amber">4G</div><div class="lbl">Optional</div><div class="sub">Not required for autonomy</div></div>
+                <div class="stat"><div class="num blue">100%</div><div class="lbl">Offline-first</div><div class="sub">Works with zero network</div></div>
+                <div class="stat"><div class="num purple">45 days</div><div class="lbl">Flash buffer</div><div class="sub">~500 readings stored locally</div></div>
             </div>
         </div>
     </section>
 
-    <!-- ═════════ 15 — LIMITATIONS ═════════ -->
+    <!-- 16 — LIMITATIONS -->
     <section class="slide">
         <div class="slide-tag"><span class="dot"></span> Honest Assessment</div>
         <h2 class="slide-title">What we <span style="color: #c74440; -webkit-text-fill-color: #c74440;">haven't solved yet</span></h2>
-        <p class="lead" style="margin-bottom: 1.3rem;">
-            Being honest about limitations separates a real engineering project from a hobby demo.
-        </p>
+        <p class="lead" style="margin-bottom: 1.3rem;">Being honest about limitations separates a real engineering project from a hobby demo.</p>
         <div class="feature-list">
-            <div class="feature red">
-                <div class="emoji">📐</div>
-                <div>
-                    <h4>Approximate 180° turns</h4>
-                    <p>Without a gyro or compass, the turn is timed. Small drift accumulates over long rows — self-corrects but not perfect.</p>
-                </div>
-            </div>
-            <div class="feature red">
-                <div class="emoji">📷</div>
-                <div>
-                    <h4>HSV is sunlight-sensitive</h4>
-                    <p>Cloudy days shift the HSV values. A calibration step or AWB-locked camera would improve robustness.</p>
-                </div>
-            </div>
-            <div class="feature red">
-                <div class="emoji">🌾</div>
-                <div>
-                    <h4>No weed vs crop distinction</h4>
-                    <p>The camera can't tell a chili plant from a weed with similar hue. Would need shape analysis or a trained model.</p>
-                </div>
-            </div>
-            <div class="feature red">
-                <div class="emoji">🔋</div>
-                <div>
-                    <h4>Runtime limited by pump</h4>
-                    <p>The pump draws 1–2 A. Battery bank gives 2–3 hours of continuous field operation.</p>
-                </div>
-            </div>
-            <div class="feature red">
-                <div class="emoji">🧪</div>
-                <div>
-                    <h4>Single-tank chemical</h4>
-                    <p>Current design has one reservoir. Mixing fertilizer and fungicide would need a second pump + tank.</p>
-                </div>
-            </div>
+            <div class="feature red"><div class="emoji">📐</div><div><h4>Approximate 180° turns</h4><p>Timed, not gyro-corrected. Small drift accumulates over long rows.</p></div></div>
+            <div class="feature red"><div class="emoji">📷</div><div><h4>HSV is sunlight-sensitive</h4><p>Cloudy days shift HSV values. Calibration step or AWB-locked camera would improve robustness.</p></div></div>
+            <div class="feature red"><div class="emoji">🌾</div><div><h4>No weed vs crop distinction</h4><p>Camera can't tell a chili plant from a similar-hue weed. Needs shape analysis or ML model.</p></div></div>
+            <div class="feature red"><div class="emoji">🔋</div><div><h4>Runtime limited by pump</h4><p>Pump draws 1–2 A. Battery bank gives 2–3 hours of continuous operation.</p></div></div>
+            <div class="feature red"><div class="emoji">🧪</div><div><h4>Single-tank chemical</h4><p>Mixing fertilizer + fungicide needs a second tank + pump.</p></div></div>
+            <div class="feature red"><div class="emoji">📡</div><div><h4>Live stream requires network</h4><p>Robot works offline, but <em>live</em> telemetry to the dashboard needs connectivity. Data buffers to flash and syncs when available.</p></div></div>
         </div>
     </section>
 
-    <!-- ═════════ 16 — FUTURE: PCB ═════════ -->
+    <!-- 17 — FUTURE PCB -->
     <section class="slide">
         <div class="slide-tag"><span class="dot"></span> Future Scope · 1</div>
         <h2 class="slide-title">Full custom PCB with <span class="accent">everything on one board</span></h2>
-        <p class="lead" style="margin-bottom: 1rem;">
-            The commercial mid-tier uses a custom terminal shield. The next step is a fully integrated single-board controller — <strong>a design target, not a shipping product today.</strong>
-        </p>
+        <p class="lead" style="margin-bottom: 1rem;">Design target, not a shipping product today.</p>
         <div class="tier-grid">
             <div class="tier-card demo">
                 <div class="tier-label">◈ Commercial Mid-Tier · Now</div>
                 <div class="tier-title">Terminal Shield</div>
-                <div class="tier-desc">ESP32 sits on a custom terminal shield. External modules (motor driver, relay, servo) connect via screw terminals — no jumper wires.</div>
+                <div class="tier-desc">ESP32 sits on a custom terminal shield. External modules connect via screw terminals — no jumper wires.</div>
                 <ul>
                     <li>Custom terminal shield PCB</li>
                     <li>External L298N motor driver</li>
@@ -2095,118 +666,59 @@
             <div class="tier-card production">
                 <div class="tier-label">◈ Next Generation</div>
                 <div class="tier-title">Full Integrated PCB</div>
-                <div class="tier-desc">A single custom PCB replaces the terminal shield, external motor driver, and separate power module. Fewer components, fewer failure points — <em>same overall robot size.</em></div>
+                <div class="tier-desc">A single PCB replaces terminal shield, external motor driver, and power module.</div>
                 <ul>
-                    <li>Single ESP32-S3 with native camera interface</li>
-                    <li>Onboard DRV8833 motor driver (replaces L298N)</li>
-                    <li>Integrated 12V → 5V buck + TP4056 Li-ion charger</li>
-                    <li>Machine-placed SMT replaces hand-soldered joints</li>
-                    <li>Reduces wiring-related failures by an estimated 70–80%</li>
-                    <li>≈৳1,800 per PCB at 100-unit scale (parts + assembly only)</li>
+                    <li>Single ESP32-S3 with camera interface</li>
+                    <li>Onboard DRV8833 motor driver</li>
+                    <li>Integrated buck + TP4056 Li-ion charger</li>
+                    <li>Reduces wiring failures by ~70–80%</li>
+                    <li>≈৳1,800 per PCB at 100-unit scale (board only)</li>
                     <li><strong>Status: Concept stage · 6-month roadmap</strong></li>
                 </ul>
             </div>
         </div>
-        <p class="lead" style="margin-top: 1.5rem; font-size: 1rem; color: var(--text-muted);">
-            <strong style="color: var(--green-800);">Note on cost:</strong> the ৳1,800 figure covers the PCB itself — not the chassis, motors, pump, tank, battery, or camera. A complete next-gen robot at 100-unit scale would still cost approximately <strong>৳6,500–7,500</strong>. The real gain is <em>reliability and manufacturability</em>, not a dramatic price drop.
-        </p>
+        <p class="lead" style="margin-top: 1.5rem; font-size: 1rem; color: var(--text-muted);"><strong style="color: var(--green-800);">Note:</strong> ৳1,800 covers the PCB alone. A complete next-gen robot at scale would still cost ~৳6,500–7,500. The gain is reliability, not a dramatic price drop.</p>
     </section>
 
-    <!-- ═════════ 17 — FUTURE ROADMAP ═════════ -->
+    <!-- 18 — FUTURE ROADMAP -->
     <section class="slide">
         <div class="slide-tag"><span class="dot"></span> Future Scope · 2</div>
         <h2 class="slide-title">Where NIPAS goes <span class="accent-purple">next</span></h2>
         <div class="future-timeline">
-            <div class="ftl-item">
-                <div class="phase">PHASE 01 · 3 MONTHS</div>
-                <h4>Custom PCB Rev 1</h4>
-                <p>Single-board controller with integrated motor driver, power management, and JST connectors. Eliminates 80% of wiring failures.</p>
-            </div>
-            <div class="ftl-item">
-                <div class="phase">PHASE 02 · 6 MONTHS</div>
-                <h4>MPU6050 Gyro + Precision Turns</h4>
-                <p>Add a 6-DOF IMU for closed-loop heading control. 180° turns become exact, not timed. Row drift drops to &lt; 1 cm.</p>
-            </div>
-            <div class="ftl-item amber">
-                <div class="phase">PHASE 03 · 9 MONTHS</div>
-                <h4>On-Device TinyML Disease Model</h4>
-                <p>Replace HSV with a quantized MobileNet or YOLO-Nano model running on ESP32-S3. Detects weeds, distinguishes multiple diseases, works under any lighting.</p>
-            </div>
-            <div class="ftl-item amber">
-                <div class="phase">PHASE 04 · 12 MONTHS</div>
-                <h4>Sunlight-Adaptive Camera</h4>
-                <p>Add ambient light sensor + servo-controlled diffuser. HSV ranges auto-calibrate based on measured illumination.</p>
-            </div>
-            <div class="ftl-item purple">
-                <div class="phase">PHASE 05 · 18 MONTHS</div>
-                <h4>Multi-Robot Swarm</h4>
-                <p>Three or more NIPAS units share a single MQTT broker. Dashboard shows all robots on one field map. Collision avoidance via shared state.</p>
-            </div>
-            <div class="ftl-item purple">
-                <div class="phase">PHASE 06 · 24 MONTHS</div>
-                <h4>Solar + Swappable Battery</h4>
-                <p>Roof-mounted 10W solar panel + hot-swap 18650 pack. Full-day runtime without grid charging. Truly off-grid.</p>
-            </div>
+            <div class="ftl-item"><div class="phase">PHASE 01 · 3 MONTHS</div><h4>Custom PCB Rev 1</h4><p>Single-board controller with integrated motor driver, power management, JST connectors.</p></div>
+            <div class="ftl-item"><div class="phase">PHASE 02 · 6 MONTHS</div><h4>MPU6050 Gyro + Precision Turns</h4><p>Closed-loop heading control. 180° turns become exact. Row drift &lt; 1 cm.</p></div>
+            <div class="ftl-item amber"><div class="phase">PHASE 03 · 9 MONTHS</div><h4>On-Device TinyML Model</h4><p>Replace HSV with quantized MobileNet. Detects weeds, distinguishes diseases, works in any lighting.</p></div>
+            <div class="ftl-item amber"><div class="phase">PHASE 04 · 12 MONTHS</div><h4>Optional 4G Module Integration</h4><p>A7670C modem support — cellular coverage in fields without WiFi. Same MQTT protocol, just a different transport.</p></div>
+            <div class="ftl-item purple"><div class="phase">PHASE 05 · 18 MONTHS</div><h4>Multi-Robot Swarm</h4><p>Three or more units share a single MQTT broker. One field map, all robots.</p></div>
+            <div class="ftl-item purple"><div class="phase">PHASE 06 · 24 MONTHS</div><h4>Solar + Swappable Battery</h4><p>Roof-mounted 10W panel + hot-swap 18650 pack. Full-day runtime, truly off-grid.</p></div>
         </div>
     </section>
 
-    <!-- ═════════ 18 — IMPACT ═════════ -->
+    <!-- 19 — IMPACT -->
     <section class="slide">
         <div class="slide-tag"><span class="dot"></span> Impact</div>
         <h2 class="slide-title">What NIPAS delivers <span class="accent">today</span></h2>
         <div class="stat-grid" style="grid-template-columns: repeat(4, 1fr); margin-top: 1.7rem;">
-            <div class="stat">
-                <div class="num">~70%</div>
-                <div class="lbl">Water savings</div>
-                <div class="sub">Micro-misting vs flood irrigation</div>
-            </div>
-            <div class="stat">
-                <div class="num amber">~50%</div>
-                <div class="lbl">Chemical reduction</div>
-                <div class="sub">Targeted dosing vs broadcast</div>
-            </div>
-            <div class="stat">
-                <div class="num blue">24/7</div>
-                <div class="lbl">Continuous monitoring</div>
-                <div class="sub">vs daily manual walks</div>
-            </div>
-            <div class="stat">
-                <div class="num purple">৳25</div>
-                <div class="lbl">Monthly data cost</div>
-                <div class="sub">If 4G module added</div>
-            </div>
+            <div class="stat"><div class="num">~70%</div><div class="lbl">Water savings</div><div class="sub">Micro-misting vs flood</div></div>
+            <div class="stat"><div class="num amber">~50%</div><div class="lbl">Chemical reduction</div><div class="sub">Targeted vs broadcast</div></div>
+            <div class="stat"><div class="num blue">24/7</div><div class="lbl">Autonomous scanning</div><div class="sub">No human walking required</div></div>
+            <div class="stat"><div class="num purple">৳0</div><div class="lbl">Cloud cost</div><div class="sub">Works without any network</div></div>
         </div>
         <div class="feature-list" style="margin-top: 1.6rem;">
-            <div class="feature">
-                <div class="emoji">🌱</div>
-                <div>
-                    <h4>Directly addresses five UN SDGs</h4>
-                    <p>SDG 2 (Zero Hunger) · SDG 6 (Clean Water) · SDG 8 (Decent Work) · SDG 12 (Responsible Consumption) · SDG 13 (Climate Action)</p>
-                </div>
-            </div>
-            <div class="feature">
-                <div class="emoji">💰</div>
-                <div>
-                    <h4>Within reach of smallholders</h4>
-                    <p>The commercial unit at ৳8,000 (~$70) replaces tools costing 10–50× more, and pays back within a single protected crop cycle.</p>
-                </div>
-            </div>
+            <div class="feature"><div class="emoji">🌱</div><div><h4>Directly addresses five UN SDGs</h4><p>SDG 2 (Zero Hunger) · SDG 6 (Clean Water) · SDG 8 (Decent Work) · SDG 12 (Responsible Consumption) · SDG 13 (Climate Action)</p></div></div>
+            <div class="feature"><div class="emoji">💰</div><div><h4>Within reach of smallholders</h4><p>Commercial unit at ৳8,000 replaces tools costing 10–50× more, and pays back within one protected crop cycle.</p></div></div>
         </div>
     </section>
 
-    <!-- ═════════ 19 — Q&A ═════════ -->
+    <!-- 20 — Q&A -->
     <section class="slide cta-slide">
         <div class="slide-tag"><span class="dot"></span> Thank You</div>
         <h1 class="qa-heading">Q&amp;A Session</h1>
         <p class="qa-subtitle">Questions &amp; Discussion</p>
-        <p class="lead" style="max-width: 800px;">
-            We'd love to hear your thoughts and questions on NIPAS — from the <strong>demo prototype</strong>
-            proving the technology, to the <strong>commercial mid-tier</strong> designed for real farmers
-            across Bangladesh.
-        </p>
+        <p class="lead" style="max-width: 800px;">We'd love to hear your thoughts and questions on NIPAS — from the demo prototype proving the technology, to the commercial mid-tier designed for real farmers in rural Bangladesh.</p>
         <div class="cta-links">
-            <a class="cta-link" href="index.html">🌐 View Live Dashboard</a>
-            <a class="cta-link" href="https://github.com/Miftah1911/NIPAS-project">💻 GitHub Repository</a>
+            <a class="cta-link" href="https://nipas.netlify.app" target="_blank" rel="noopener">🌐 View Live Dashboard</a>
+            <a class="cta-link" href="https://github.com/Miftah1911/NIPAS-project" target="_blank" rel="noopener">💻 GitHub Repository</a>
         </div>
         <div style="margin-top: 2.5rem; display:flex; gap:2rem; flex-wrap:wrap; justify-content:center; color: var(--text-muted); font-size: 1.05rem;">
             <span><strong style="color: var(--green-700);">Miftah Ur Rahman</strong></span>
@@ -2216,24 +728,20 @@
 
 </div>
 
-<!-- ═══════════════ NAVIGATION ═══════════════ -->
 <nav class="nav">
     <button class="nav-btn" id="prevBtn" aria-label="Previous">←</button>
     <div class="dots" id="dots"></div>
-    <span class="progress-text" id="progressText">1 / 19</span>
+    <span class="progress-text" id="progressText">1 / 20</span>
     <button class="nav-btn" id="nextBtn" aria-label="Next">→</button>
 </nav>
 
 <script>
 (function () {
     'use strict';
-
     const slides = Array.from(document.querySelectorAll('.slide'));
     const total = slides.length;
     let current = 0;
-
     document.getElementById('totSlides').textContent = String(total).padStart(2, '0');
-
     const dotsContainer = document.getElementById('dots');
     slides.forEach((_, i) => {
         const btn = document.createElement('button');
@@ -2242,58 +750,38 @@
         btn.addEventListener('click', () => goTo(i));
         dotsContainer.appendChild(btn);
     });
-
     const dots = Array.from(dotsContainer.children);
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
     const progressText = document.getElementById('progressText');
     const curSlideEl = document.getElementById('curSlide');
-
     function goTo(index) {
         if (index < 0 || index >= total) return;
         slides[current].classList.remove('active');
         dots[current].classList.remove('active');
-
         current = index;
-
         slides[current].classList.add('active');
         dots[current].classList.add('active');
         slides[current].scrollTop = 0;
         progressText.textContent = (current + 1) + ' / ' + total;
         curSlideEl.textContent = String(current + 1).padStart(2, '0');
-
         prevBtn.disabled = current === 0;
         nextBtn.disabled = current === total - 1;
     }
-
     prevBtn.addEventListener('click', () => goTo(current - 1));
     nextBtn.addEventListener('click', () => goTo(current + 1));
-
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
-            e.preventDefault();
-            goTo(current + 1);
-        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
-            e.preventDefault();
-            goTo(current - 1);
-        } else if (e.key === 'Home') {
-            goTo(0);
-        } else if (e.key === 'End') {
-            goTo(total - 1);
-        }
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); goTo(current + 1); }
+        else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); goTo(current - 1); }
+        else if (e.key === 'Home') goTo(0);
+        else if (e.key === 'End') goTo(total - 1);
     });
-
     let touchStartX = 0;
-    document.addEventListener('touchstart', (e) => {
-        touchStartX = e.touches[0].clientX;
-    }, { passive: true });
+    document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
     document.addEventListener('touchend', (e) => {
         const dx = e.changedTouches[0].clientX - touchStartX;
-        if (Math.abs(dx) > 60) {
-            goTo(dx < 0 ? current + 1 : current - 1);
-        }
+        if (Math.abs(dx) > 60) goTo(dx < 0 ? current + 1 : current - 1);
     }, { passive: true });
-
     goTo(0);
 })();
 </script>
