@@ -935,7 +935,7 @@ For questions, issues, or collaboration:
 
 - Open an issue on [GitHub](https://github.com/Miftah1911/NIPAS-project/issues)
 - Email: *(miftahurrahman187@gmail.com)*
-- LinkedIn: *(https://www.linkedin.com/in/miftah-ur-rahman-08488a407/)*
+- LinkedIn: *(https://www.linkedin.com/in/miftah-ur-rahman-08488a407/)git *
 
 ---
 
