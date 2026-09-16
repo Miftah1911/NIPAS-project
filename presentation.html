@@ -27,10 +27,8 @@
         --purple-500: #8a70d9;
         --purple-400: #ab94e8;
 
-        /* Lighter background palette */
         --bg-1: #eef7f0;
         --bg-2: #dcefe1;
-        --bg-3: #c9e5d1;
 
         --text-dark: #0d2a1c;
         --text-body: #1c5738;
@@ -48,9 +46,7 @@
         font-feature-settings: 'tnum';
     }
 
-    /* ============================================================
-       LIGHT ANIMATED BACKGROUND
-       ============================================================ */
+    /* ═══════════════ BACKGROUND ═══════════════ */
     .bg {
         position: fixed; inset: 0;
         z-index: 0;
@@ -113,9 +109,7 @@
         100% { transform: translate(80px, -12vh) rotate(400deg); opacity: 0; }
     }
 
-    /* ============================================================
-       DECK & SLIDE
-       ============================================================ */
+    /* ═══════════════ SLIDE LAYOUT ═══════════════ */
     .deck {
         position: relative;
         z-index: 1;
@@ -150,9 +144,7 @@
         pointer-events: auto;
     }
 
-    /* ============================================================
-       HEADERS — larger text for big-screen visibility
-       ============================================================ */
+    /* ═══════════════ HEADERS ═══════════════ */
     .slide-tag {
         display: inline-flex;
         align-items: center;
@@ -189,12 +181,6 @@
         color: var(--green-900);
         margin-bottom: 1.3rem;
     }
-    h1.title .accent {
-        background: linear-gradient(120deg, #267347, #5fb87d);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
     h2.slide-title {
         font-size: clamp(2.2rem, 4.2vw, 3.4rem);
         font-weight: 800;
@@ -228,6 +214,12 @@
         background-clip: text;
         -webkit-text-fill-color: transparent;
     }
+    h2.slide-title .accent-red {
+        background: linear-gradient(120deg, #c74440, #e57368);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
     .lead {
         font-size: 1.4rem;
         line-height: 1.65;
@@ -238,9 +230,7 @@
     .lead strong { color: var(--green-800); font-weight: 700; }
     .lead em { color: var(--amber-500); font-style: normal; font-weight: 700; }
 
-    /* ============================================================
-       TITLE SLIDE
-       ============================================================ */
+    /* ═══════════════ TITLE SLIDE ═══════════════ */
     .title-slide { align-items: center; text-align: center; }
     .title-slide .slide-tag { margin-left: auto; margin-right: auto; }
     .title-slide .lead { margin: 0 auto; }
@@ -342,7 +332,6 @@
         font-size: 1.4rem;
         font-weight: 700;
         color: var(--green-900);
-        letter-spacing: 0.005em;
     }
     .team-member .role {
         font-size: 0.9rem;
@@ -355,9 +344,7 @@
         margin-left: 0.5rem;
     }
 
-    /* ============================================================
-       STAT GRID
-       ============================================================ */
+    /* ═══════════════ STAT GRID ═══════════════ */
     .stat-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
@@ -416,9 +403,7 @@
         font-weight: 500;
     }
 
-    /* ============================================================
-       TWO COLUMN
-       ============================================================ */
+    /* ═══════════════ TWO COLUMN ═══════════════ */
     .two-col {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -428,9 +413,7 @@
     .two-col.tight { gap: 1.5rem; }
     .two-col.wide { grid-template-columns: 1.4fr 1fr; }
 
-    /* ============================================================
-       FEATURE LIST
-       ============================================================ */
+    /* ═══════════════ FEATURE LIST ═══════════════ */
     .feature-list {
         display: flex; flex-direction: column; gap: 1rem;
     }
@@ -439,7 +422,7 @@
         gap: 1.1rem;
         align-items: flex-start;
         padding: 1.15rem 1.4rem;
-        background: rgba(255, 255, 255, 0.75);
+        background: rgba(255, 255, 255, 0.78);
         border: 1px solid rgba(58, 145, 96, 0.22);
         border-left: 4px solid var(--green-600);
         border-radius: 14px;
@@ -478,10 +461,123 @@
         line-height: 1.55;
         font-weight: 500;
     }
+    .feature p strong { color: var(--green-800); font-weight: 800; }
 
-    /* ============================================================
-       COST TABLES
-       ============================================================ */
+    /* ═══════════════ PROBLEM-SOLUTION CARDS ═══════════════ */
+    .ps-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 1.1rem;
+        margin-top: 1.2rem;
+    }
+    .ps-card {
+        background: rgba(255, 255, 255, 0.82);
+        border: 1px solid rgba(58, 145, 96, 0.25);
+        border-radius: 20px;
+        padding: 1.4rem 1.5rem;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 10px 26px -14px rgba(58, 145, 96, 0.35);
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .ps-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px -18px rgba(58, 145, 96, 0.5);
+    }
+    .ps-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #c74440, #d99a1c, #3a9160);
+    }
+    .ps-card .ps-number {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #3a9160, #1c5738);
+        color: #ffffff;
+        font-family: var(--font-mono);
+        font-weight: 800;
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 6px 14px -6px rgba(58, 145, 96, 0.6);
+    }
+    .ps-card .ps-problem {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #8b2f2b;
+        margin-bottom: 0.65rem;
+        line-height: 1.35;
+    }
+    .ps-card .ps-problem::before {
+        content: '✕ ';
+        color: var(--red-500);
+        font-weight: 800;
+    }
+    .ps-card .ps-solution {
+        font-size: 1rem;
+        color: var(--green-800);
+        line-height: 1.55;
+        font-weight: 500;
+        padding: 0.85rem 1rem;
+        background: rgba(95, 184, 125, 0.14);
+        border-radius: 10px;
+        border-left: 3px solid var(--green-500);
+    }
+    .ps-card .ps-solution::before {
+        content: '✓ ';
+        color: var(--green-600);
+        font-weight: 800;
+        margin-right: 0.15rem;
+    }
+
+    /* ═══════════════ BIG PROBLEM STATS ═══════════════ */
+    .problem-stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.1rem;
+        margin-top: 1.6rem;
+    }
+    .problem-stat {
+        background: rgba(255, 255, 255, 0.78);
+        border: 1px solid rgba(199, 68, 64, 0.3);
+        border-radius: 18px;
+        padding: 1.4rem 1.2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 20px -14px rgba(199, 68, 64, 0.35);
+    }
+    .problem-stat::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #c74440, #d99a1c);
+    }
+    .problem-stat .big-num {
+        font-family: var(--font-mono);
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: var(--red-500);
+        line-height: 1;
+        letter-spacing: -0.02em;
+    }
+    .problem-stat .big-lbl {
+        font-size: 0.85rem;
+        color: var(--text-body);
+        margin-top: 0.7rem;
+        line-height: 1.4;
+        font-weight: 600;
+    }
+
+    /* ═══════════════ COST TABLES ═══════════════ */
     .cost-table {
         margin-top: 1.2rem;
         border: 1px solid rgba(58, 145, 96, 0.25);
@@ -508,8 +604,8 @@
     }
     .cost-row:not(.header):hover { background: rgba(212, 239, 219, 0.55); }
     .cost-row > div {
-        padding: 0.85rem 1.2rem;
-        font-size: 1rem;
+        padding: 0.8rem 1.2rem;
+        font-size: 0.98rem;
         color: var(--text-body);
         border-right: 1px solid rgba(58, 145, 96, 0.1);
         display: flex;
@@ -518,25 +614,23 @@
     }
     .cost-row > div:last-child { border-right: none; }
     .cost-row .name { font-weight: 700; color: var(--green-900); }
-    .cost-row .purpose { font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; }
+    .cost-row .purpose { font-size: 0.88rem; color: var(--text-muted); line-height: 1.4; }
     .cost-row .price {
         font-family: var(--font-mono);
         font-weight: 700;
         color: var(--green-700);
         justify-content: flex-end;
         text-align: right;
-        font-size: 1.05rem;
+        font-size: 1rem;
     }
     .cost-row.total {
         background: linear-gradient(90deg, rgba(58, 145, 96, 0.2), rgba(58, 145, 96, 0.06));
         font-weight: 800;
     }
-    .cost-row.total .name { color: var(--green-800); font-size: 1.05rem; letter-spacing: 0.05em; }
-    .cost-row.total .price { color: var(--amber-500); font-size: 1.2rem; }
+    .cost-row.total .name { color: var(--green-800); font-size: 1rem; letter-spacing: 0.05em; }
+    .cost-row.total .price { color: var(--amber-500); font-size: 1.15rem; }
 
-    /* ============================================================
-       TIER COMPARISON CARDS
-       ============================================================ */
+    /* ═══════════════ TIER COMPARISON ═══════════════ */
     .tier-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -561,9 +655,7 @@
         transform: translateY(-6px);
         box-shadow: 0 20px 44px -18px rgba(58, 145, 96, 0.5);
     }
-    .tier-card.demo {
-        border-color: rgba(74, 144, 199, 0.5);
-    }
+    .tier-card.demo { border-color: rgba(74, 144, 199, 0.5); }
     .tier-card.demo::before {
         content: '';
         position: absolute;
@@ -571,9 +663,7 @@
         height: 5px;
         background: linear-gradient(90deg, #4a90c7, #78b3dd);
     }
-    .tier-card.production {
-        border-color: rgba(58, 145, 96, 0.6);
-    }
+    .tier-card.production { border-color: rgba(58, 145, 96, 0.6); }
     .tier-card.production::before {
         content: '';
         position: absolute;
@@ -591,21 +681,21 @@
     .tier-card.demo .tier-label { color: var(--blue-500); }
     .tier-card.production .tier-label { color: var(--green-700); }
     .tier-card .tier-title {
-        font-size: 1.9rem;
+        font-size: 1.85rem;
         font-weight: 900;
         color: var(--green-900);
         line-height: 1.1;
         letter-spacing: -0.02em;
     }
     .tier-card .tier-desc {
-        font-size: 1.05rem;
+        font-size: 1rem;
         color: var(--text-body);
         line-height: 1.55;
         font-weight: 500;
     }
     .tier-card .tier-price {
         font-family: var(--font-mono);
-        font-size: 2.6rem;
+        font-size: 2.4rem;
         font-weight: 900;
         line-height: 1;
         letter-spacing: -0.03em;
@@ -614,7 +704,7 @@
     .tier-card.demo .tier-price { color: var(--blue-500); }
     .tier-card.production .tier-price { color: var(--green-700); }
     .tier-card .tier-price-note {
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         color: var(--text-muted);
         font-weight: 600;
         margin-bottom: 0.5rem;
@@ -623,13 +713,13 @@
         list-style: none;
         display: flex;
         flex-direction: column;
-        gap: 0.6rem;
+        gap: 0.55rem;
         margin-top: 0.4rem;
     }
     .tier-card li {
-        font-size: 1rem;
+        font-size: 0.98rem;
         color: var(--text-body);
-        padding-left: 1.5rem;
+        padding-left: 1.4rem;
         position: relative;
         line-height: 1.5;
         font-weight: 500;
@@ -640,13 +730,11 @@
         left: 0;
         color: var(--green-600);
         font-weight: 800;
-        font-size: 1.1rem;
+        font-size: 1.05rem;
     }
     .tier-card.demo li::before { content: '▸'; color: var(--blue-500); }
 
-    /* ============================================================
-       PROCESS GRID
-       ============================================================ */
+    /* ═══════════════ PROCESS GRID ═══════════════ */
     .process-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
@@ -702,23 +790,21 @@
         line-height: 1.25;
     }
     .phase p {
-        font-size: 0.98rem;
+        font-size: 0.95rem;
         color: var(--text-body);
         line-height: 1.55;
         font-weight: 500;
     }
     .phase code {
         font-family: var(--font-mono);
-        font-size: 0.85rem;
+        font-size: 0.82rem;
         color: var(--green-700);
         background: rgba(95, 184, 125, 0.16);
         padding: 0.12rem 0.5rem;
         border-radius: 5px;
     }
 
-    /* ============================================================
-       PROBLEM → SOLUTION
-       ============================================================ */
+    /* ═══════════════ PROBLEM → SOLUTION TABLE ═══════════════ */
     .ps-row {
         display: grid;
         grid-template-columns: 1fr auto 1fr;
@@ -728,42 +814,40 @@
         border-bottom: 1px solid rgba(58, 145, 96, 0.14);
     }
     .ps-row:last-child { border-bottom: none; }
-    .ps-problem, .ps-solution {
+    .ps-problem-cell, .ps-solution-cell {
         padding: 1.1rem 1.3rem;
         border-radius: 14px;
         display: flex;
         align-items: center;
         gap: 1rem;
-        font-size: 1.05rem;
+        font-size: 1.02rem;
         line-height: 1.5;
         font-weight: 600;
     }
-    .ps-problem {
+    .ps-problem-cell {
         background: rgba(199, 68, 64, 0.1);
         border: 1px solid rgba(199, 68, 64, 0.32);
         color: #8b2f2b;
     }
-    .ps-solution {
+    .ps-solution-cell {
         background: rgba(95, 184, 125, 0.16);
         border: 1px solid rgba(58, 145, 96, 0.36);
         color: var(--green-800);
     }
-    .ps-problem .ico, .ps-solution .ico {
-        font-size: 1.55rem;
+    .ps-problem-cell .ico, .ps-solution-cell .ico {
+        font-size: 1.5rem;
         flex-shrink: 0;
     }
     .ps-arrow {
         display: grid;
         place-items: center;
         color: var(--green-600);
-        font-size: 1.6rem;
+        font-size: 1.5rem;
         font-weight: 800;
-        min-width: 36px;
+        min-width: 32px;
     }
 
-    /* ============================================================
-       COMPONENT CARDS
-       ============================================================ */
+    /* ═══════════════ COMPONENT CARDS ═══════════════ */
     .component-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
@@ -815,9 +899,7 @@
         font-weight: 500;
     }
 
-    /* ============================================================
-       STATE MACHINE
-       ============================================================ */
+    /* ═══════════════ STATE GRID ═══════════════ */
     .state-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
@@ -858,9 +940,7 @@
         font-weight: 500;
     }
 
-    /* ============================================================
-       AUTONOMY FACTORS
-       ============================================================ */
+    /* ═══════════════ AUTONOMY GRID ═══════════════ */
     .autonomy-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -901,7 +981,7 @@
         margin-bottom: 0.55rem;
     }
     .auto-card p {
-        font-size: 0.96rem;
+        font-size: 0.95rem;
         color: var(--text-body);
         line-height: 1.55;
         margin-bottom: 0.8rem;
@@ -928,57 +1008,7 @@
         font-weight: 800;
     }
 
-    /* ============================================================
-       HARDWARE CARDS (for purpose-of-each-part slides)
-       ============================================================ */
-    .hw-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1.1rem;
-        margin-top: 1.4rem;
-    }
-    .hw {
-        background: rgba(255, 255, 255, 0.78);
-        border: 1px solid rgba(58, 145, 96, 0.25);
-        border-radius: 18px;
-        padding: 1.3rem 1.3rem;
-        box-shadow: 0 6px 18px -12px rgba(58, 145, 96, 0.3);
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-    }
-    .hw:hover {
-        transform: translateY(-5px);
-        border-color: rgba(58, 145, 96, 0.55);
-    }
-    .hw .icon {
-        width: 46px; height: 46px;
-        border-radius: 12px;
-        display: grid; place-items: center;
-        font-size: 1.45rem;
-        background: linear-gradient(135deg, rgba(95, 184, 125, 0.26), rgba(58, 145, 96, 0.14));
-        border: 1px solid rgba(58, 145, 96, 0.3);
-        margin-bottom: 0.9rem;
-    }
-    .hw h4 {
-        font-size: 1.05rem;
-        font-weight: 800;
-        color: var(--green-900);
-        margin-bottom: 0.5rem;
-    }
-    .hw p { font-size: 0.94rem; color: var(--text-body); line-height: 1.55; font-weight: 500; }
-    .hw code {
-        font-family: var(--font-mono);
-        font-size: 0.82rem;
-        color: var(--green-700);
-        background: rgba(95, 184, 125, 0.16);
-        padding: 0.1rem 0.45rem;
-        border-radius: 5px;
-    }
-
-    /* ============================================================
-       DATA FLOW
-       ============================================================ */
+    /* ═══════════════ DATA FLOW ═══════════════ */
     .flow {
         display: flex;
         flex-direction: column;
@@ -1038,19 +1068,8 @@
         font-size: 1.3rem;
         font-weight: 800;
     }
-    .flow-payload {
-        font-family: var(--font-mono);
-        font-size: 0.78rem;
-        color: var(--amber-500);
-        background: rgba(240, 184, 60, 0.15);
-        padding: 0.15rem 0.5rem;
-        border-radius: 5px;
-        margin-left: 0.4rem;
-    }
 
-    /* ============================================================
-       ROADMAP
-       ============================================================ */
+    /* ═══════════════ TIMELINE ═══════════════ */
     .future-timeline {
         position: relative;
         margin-top: 1.5rem;
@@ -1065,7 +1084,7 @@
     }
     .ftl-item {
         position: relative;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1.4rem;
         padding-left: 0.6rem;
     }
     .ftl-item::before {
@@ -1091,39 +1110,19 @@
     .ftl-item.amber .phase { color: var(--amber-500); }
     .ftl-item.purple .phase { color: var(--purple-500); }
     .ftl-item h4 {
-        font-size: 1.25rem;
+        font-size: 1.2rem;
         font-weight: 800;
         color: var(--green-900);
         margin-bottom: 0.35rem;
     }
     .ftl-item p {
-        font-size: 1rem;
+        font-size: 0.98rem;
         color: var(--text-body);
         line-height: 1.55;
         font-weight: 500;
     }
 
-    /* ============================================================
-       LIMITATION CARDS
-       ============================================================ */
-    .limit-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.4rem 0.95rem;
-        background: rgba(199, 68, 64, 0.15);
-        border: 1px solid rgba(199, 68, 64, 0.4);
-        border-radius: 999px;
-        color: #8b2f2b;
-        font-size: 0.85rem;
-        font-weight: 800;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-    }
-
-    /* ============================================================
-       Q&A SLIDE
-       ============================================================ */
+    /* ═══════════════ Q&A ═══════════════ */
     .cta-slide { text-align: center; align-items: center; }
     .cta-slide .slide-tag { margin-left: auto; margin-right: auto; }
     .cta-slide .lead { margin: 0 auto; }
@@ -1175,9 +1174,7 @@
         box-shadow: 0 15px 30px -12px rgba(58, 145, 96, 0.4);
     }
 
-    /* ============================================================
-       NAV
-       ============================================================ */
+    /* ═══════════════ NAV ═══════════════ */
     .nav {
         position: fixed;
         bottom: 1.5rem;
@@ -1239,9 +1236,7 @@
         text-align: center;
     }
 
-    /* ============================================================
-       HUD
-       ============================================================ */
+    /* ═══════════════ HUD ═══════════════ */
     .slide-num {
         position: fixed;
         top: 1.6rem; right: 2rem;
@@ -1273,17 +1268,15 @@
         box-shadow: 0 6px 14px -4px rgba(58, 145, 96, 0.5);
     }
 
-    /* ============================================================
-       RESPONSIVE
-       ============================================================ */
+    /* ═══════════════ RESPONSIVE ═══════════════ */
     @media (max-width: 1200px) {
         .slide { padding: 3rem 2.5rem; }
         .stat-grid { grid-template-columns: 1fr 1fr; }
+        .problem-stats { grid-template-columns: 1fr 1fr; }
         .two-col, .two-col.wide { grid-template-columns: 1fr; }
         .state-grid { grid-template-columns: 1fr 1fr; }
         .component-grid { grid-template-columns: 1fr; }
         .autonomy-grid { grid-template-columns: 1fr; }
-        .hw-grid { grid-template-columns: 1fr; }
         .tier-grid { grid-template-columns: 1fr; }
         .process-grid { grid-template-columns: 1fr 1fr; }
         .flow-row { grid-template-columns: 1fr; gap: 0.5rem; }
@@ -1297,12 +1290,13 @@
         .process-grid { grid-template-columns: 1fr; }
         .stat-grid { grid-template-columns: 1fr; }
         .state-grid { grid-template-columns: 1fr; }
+        .problem-stats { grid-template-columns: 1fr; }
     }
 </style>
 </head>
 <body>
 
-<!-- ================= LIGHT ANIMATED BACKGROUND ================= -->
+<!-- ═══════════════ BACKGROUND ═══════════════ -->
 <div class="bg">
     <div class="orb o1"></div>
     <div class="orb o2"></div>
@@ -1317,14 +1311,12 @@
 </div>
 
 <div class="watermark"><div class="mark">🌱</div> NIPAS</div>
-<div class="slide-num"><strong id="curSlide">01</strong> / <span id="totSlides">19</span></div>
+<div class="slide-num"><strong id="curSlide">01</strong> / <span id="totSlides">21</span></div>
 
-<!-- ================= SLIDES ================= -->
+<!-- ═══════════════ SLIDES ═══════════════ -->
 <div class="deck" id="deck">
 
-    <!-- ═══════════════════════════════════════════════════════
-         01 — TITLE
-         ═══════════════════════════════════════════════════════ -->
+    <!-- ═════════ 01 — TITLE ═════════ -->
     <section class="slide title-slide active">
         <div class="logo-badge">🌱</div>
         <div class="slide-tag"><span class="dot"></span> Precision Agriculture · Bangladesh</div>
@@ -1349,54 +1341,121 @@
         </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════════════════
-         02 — THE PROBLEM
-         ═══════════════════════════════════════════════════════ -->
+    <!-- ═════════ 02 — THE PROBLEM (BD CONTEXT) ═════════ -->
     <section class="slide">
-        <div class="slide-tag"><span class="dot"></span> The Problem</div>
-        <h2 class="slide-title">Bangladeshi smallholders face <span class="accent">five compounding crises</span></h2>
+        <div class="slide-tag"><span class="dot"></span> The Problem · Bangladesh</div>
+        <h2 class="slide-title">Bangladeshi smallholders face <span class="accent-red">five compounding crises</span></h2>
+        <p class="lead" style="margin-bottom: 0.5rem;">
+            These aren't abstract challenges — they are specific, measurable problems in Bangladesh today.
+        </p>
         <div class="feature-list">
             <div class="feature red">
                 <div class="emoji">🚱</div>
                 <div>
-                    <h4>Groundwater depletion</h4>
-                    <p>Flood irrigation in northern districts wastes massive water volumes. Aquifers are dropping faster than they recharge.</p>
+                    <h4>Groundwater depletion from flood irrigation</h4>
+                    <p>Northern districts (Rajshahi, Rangpur, Dinajpur) sit over aquifers that are being pumped dry. Water tables are dropping <strong>meters per decade</strong>. Tube wells now go 300+ feet deep.</p>
                 </div>
             </div>
             <div class="feature red">
                 <div class="emoji">💸</div>
                 <div>
-                    <h4>Chemical overuse &amp; input costs</h4>
-                    <p>Broadcast fertilization drains farmer income and degrades soil biology. Most doses are wasted on non-target areas.</p>
+                    <h4>Over-fertilization &amp; chemical waste</h4>
+                    <p>A smallholder spends <strong>30–40% of total input cost</strong> on fertilizer and pesticide. Most is broadcast over the whole field — where <strong>60–70% never reaches the plant</strong>. Runoff contaminates canals and kills soil biology.</p>
                 </div>
             </div>
             <div class="feature red">
                 <div class="emoji">🌱</div>
                 <div>
-                    <h4>Root zone damage from manual testing</h4>
-                    <p>Hand-digging soil samples severs delicate root architecture and opens infection pathways.</p>
+                    <h4>Root zone damage from manual soil testing</h4>
+                    <p>Traditional digging with a spade cuts through the <strong>fine root hairs</strong> that absorb nutrients. Every cut is an infection entry point — a common cause of root rot in tomato and chili.</p>
                 </div>
             </div>
             <div class="feature red">
                 <div class="emoji">🍂</div>
                 <div>
-                    <h4>Diseases spread undetected</h4>
-                    <p>Chlorosis, blight, and bacterial spot destroy tomato, chili, and brinjal crops within days — before symptoms are visible.</p>
+                    <h4>Diseases spread before they're visible</h4>
+                    <p>By the time a farmer <em>sees</em> chlorosis or necrosis, the disease has spread through the plant's vascular system. The window between invisible and unrecoverable is <strong>3–5 days</strong>.</p>
                 </div>
             </div>
             <div class="feature red">
-                <div class="emoji">👷</div>
+                <div class="emoji">👴</div>
                 <div>
-                    <h4>Labor-intensive manual monitoring</h4>
-                    <p>Walking fields daily to inspect every plant is physically impossible for aging farmers and family-run plots.</p>
+                    <h4>Labor shortage &amp; aging farmer population</h4>
+                    <p>Bangladesh's average farmer is <strong>over 50</strong>, and young people are migrating to cities for garment factory work. There aren't enough hands to walk every field every day.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════════════════
-         03 — CORE PURPOSES
-         ═══════════════════════════════════════════════════════ -->
+    <!-- ═════════ 03 — PROBLEM IN NUMBERS ═════════ -->
+    <section class="slide">
+        <div class="slide-tag"><span class="dot"></span> The Problem · By the Numbers</div>
+        <h2 class="slide-title">Five problems, <span class="accent-red">measured in real figures</span></h2>
+        <div class="problem-stats">
+            <div class="problem-stat">
+                <div class="big-num">70%</div>
+                <div class="big-lbl">Water wasted by flood irrigation</div>
+            </div>
+            <div class="problem-stat">
+                <div class="big-num">30–40%</div>
+                <div class="big-lbl">Of farm income spent on chemicals</div>
+            </div>
+            <div class="problem-stat">
+                <div class="big-num">60–70%</div>
+                <div class="big-lbl">Chemical lost to runoff, not absorbed</div>
+            </div>
+            <div class="problem-stat">
+                <div class="big-num">3–5</div>
+                <div class="big-lbl">Days between invisible and unrecoverable disease</div>
+            </div>
+        </div>
+        <p class="lead" style="margin-top: 2rem;">
+            Each of these numbers represents real income lost — <strong>every single season</strong> — for millions of smallholder families across Bangladesh.
+        </p>
+    </section>
+
+    <!-- ═════════ 04 — HOW NIPAS SOLVES IT ═════════ -->
+    <section class="slide">
+        <div class="slide-tag"><span class="dot"></span> The Solution · Problem by Problem</div>
+        <h2 class="slide-title">Every problem, <span class="accent">a specific engineering fix</span></h2>
+        <p class="lead" style="margin-bottom: 0.5rem;">
+            NIPAS was designed around these five problems — not around technology looking for a use case.
+        </p>
+        <div class="ps-grid">
+            <div class="ps-card">
+                <div class="ps-number">01</div>
+                <div class="ps-problem">Groundwater depletion</div>
+                <div class="ps-solution"><strong>Targeted micro-misting</strong> — delivers water only to each plant's root zone, only when soil moisture drops below threshold. Saves up to <strong>70% of water</strong>.</div>
+            </div>
+            <div class="ps-card">
+                <div class="ps-number">02</div>
+                <div class="ps-problem">Chemical overuse &amp; waste</div>
+                <div class="ps-solution"><strong>Spray only infected plants</strong> — ESP32-CAM scans every leaf, then doses only what's needed, at the exact amount required for that severity. <strong>50% less chemical</strong>.</div>
+            </div>
+            <div class="ps-card">
+                <div class="ps-number">03</div>
+                <div class="ps-problem">Root zone damage</div>
+                <div class="ps-solution"><strong>Servo-deployed probe</strong> — capacitive sensor is lowered gently into soil by a metal-gear servo, then retracted. <strong>No digging, no cutting, no root damage</strong>.</div>
+            </div>
+            <div class="ps-card">
+                <div class="ps-number">04</div>
+                <div class="ps-problem">Disease spreading undetected</div>
+                <div class="ps-solution"><strong>HSV color analysis</strong> — the camera detects the color signature of infection at <strong>5% ratio</strong>, well before the human eye can see yellowing or browning.</div>
+            </div>
+            <div class="ps-card">
+                <div class="ps-number">05</div>
+                <div class="ps-problem">Labor shortage</div>
+                <div class="ps-solution"><strong>Fully autonomous robot</strong> — scans every plant, every row, every 40 centimeters. <strong>2–3 hours of work per charge</strong>, no human walking required.</div>
+            </div>
+            <div class="ps-card">
+                <div class="ps-number">06</div>
+                <div class="ps-problem">No actionable farm data</div>
+                <div class="ps-solution"><strong>Live web dashboard</strong> — every reading, every spray, every scan logged and streamed to the farmer's phone. <strong>Replaces guesswork with exact numbers</strong>.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═════════ 05 — CORE PURPOSES ═════════ -->
     <section class="slide">
         <div class="slide-tag"><span class="dot"></span> Core Purposes</div>
         <h2 class="slide-title">Four missions that drive <span class="accent">every design decision</span></h2>
@@ -1432,20 +1491,18 @@
         </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════════════════
-         04 — TWO TIERS OVERVIEW (NEW)
-         ═══════════════════════════════════════════════════════ -->
+    <!-- ═════════ 06 — TWO TIERS OVERVIEW ═════════ -->
     <section class="slide">
         <div class="slide-tag"><span class="dot"></span> Two Tiers · One System</div>
         <h2 class="slide-title">A <span class="accent-blue">demo prototype</span> for building · a <span class="accent">commercial robot</span> for farmers</h2>
         <p class="lead" style="margin-bottom: 1rem;">
-            NIPAS exists in two deliberate versions. The <strong>Demo Prototype</strong> proves the technology and is used for academic demonstration. The <strong>Commercial Mid-Tier</strong> is the field-ready unit that can actually be handed to a farmer today.
+            NIPAS exists in two deliberate versions. The <strong>Demo Prototype</strong> proves the technology. The <strong>Commercial Mid-Tier</strong> is the field-ready unit for real deployment.
         </p>
         <div class="tier-grid">
             <div class="tier-card demo">
                 <div class="tier-label">◈ Version 1</div>
                 <div class="tier-title">Demo Prototype</div>
-                <div class="tier-desc">Built for academic demonstration and engineering validation. Uses standard hobby-grade modules assembled on a breadboard.</div>
+                <div class="tier-desc">Built for academic demonstration and engineering validation. Standard hobby-grade modules on a breadboard.</div>
                 <div class="tier-price">৳3,440 – ৳4,000</div>
                 <div class="tier-price-note">≈ $30 USD · prototyping BOM</div>
                 <ul>
@@ -1454,31 +1511,28 @@
                     <li>Exposed wiring, no weatherproofing</li>
                     <li>HC-SR04 sensor (not waterproof)</li>
                     <li>Full functionality — but fragile</li>
-                    <li>Perfect for classroom demonstration</li>
+                    <li>Perfect for classroom demo</li>
                 </ul>
             </div>
             <div class="tier-card production">
                 <div class="tier-label">◈ Version 2</div>
                 <div class="tier-title">Commercial Mid-Tier</div>
-                <div class="tier-desc">The field-ready unit for real deployment. Weather-sealed, vibration-resistant, and built with locally available commercial parts.</div>
+                <div class="tier-desc">The field-ready unit for real deployment. Weather-sealed, vibration-resistant, built with locally available commercial parts.</div>
                 <div class="tier-price">৳7,500 – ৳8,000</div>
                 <div class="tier-price-note">≈ $65 – $70 USD · retail price to farmer</div>
                 <ul>
                     <li>Laser-cut aluminum/acrylic hybrid frame</li>
                     <li>37GB metal-gear high-torque motors</li>
-                    <li>Custom PCB terminal shield — no loose wires</li>
+                    <li>Custom PCB shield — no loose wires</li>
                     <li>IP67 JSN-SR04T waterproof ultrasonic</li>
                     <li>MG90S metal-gear probe servo</li>
                     <li>Sealed lens hood, mud shielding</li>
-                    <li>3–4× longer service life</li>
                 </ul>
             </div>
         </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════════════════
-         05 — WHY TWO TIERS
-         ═══════════════════════════════════════════════════════ -->
+    <!-- ═════════ 07 — WHY TWO TIERS ═════════ -->
     <section class="slide">
         <div class="slide-tag"><span class="dot"></span> Why Two Tiers?</div>
         <h2 class="slide-title">A prototype proves the idea. <span class="accent">A product survives the field.</span></h2>
@@ -1495,21 +1549,21 @@
                     <div class="emoji">🌾</div>
                     <div>
                         <h4>Commercial Mid-Tier exists to survive farms</h4>
-                        <p>Fields are dusty, wet, hot, and bumpy. Plastic gears strip, jumper wires vibrate loose, non-waterproof sensors fail after the first rain. The commercial version fixes all of this with upgraded parts and enclosure protection.</p>
+                        <p>Fields are dusty, wet, hot, and bumpy. Plastic gears strip, jumper wires vibrate loose, non-waterproof sensors fail after the first rain. The commercial version fixes all of this.</p>
                     </div>
                 </div>
                 <div class="feature amber">
                     <div class="emoji">💰</div>
                     <div>
                         <h4>Price difference reflects real engineering</h4>
-                        <p>The demo costs ৳4,000 because it's made of the cheapest functional parts. The commercial costs ৳8,000 because it uses metal gears, custom PCB, waterproof sensors, and a protective frame — all of which cost more but save the farmer from constant repairs.</p>
+                        <p>The demo costs ৳4,000 because it uses the cheapest functional parts. The commercial costs ৳8,000 because it uses metal gears, custom PCB, waterproof sensors, and a protective frame.</p>
                     </div>
                 </div>
                 <div class="feature purple">
                     <div class="emoji">🎯</div>
                     <div>
                         <h4>Both are affordable for their audience</h4>
-                        <p>The demo is affordable for a student or researcher. The commercial is affordable for a farmer, financed against the cost of a single lost crop. Both are vastly cheaper than commercial precision-ag platforms at $500+.</p>
+                        <p>The demo is affordable for a student or researcher. The commercial is affordable for a farmer, financed against the cost of a single lost crop.</p>
                     </div>
                 </div>
             </div>
@@ -1517,35 +1571,33 @@
                 <div class="stat">
                     <div class="num blue">৳4K</div>
                     <div class="lbl">Demo Prototype</div>
-                    <div class="sub">Hobby-grade parts, breadboard assembly</div>
+                    <div class="sub">Hobby-grade parts</div>
                 </div>
                 <div class="stat">
                     <div class="num">৳8K</div>
                     <div class="lbl">Commercial Mid-Tier</div>
-                    <div class="sub">Industrial parts, field-ready build</div>
+                    <div class="sub">Field-ready build</div>
                 </div>
                 <div class="stat">
                     <div class="num amber">2×</div>
                     <div class="lbl">Cost Multiplier</div>
-                    <div class="sub">For 3–4× longer field service life</div>
+                    <div class="sub">For 3–4× longer field life</div>
                 </div>
                 <div class="stat">
                     <div class="num purple">$30 vs $70</div>
                     <div class="lbl">USD Equivalent</div>
-                    <div class="sub">Both under $100 — vastly under commercial alternatives</div>
+                    <div class="sub">Both under $100</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════════════════
-         06 — COMMERCIAL BOM (NEW)
-         ═══════════════════════════════════════════════════════ -->
+    <!-- ═════════ 08 — COMMERCIAL BOM ═════════ -->
     <section class="slide">
         <div class="slide-tag"><span class="dot"></span> Commercial Mid-Tier · BOM</div>
         <h2 class="slide-title">Field-ready build · <span class="accent-amber">৳7,180 total manufacturing cost</span></h2>
         <p class="lead" style="margin-bottom: 0.6rem;">
-            Every component is upgraded over the demo tier. These are real, locally-sourced parts chosen for durability in Bangladeshi field conditions.
+            Every component is upgraded over the demo tier. Real, locally-sourced parts chosen for durability in Bangladeshi field conditions.
         </p>
         <div class="cost-table">
             <div class="cost-row header">
@@ -1555,7 +1607,7 @@
             </div>
             <div class="cost-row">
                 <div class="name">Hybrid Frame Chassis</div>
-                <div class="purpose">Laser-cut aluminum/acrylic housing with mud shields</div>
+                <div class="purpose">Laser-cut aluminum/acrylic with mud shields</div>
                 <div class="price">1,000</div>
             </div>
             <div class="cost-row">
@@ -1595,7 +1647,7 @@
             </div>
             <div class="cost-row">
                 <div class="name">ESP32-CAM + Lens Hood</div>
-                <div class="purpose">Camera module inside protective recessed hood</div>
+                <div class="purpose">Camera inside protective recessed hood</div>
                 <div class="price">750</div>
             </div>
             <div class="cost-row">
@@ -1626,9 +1678,7 @@
         </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════════════════
-         07 — WHAT'S UPGRADED (NEW)
-         ═══════════════════════════════════════════════════════ -->
+    <!-- ═════════ 09 — WHAT'S UPGRADED ═════════ -->
     <section class="slide">
         <div class="slide-tag"><span class="dot"></span> What's Upgraded?</div>
         <h2 class="slide-title">Every component that fails in the field · <span class="accent">is upgraded in the commercial build</span></h2>
@@ -1654,7 +1704,7 @@
                 <div>
                     <h5>Obstacle Sensing</h5>
                     <div class="role">Replaces HC-SR04 · +৳370</div>
-                    <p>JSN-SR04T IP67-rated waterproof ultrasonic replaces the standard HC-SR04. Dust, rain, and mud spray no longer blind the sensor.</p>
+                    <p>JSN-SR04T IP67 waterproof ultrasonic replaces the standard HC-SR04. Dust, rain, and mud spray no longer blind the sensor.</p>
                 </div>
             </div>
             <div class="component">
@@ -1662,7 +1712,7 @@
                 <div>
                     <h5>Misting System</h5>
                     <div class="role">Replaces gravity feed · +৳250</div>
-                    <p>Self-priming 12V diaphragm pump builds proper hydraulic pressure for precise micro-misting nozzles — much finer droplets, less chemical waste.</p>
+                    <p>Self-priming 12V diaphragm pump builds proper hydraulic pressure for precise micro-misting nozzles — finer droplets, less chemical waste.</p>
                 </div>
             </div>
             <div class="component">
@@ -1684,24 +1734,22 @@
         </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════════════════
-         08 — DATA FLOW
-         ═══════════════════════════════════════════════════════ -->
+    <!-- ═════════ 10 — DATA FLOW ═════════ -->
     <section class="slide">
         <div class="slide-tag"><span class="dot"></span> Data Flow</div>
         <h2 class="slide-title">How information travels from <span class="accent-blue">soil to screen</span></h2>
         <div class="flow">
             <div class="flow-row">
                 <div class="flow-num">STEP 01</div>
-                <div class="flow-source">🌾 Sensor reads<span class="flow-payload">raw analog</span></div>
+                <div class="flow-source">🌾 Sensor reads</div>
                 <div class="flow-arrow">→</div>
-                <div class="flow-dest">🧠 ESP32 converts to JSON<span class="flow-payload">{moisture, temp}</span></div>
+                <div class="flow-dest">🧠 ESP32 converts to JSON</div>
             </div>
             <div class="flow-row">
                 <div class="flow-num">STEP 02</div>
                 <div class="flow-source">🧠 ESP32 state machine</div>
                 <div class="flow-arrow">→</div>
-                <div class="flow-dest">📡 MQTT publish on <code style="font-family: var(--font-mono); color: var(--green-800); font-size: 0.85rem;">nipas/robot-01/telemetry</code></div>
+                <div class="flow-dest">📡 MQTT publish on telemetry topic</div>
             </div>
             <div class="flow-row">
                 <div class="flow-num">STEP 03</div>
@@ -1719,7 +1767,7 @@
                 <div class="flow-num">STEP 05</div>
                 <div class="flow-source">🖱️ Farmer taps Spray</div>
                 <div class="flow-arrow">→</div>
-                <div class="flow-dest">📤 MQTT publish on <code style="font-family: var(--font-mono); color: var(--green-800); font-size: 0.85rem;">nipas/robot-01/cmd</code></div>
+                <div class="flow-dest">📤 MQTT publish on cmd topic</div>
             </div>
             <div class="flow-row">
                 <div class="flow-num">STEP 06</div>
@@ -1729,15 +1777,11 @@
             </div>
         </div>
         <p class="lead" style="margin-top: 1.5rem; font-size: 1.1rem;">
-            <strong>Round-trip time:</strong> ~150–400 ms over 4G, &lt; 50 ms over local WiFi ·
-            <strong>Payload size:</strong> ~180 bytes per telemetry frame ·
-            <strong>Data used:</strong> ~2 MB/month
+            <strong>Round-trip time:</strong> ~150–400 ms over 4G · <strong>Payload size:</strong> ~180 bytes per frame · <strong>Data used:</strong> ~2 MB/month
         </p>
     </section>
 
-    <!-- ═══════════════════════════════════════════════════════
-         09 — STATE MACHINE
-         ═══════════════════════════════════════════════════════ -->
+    <!-- ═════════ 11 — STATE MACHINE ═════════ -->
     <section class="slide">
         <div class="slide-tag"><span class="dot"></span> Autonomy · The Brain</div>
         <h2 class="slide-title">A <span class="accent">state machine</span> that drives the entire field mission</h2>
@@ -1788,9 +1832,7 @@
         </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════════════════
-         10 — AUTONOMY FACTORS
-         ═══════════════════════════════════════════════════════ -->
+    <!-- ═════════ 12 — AUTONOMY FACTORS ═════════ -->
     <section class="slide">
         <div class="slide-tag"><span class="dot"></span> Autonomy Factors</div>
         <h2 class="slide-title">What makes the robot <span class="accent">run on its own</span></h2>
@@ -1798,7 +1840,7 @@
             <div class="auto-card">
                 <span class="icon-lg">📏</span>
                 <h4>Odometry via Encoders</h4>
-                <p>The robot tracks distance using wheel rotations. Every 20 ticks = one wheel revolution ≈ 20 cm.</p>
+                <p>Distance tracked by wheel rotations. Every 20 ticks = one wheel revolution ≈ 20 cm.</p>
                 <ul>
                     <li>Knows exact row position</li>
                     <li>Triggers scan at correct spacing</li>
@@ -1818,17 +1860,17 @@
             <div class="auto-card">
                 <span class="icon-lg">🔄</span>
                 <h4>Row-End Detection</h4>
-                <p>Encoder ticks since row start are compared against the configured row length.</p>
+                <p>Encoder ticks since row start compared against configured row length.</p>
                 <ul>
                     <li>Auto turn on reaching end</li>
                     <li>Row counter increments</li>
-                    <li>Field finish when total rows reached</li>
+                    <li>Field finish when all rows done</li>
                 </ul>
             </div>
             <div class="auto-card">
                 <span class="icon-lg">🎯</span>
                 <h4>Adaptive Spray Dosing</h4>
-                <p>Spray duration is computed from infection severity — not fixed.</p>
+                <p>Spray duration computed from infection severity — not fixed.</p>
                 <ul>
                     <li>Healthy leaf → 0 ms spray</li>
                     <li>Mild infection → 800 ms</li>
@@ -1848,7 +1890,7 @@
             <div class="auto-card">
                 <span class="icon-lg">📡</span>
                 <h4>MQTT Resilience</h4>
-                <p>State is published continuously. If WiFi drops, robot keeps working — messages queue for reconnect.</p>
+                <p>State published continuously. If WiFi drops, robot keeps working — messages queue for reconnect.</p>
                 <ul>
                     <li>Offline-first design</li>
                     <li>QoS 1 guarantees delivery</li>
@@ -1858,9 +1900,7 @@
         </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════════════════
-         11 — HSV VISION
-         ═══════════════════════════════════════════════════════ -->
+    <!-- ═════════ 13 — HSV VISION ═════════ -->
     <section class="slide">
         <div class="slide-tag"><span class="dot"></span> Computer Vision</div>
         <h2 class="slide-title">Color is a <span class="accent">diagnostic signal</span></h2>
@@ -1868,7 +1908,7 @@
             <div>
                 <p class="lead">
                     Every pixel is converted to the HSV color space. The CAM counts pixels falling
-                    into disease-specific ranges. This runs <strong>entirely on-device</strong> — no GPU, no cloud AI, no monthly fee.
+                    into disease-specific ranges. Runs <strong>entirely on-device</strong> — no GPU, no cloud AI, no monthly fee.
                 </p>
                 <div class="feature-list" style="margin-top: 1.5rem;">
                     <div class="feature" style="border-left-color: #5fb87d;">
@@ -1918,9 +1958,7 @@
         </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════════════════
-         12 — THE DASHBOARD
-         ═══════════════════════════════════════════════════════ -->
+    <!-- ═════════ 14 — THE DASHBOARD ═════════ -->
     <section class="slide">
         <div class="slide-tag"><span class="dot"></span> The Dashboard</div>
         <h2 class="slide-title">The farmer's <span class="accent">mission control</span></h2>
@@ -1987,9 +2025,7 @@
         </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════════════════
-         13 — CURRENT LIMITATIONS
-         ═══════════════════════════════════════════════════════ -->
+    <!-- ═════════ 15 — LIMITATIONS ═════════ -->
     <section class="slide">
         <div class="slide-tag"><span class="dot"></span> Honest Assessment</div>
         <h2 class="slide-title">What we <span style="color: #c74440; -webkit-text-fill-color: #c74440;">haven't solved yet</span></h2>
@@ -2022,7 +2058,7 @@
                 <div class="emoji">🔋</div>
                 <div>
                     <h4>Runtime limited by pump</h4>
-                    <p>The pump draws 1–2 A. Battery bank gives 2–3 hours continuous field operation.</p>
+                    <p>The pump draws 1–2 A. Battery bank gives 2–3 hours of continuous field operation.</p>
                 </div>
             </div>
             <div class="feature red">
@@ -2035,9 +2071,7 @@
         </div>
     </section>
 
-        <!-- ═══════════════════════════════════════════════════════
-         14 — FUTURE: DEDICATED CONTROLLER
-         ═══════════════════════════════════════════════════════ -->
+    <!-- ═════════ 16 — FUTURE: PCB ═════════ -->
     <section class="slide">
         <div class="slide-tag"><span class="dot"></span> Future Scope · 1</div>
         <h2 class="slide-title">Full custom PCB with <span class="accent">everything on one board</span></h2>
@@ -2055,7 +2089,7 @@
                     <li>External relay + power modules</li>
                     <li>≈৳7,180 total manufacturing cost</li>
                     <li>Field-ready but modular</li>
-                    <li><strong>Status: Assembled &amp; tested</strong></li>
+                    <li><strong>Status: Design complete · not yet assembled</strong></li>
                 </ul>
             </div>
             <div class="tier-card production">
@@ -2068,8 +2102,8 @@
                     <li>Integrated 12V → 5V buck + TP4056 Li-ion charger</li>
                     <li>Machine-placed SMT replaces hand-soldered joints</li>
                     <li>Reduces wiring-related failures by an estimated 70–80%</li>
-                    <li>≈৳1,800 per PCB at 100-unit scale <span style="color: var(--text-muted); font-weight: 500;">(parts + assembly only)</span></li>
-                    <li><strong>Status: Design stage · ~6 months to first prototype</strong></li>
+                    <li>≈৳1,800 per PCB at 100-unit scale (parts + assembly only)</li>
+                    <li><strong>Status: Concept stage · 6-month roadmap</strong></li>
                 </ul>
             </div>
         </div>
@@ -2078,9 +2112,7 @@
         </p>
     </section>
 
-    <!-- ═══════════════════════════════════════════════════════
-         15 — FUTURE ROADMAP
-         ═══════════════════════════════════════════════════════ -->
+    <!-- ═════════ 17 — FUTURE ROADMAP ═════════ -->
     <section class="slide">
         <div class="slide-tag"><span class="dot"></span> Future Scope · 2</div>
         <h2 class="slide-title">Where NIPAS goes <span class="accent-purple">next</span></h2>
@@ -2118,9 +2150,7 @@
         </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════════════════
-         16 — IMPACT
-         ═══════════════════════════════════════════════════════ -->
+    <!-- ═════════ 18 — IMPACT ═════════ -->
     <section class="slide">
         <div class="slide-tag"><span class="dot"></span> Impact</div>
         <h2 class="slide-title">What NIPAS delivers <span class="accent">today</span></h2>
@@ -2164,9 +2194,7 @@
         </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════════════════
-         17 — CLOSING / Q&A
-         ═══════════════════════════════════════════════════════ -->
+    <!-- ═════════ 19 — Q&A ═════════ -->
     <section class="slide cta-slide">
         <div class="slide-tag"><span class="dot"></span> Thank You</div>
         <h1 class="qa-heading">Q&amp;A Session</h1>
@@ -2188,11 +2216,11 @@
 
 </div>
 
-<!-- ================= NAVIGATION ================= -->
+<!-- ═══════════════ NAVIGATION ═══════════════ -->
 <nav class="nav">
     <button class="nav-btn" id="prevBtn" aria-label="Previous">←</button>
     <div class="dots" id="dots"></div>
-    <span class="progress-text" id="progressText">1 / 17</span>
+    <span class="progress-text" id="progressText">1 / 19</span>
     <button class="nav-btn" id="nextBtn" aria-label="Next">→</button>
 </nav>
 
@@ -2210,7 +2238,7 @@
     slides.forEach((_, i) => {
         const btn = document.createElement('button');
         btn.className = 'dot-btn' + (i === 0 ? ' active' : '');
-        btn.setAttribute('aria-label', `Go to slide ${i + 1}`);
+        btn.setAttribute('aria-label', 'Go to slide ' + (i + 1));
         btn.addEventListener('click', () => goTo(i));
         dotsContainer.appendChild(btn);
     });
@@ -2231,7 +2259,7 @@
         slides[current].classList.add('active');
         dots[current].classList.add('active');
         slides[current].scrollTop = 0;
-        progressText.textContent = `${current + 1} / ${total}`;
+        progressText.textContent = (current + 1) + ' / ' + total;
         curSlideEl.textContent = String(current + 1).padStart(2, '0');
 
         prevBtn.disabled = current === 0;
