@@ -243,6 +243,7 @@ Download from [arduino.cc/en/software](https://www.arduino.cc/en/software) — v
 | ESP32Servo | Kevin Harrington | Servo control |
 | DHT sensor library | Adafruit | Temperature/humidity |
 | Adafruit Unified Sensor | Adafruit | DHT dependency |
+| WiFiManager | tzapu | Zero-config WiFi setup |
 
 **Note:** `esp32-camera` is bundled with the ESP32 board package — no separate install needed.
 
@@ -869,6 +870,52 @@ https://miftah1911.github.io/NIPAS-project/presentation.html
 
 ---
 
+## 🏆 BuildAthon Track C Compliance
+
+This project is submitted to **Track C — Agritech** at RoboFest Bangladesh 2026 · BuildAthon. Below is our compliance mapping to the rulebook requirements.
+
+### Track C Objectives
+
+| Requirement | How NIPAS Meets It |
+|---|---|
+| **Precision Farming** | Autonomous row-by-row scanning, per-plant spray decision, adaptive dosing |
+| **Pest Detection** | On-device HSV color analysis for chlorosis and necrosis |
+| **Resource Management** | Targeted micro-misting delivers water/chemicals only to plants that need it |
+
+### Sustainability Layer
+
+| Requirement | How NIPAS Meets It |
+|---|---|
+| **Water Optimization** | ~70% reduction vs flood irrigation (micro-misting to root zone only) |
+| **Reduced Chemical Usage** | ~50% reduction (spray only infected plants, dose ∝ severity) |
+| **Carbon Footprint** | Fully battery-powered, solar-ready, no cloud server dependency |
+
+### Feasibility & Scalability
+
+| Requirement | How NIPAS Meets It |
+|---|---|
+| **Edge Deployment** | All vision processing runs on the ESP32-CAM. No cloud inference. |
+| **Low-Connectivity Environments** | Offline-first: buffers up to 45 days of data to flash when network is absent |
+| **Minimal Payload Delivery** | MQTT packets are ~100 bytes. Monthly data usage ~2 MB. Works on 2G/3G. |
+
+### Track Constraint — Communication Protocol
+
+| Requirement | How NIPAS Meets It |
+|---|---|
+| **Protocol capable of scaling across regional sensor networks** | **MQTT over TLS.** Multiple robots each publish to their own topic namespace (`nipas/robot-01/...`, `nipas/robot-02/...`). A single dashboard subscribes to `nipas/+/telemetry` and receives data from every robot at once. HiveMQ Cloud free tier supports up to 100 devices — no infrastructure change needed to scale. 4G modem support (A7670C / SIM7600) is designed in — same MQTT layer, different transport. |
+
+### Deliverables (Section 02)
+
+| Requirement | Status |
+|---|---|
+| Public GitHub repository link | ✅ https://github.com/Miftah1911/NIPAS-project |
+| Active commit history | ✅ Daily commits during competition window |
+| Well-documented repo | ✅ Full README, AI_USAGE.md, docs/, wiring diagrams |
+| AI usage documented | ✅ [AI_USAGE.md](AI_USAGE.md) |
+| 3-minute demo video | ⏳ To be recorded before submission |
+
+---
+
 ## 🎓 Project Context
 
 This project was developed as part of an academic design and engineering submission on **precision agriculture for smallholder farmers in Bangladesh**.
@@ -1028,8 +1075,7 @@ For questions, issues, or collaboration:
 
 - Open an issue on [GitHub](https://github.com/Miftah1911/NIPAS-project/issues)
 - Email: *(miftahurrahman187@gmail.com)*
-- LinkedIn: *(https://www.linkedin.com/in/miftah-ur-rahman-08488a407/)git *
-
+- LinkedIn: [miftah-ur-rahman-08488a407](https://www.linkedin.com/in/miftah-ur-rahman-08488a407/)
 ---
 
 ## 📎 Appendix — Recommended `.gitignore`
