@@ -133,15 +133,21 @@ NIPAS/
 | File | Purpose | Runs on |
 |---|---|---|
 | **`index.html`** | Live dashboard — telemetry charts, KPI cards, robot status, leaf vision panel, manual controls, spray audit log, event log, settings drawer | Any modern browser |
-| **`presentation.html`** | 18-slide presentation deck with animated background, hardware breakdown, data flow diagrams, autonomy factors, future roadmap | Any modern browser (arrow keys to navigate) |
-
+| **`presentation.html`** | 8-slide BuildAthon pitch deck with timing bar, live dashboard demo slide, and honest limitations section | Any modern browser (arrow keys to navigate) |
 ### ⚙️ Firmware (ESP32)
 
 | File | Purpose | Flashed to |
 |---|---|---|
 | **`NIPAS_Config.h`** | **Edit this first.** Contains WiFi credentials, MQTT broker details, pin assignments, motion parameters, field defaults. Included by both `.ino` files. | — (header file) |
-| **`NIPAS_Robot.ino`** | Main brain — drives motors, reads encoders, coordinates scan→spray cycle, publishes MQTT telemetry, subscribes to dashboard commands | ESP32 Dev Board |
-| **`NIPAS_CAM.ino`** | Vision module — receives `SCAN` over UART, sweeps servo, runs HSV analysis, returns JSON result | ESP32-CAM (AI-Thinker) |
+| **`NIPAS_Robot/NIPAS_Robot.ino`** | Main brain — drives motors, reads encoders, coordinates scan→spray cycle, publishes MQTT telemetry, subscribes to dashboard commands | ESP32 Dev Board |
+| **`NIPAS_CAM/NIPAS_CAM.ino`** | Vision module — receives `SCAN` over UART, sweeps servo, runs HSV analysis, returns JSON result | ESP32-CAM (AI-Thinker) |
+### 🔧 Firmware Tools (Development & Testing)
+
+| File | Purpose | When to use |
+|---|---|---|
+| **`NIPAS_Calibration.ino`** | Standalone sensor calibration tool. Prints raw ADC values, ultrasonic distances, encoder counts, and battery voltage to Serial Monitor. | **Before assembly** — find your sensor baselines |
+| **`NIPAS_Simulation.ino`** | Full state machine running **without any hardware**. Motor commands print to Serial. Sensor values are synthetic. **MQTT still publishes real data.** | **Before you have hardware** — test the full MQTT pipeline, demo the dashboard with real messages |
+| **`NIPAS_Test.ino`** | Hardware diagnostic. Tests each component one at a time: LED, buzzer, relay, servo, motors, ultrasonic, moisture sensor, encoders. | **The day you assemble** — verify every component works before running the full robot |
 
 ### 📚 Documentation
 
@@ -160,12 +166,12 @@ NIPAS/
 | Device ID / MQTT topics | `firmware/NIPAS_Config.h` |
 | Motor speed, wheel diameter | `firmware/NIPAS_Config.h` |
 | Plant spacing / row length defaults | `firmware/NIPAS_Config.h` |
-| Pin assignments | `firmware/NIPAS_Robot.ino` (top of file) |
-| HSV disease color ranges | `firmware/NIPAS_CAM.ino` (`isChlorosis`, `isNecrosis` functions) |
-| State machine logic | `firmware/NIPAS_Robot.ino` (`loop()` switch-case) |
+| Pin assignments | `firmware/NIPAS_Robot/NIPAS_Robot.ino` (top of file) |
+| HSV disease color ranges | `firmware/NIPAS_CAM/NIPAS_CAM.ino` (`isChlorosis`, `isNecrosis` functions) |
+| State machine logic | `firmware/NIPAS_Robot/NIPAS_Robot.ino` (`loop()` switch-case) |
+| Offline buffer size | `firmware/NIPAS_Robot/NIPAS_Robot.ino` (`BUFFER_MAX` constant) |
 | Dashboard look & feel | `index.html` (`<style>` block) |
 | Dashboard behavior | `index.html` (`<script>` block at bottom) |
-
 ---
 
 ## 🛠 Hardware Requirements
@@ -401,12 +407,17 @@ Tab 1's dashboard should now update live with the fake data.
 
 ### 🌐 Internet Fallback (Rural Bangladesh)
 
-NIPAS is designed to work **without internet** in the field:
+### 🌐 Offline-First Design (Rural Bangladesh)
 
-1. **Local AP mode**: If WiFi or 4G is unavailable, the ESP32 can broadcast its own hotspot (`NIPAS-Field`). The farmer's phone connects directly and reads live data — no internet needed.
-2. **4G module option**: For remote monitoring, add a **SIM7600** or **A7670C** 4G modem. Same code — just different transport.
-3. **Offline buffer**: When connectivity drops, readings are cached to ESP32 flash. When the network returns, they're uploaded in bulk.
+WiFi in Bangladeshi fields is rare. Even 4G is patchy. So NIPAS is designed to work **without any network at all**. Three modes:
 
+| Mode | When it runs | Behavior |
+|---|---|---|
+| **📴 Fully Offline** (default) | No network | Robot drives, scans, sprays autonomously. Every reading buffers to ESP32 flash memory — up to **45 days of data**. |
+| **🔄 Local Sync** (auto) | Any network available | When robot reaches home WiFi, phone hotspot, or 4G, the buffer auto-flushes. ~1,000 readings upload in 3 seconds. |
+| **📡 Live Stream** (bonus) | Network stable | Real-time dashboard updates. Bonus feature — not required for core operation. |
+
+**Architectural principle:** the network is a nice-to-have, not a dependency.
 ---
 
 ## 🔌 Wiring Diagrams
@@ -573,6 +584,86 @@ For your demo/presentation, open `presentation.html`:
 
 ---
 
+## 🔧 Firmware Tools
+
+NIPAS ships with three development and testing tools that make assembly, calibration, and verification much easier.
+
+### 🎯 `NIPAS_Calibration.ino` — Sensor Calibration Tool
+
+**Purpose:** Find your sensor baseline values **before** assembling the full robot.
+
+**How to use:**
+1. Wire only the sensors to a bare ESP32 (no motors needed)
+2. Open `firmware/NIPAS_Calibration/NIPAS_Calibration.ino` in Arduino IDE
+3. Upload to the ESP32
+4. Open Serial Monitor at 115200 baud
+
+**What it prints every second:**
+- Raw soil moisture ADC value (hold in air → note DRY value, dip in water → note WET value)
+- Ultrasonic distance in cm (test with a ruler)
+- Encoder tick count (roll wheels by hand)
+- Battery voltage (if voltage divider wired)
+
+**Use the printed values to update:**
+- `readSensors()` in `NIPAS_Robot.ino` — replace the `3200` and `1200` calibration constants
+- Battery divider ratio in `NIPAS_Robot.ino` if wired
+
+**Time saved:** 1–2 hours of trial-and-error during assembly.
+
+---
+
+### 🎮 `NIPAS_Simulation.ino` — Hardware-Free Testing Mode
+
+**Purpose:** Run the **full state machine and MQTT pipeline** without any hardware.
+
+**How to use:**
+1. Upload `firmware/NIPAS_Simulation/NIPAS_Simulation.ino` to any ESP32
+2. Configure WiFi via the `NIPAS-Setup` hotspot
+3. Open the dashboard (`index.html`)
+4. Send commands from the dashboard — the simulated robot responds
+
+**What it does:**
+- Cycles through the full state machine (IDLE → MOVING → SCANNING → SPRAYING → TURNING → ...)
+- Generates synthetic sensor values
+- **Publishes real MQTT messages** to the broker — the dashboard sees identical data to the real robot
+- Prints motor/pump commands to Serial instead of driving pins
+- Includes the same offline flash buffer as the production firmware
+
+**Use it to:**
+- Test the MQTT pipeline before buying hardware
+- Demo the dashboard with real MQTT (not just browser simulation)
+- Verify state transitions and command handling
+- Practice the full autonomous cycle
+
+**Time saved:** Lets you demo the full pipeline without spending ৳3,500 on hardware.
+
+---
+
+### 🧪 `NIPAS_Test.ino` — Hardware Diagnostic Tool
+
+**Purpose:** Verify each hardware component **one at a time** the day you assemble the robot.
+
+**How to use:**
+1. Wire all hardware to the ESP32
+2. Upload `firmware/NIPAS_Test/NIPAS_Test.ino`
+3. Open Serial Monitor at 115200 baud
+4. Follow the prompts for each test
+
+**What it tests (in sequence):**
+1. **LED** — blinks 3 times (visual check)
+2. **Buzzer** — beeps 3 times (audible check)
+3. **Relay** — pulses 3 times (listen for click)
+4. **Servo** — sweeps 0° → 90° → 45° → 0°
+5. **Motors** — drives forward 1s, backward 1s
+6. **Ultrasonic** — reads distance 5 times (place object at known distance)
+7. **Soil moisture** — reads raw ADC 5 times (test in air and water)
+8. **Encoders** — reads tick counts for 5 seconds (roll wheels by hand)
+
+**Each test prints clear pass/fail indicators to Serial Monitor.**
+
+**Time saved:** 2–3 hours of debugging during assembly.
+
+---
 ## 🧠 How It Works
 
 ### Robot State Machine
@@ -744,23 +835,25 @@ Copy `docs/calibration-log.md` and fill in your measured values after tuning. Us
 The project includes a full **18-slide presentation** (`presentation.html`) covering:
 
 1. Title + team
-2. The problem (5 crises)
-3. Core purposes
-4. Hardware overview
-5. Component purposes (1/2)
-6. Component purposes (2/2)
-7. Data flow diagram
-8. System architecture
-9. State machine
-10. Autonomy factors
-11. Decision walkthrough
-12. HSV vision
-13. The dashboard
-14. Current limitations
-15. Future: dedicated controller
-16. Future roadmap
-17. Impact
-18. Q&A Session
+2. The problem — Bangladesh context
+3. The problem — by the numbers
+4. How NIPAS solves it (problem-by-problem)
+5. Core purposes
+6. Two tiers overview
+7. Offline-first design
+8. Why two tiers exist
+9. Commercial BOM
+10. What's upgraded
+11. Data flow diagram
+12. State machine
+13. Autonomy factors
+14. HSV vision
+15. The dashboard
+16. Current limitations
+17. Future: dedicated controller
+18. Future roadmap
+19. Impact
+20. Q&A Session
 
 **Navigation:**
 - **← / →** — previous / next slide
@@ -1244,9 +1337,20 @@ NIPAS/
 ├── index.html
 ├── presentation.html
 ├── firmware/
-│   ├── NIPAS_Config.h
-│   ├── NIPAS_Robot.ino
-│   └── NIPAS_CAM.ino
+│   ├── NIPAS_Config.h              ← ⚙️ Shared config (edit this first!)
+│   ├── NIPAS_Robot/
+│   │   ├── NIPAS_Robot.ino         ← Main ESP32 firmware
+│   │   └── NIPAS_Config.h
+│   ├── NIPAS_CAM/
+│   │   ├── NIPAS_CAM.ino           ← ESP32-CAM vision firmware
+│   │   └── NIPAS_Config.h
+│   ├── NIPAS_Calibration/
+│   │   └── NIPAS_Calibration.ino   ← Sensor calibration tool
+│   ├── NIPAS_Simulation/
+│   │   ├── NIPAS_Simulation.ino    ← Hardware-free testing mode
+│   │   └── NIPAS_Config.h
+│   └── NIPAS_Test/
+│       └── NIPAS_Test.ino          ← Hardware diagnostic tool
 └── docs/
     ├── wiring-diagrams.md          ← copy from appendix
     └── calibration-log.md          ← copy from appendix
