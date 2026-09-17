@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        background: linear-gradient(135deg, #eef7f0, #dcefe1);
+        font-family: 'Inter', -apple-system, sans-serif;
+        text-align: center;
+    }
+    .logo { font-size: 5rem; margin-bottom: 1rem; }
+    .title {
+        font-size: 4rem;
+        font-weight: 900;
+        letter-spacing: -0.04em;
+        background: linear-gradient(120deg, #14402a, #3a9160, #5fb87d);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.5rem;
+    }
+    .subtitle {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #267347;
+        margin-bottom: 3rem;
+    }
+    .presenter {
+        display: inline-flex;
+        align-items: center;
+        gap: 1.5rem;
+        padding: 1rem 2rem;
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(58, 145, 96, 0.35);
+        border-radius: 999px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 30px -15px rgba(58, 145, 96, 0.4);
+    }
+    .presenter .name {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: #14402a;
+        letter-spacing: -0.01em;
+    }
+    .presenter .divider {
+        width: 1px;
+        height: 28px;
+        background: rgba(58, 145, 96, 0.4);
+    }
+    .presenter .role {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #3a9160;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+    }
+    .meta {
+        margin-top: 2.5rem;
+        font-size: 0.9rem;
+        color: #4d7a61;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        font-weight: 700;
+    }
+</style>
+</head>
+<body>
+    <div class="logo">🌱</div>
+    <div class="title">NIPAS</div>
+    <div class="subtitle">Field Command Center · 3-Minute Walkthrough</div>
+
+    <div class="presenter">
+        <span class="name">Miftah Ur Rahman</span>
+        <span class="divider"></span>
+        <span class="role">Lead Engineer</span>
+    </div>
+
+    <div class="meta">Track C · Agritech · BuildAthon 2026</div>
+</body>
+</html>

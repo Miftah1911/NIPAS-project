@@ -118,7 +118,6 @@
     .lead strong { color: var(--green-800); font-weight: 700; }
     .lead em { color: var(--amber-500); font-style: normal; font-weight: 700; }
 
-    /* TITLE SLIDE */
     .title-slide { align-items: center; text-align: center; }
     .title-slide .slide-tag { margin-left: auto; margin-right: auto; }
     .big-nipas {
@@ -168,7 +167,6 @@
         color: var(--green-800);
     }
 
-    /* GRID / CARD LAYOUTS */
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
     .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
     .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
@@ -189,8 +187,8 @@
     .card .icon-lg { font-size: 1.9rem; margin-bottom: 0.8rem; display: block; }
     .card h4 { font-size: 1.15rem; font-weight: 800; color: var(--green-900); margin-bottom: 0.5rem; line-height: 1.25; }
     .card p { font-size: 0.95rem; color: var(--text-body); line-height: 1.55; font-weight: 500; }
+    .card p.sub { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem; font-weight: 600; font-family: var(--font-mono); }
 
-    /* PROBLEM STATS */
     .problem-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 1.3rem; }
     .problem-stat {
         background: rgba(255, 255, 255, 0.78);
@@ -215,7 +213,6 @@
         margin-top: 0.6rem; line-height: 1.4; font-weight: 600;
     }
 
-    /* TIER CARDS */
     .tier-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.3rem; margin-top: 1rem; }
     .tier-card {
         background: rgba(255, 255, 255, 0.82);
@@ -271,7 +268,6 @@
     }
     .tier-card.demo li::before { content: '▸'; color: var(--blue-500); }
 
-    /* OFFLINE MODE CARDS */
     .mode-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; margin-top: 1.2rem; }
     .mode-card {
         background: rgba(255, 255, 255, 0.82);
@@ -299,7 +295,6 @@
     .mode-card h4 { font-size: 1.15rem; font-weight: 800; color: var(--green-900); margin-bottom: 0.5rem; }
     .mode-card p { font-size: 0.92rem; color: var(--text-body); line-height: 1.55; font-weight: 500; }
 
-    /* LIMITATIONS */
     .limit-list { display: flex; flex-direction: column; gap: 0.8rem; margin-top: 1rem; }
     .limit-item {
         display: flex; gap: 1rem; align-items: flex-start;
@@ -315,7 +310,6 @@
     .limit-item h4 { font-size: 1.05rem; font-weight: 800; color: var(--green-900); margin-bottom: 0.2rem; }
     .limit-item p { font-size: 0.92rem; color: var(--text-body); line-height: 1.5; font-weight: 500; }
 
-    /* HONESTY CARDS */
     .honesty-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.3rem; margin-top: 1.3rem; }
     .honesty-card {
         background: rgba(255, 255, 255, 0.85);
@@ -360,7 +354,6 @@
     }
     .honesty-card.planned li::before { color: var(--amber-500); }
 
-    /* CLOSING */
     .closing { text-align: center; align-items: center; }
     .closing .slide-tag { margin-left: auto; margin-right: auto; }
     .qa-heading {
@@ -397,7 +390,6 @@
     }
     .team-footer strong { color: var(--green-700); }
 
-    /* TIMER BAR */
     .timer-bar {
         position: fixed; top: 1.5rem; right: 2rem;
         z-index: 10;
@@ -422,7 +414,6 @@
         font-weight: 700;
     }
 
-    /* NAV */
     .nav {
         position: fixed; bottom: 1.5rem; left: 50%;
         transform: translateX(-50%);
@@ -541,7 +532,7 @@
     </section>
 
     <!-- ══════════════════════════════════════════════
-         SLIDE 3 — SOLUTION
+         SLIDE 3 — SOLUTION (updated with honest data numbers)
          ⏱️ 1:05 – 1:50 (45 s)
          ══════════════════════════════════════════════ -->
     <section class="slide">
@@ -564,18 +555,19 @@
             <div class="card">
                 <span class="icon-lg">📡</span>
                 <h4>MQTT telemetry</h4>
-                <p>Live dashboard over MQTT — 100-byte packets, works over 2G/3G/4G. Scales to a village with one wildcard subscription.</p>
+                <p>~100-byte packets over MQTT. Works on 2G/3G/4G. Scales to a village with one wildcard subscription.</p>
+                <p class="sub">~2 MB/mo idle · ~17 MB/mo active</p>
             </div>
             <div class="card">
                 <span class="icon-lg">🤖</span>
                 <h4>Autonomous operation</h4>
-                <p>Full 8-state machine runs on-device. No network required for core autonomy — driving, scanning, spraying.</p>
+                <p>Full 8-state machine runs on-device. No network required for driving, scanning, or spraying.</p>
             </div>
         </div>
     </section>
 
     <!-- ══════════════════════════════════════════════
-         SLIDE 4 — CONNECTIVITY & USE (NEW)
+         SLIDE 4 — CONNECTIVITY & USE
          ⏱️ 1:50 – 2:30 (40 s)
          ══════════════════════════════════════════════ -->
     <section class="slide">

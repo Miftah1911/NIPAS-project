@@ -17,10 +17,10 @@
 #define WIFI_SSID       "YourHomeWiFi"
 #define WIFI_PASS       "YourWiFiPassword"
 
-#define MQTT_HOST       "xxxxxxxx.s1.eu.hivemq.cloud"
+#define MQTT_HOST       "5245c93e5ad84e0085374820f1764e9a.s1.eu.hivemq.cloud"
 #define MQTT_PORT       8883
-#define MQTT_USER       "your-username"
-#define MQTT_PASS       "your-password"
+#define MQTT_USER       "Isam1911"
+#define MQTT_PASS       "Isam@191110"
 
 // ═══════════════════════════════════════════════════════════
 // MQTT TOPICS (auto-derived from DEVICE_ID)
