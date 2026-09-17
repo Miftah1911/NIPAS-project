@@ -273,6 +273,22 @@ In Arduino IDE:
 NIPAS uses **MQTT over TLS** through [HiveMQ Cloud](https://console.hivemq.cloud) (free tier — supports 100 devices).
 
 ### Why MQTT?
+### 📈 MQTT Scaling Across Regional Sensor Networks
+
+The rulebook for Track C requires a communication protocol "capable of scaling across regional sensor networks." MQTT was chosen specifically for this — and the architecture already supports it without modification.
+
+**How MQTT scales in NIPAS:**
+
+| Scaling dimension | How MQTT handles it |
+|---|---|
+| **Multiple robots in one village** | Each robot publishes to its own topic namespace — `nipas/robot-01/...`, `nipas/robot-02/...`, etc. No configuration changes needed to add a new robot. |
+| **Single dashboard, many robots** | The dashboard subscribes to `nipas/+/telemetry` using MQTT wildcards. It receives every robot's messages in one stream — the same code works for 1 robot or 1,000. |
+| **Regional aggregation** | A district-level operator can subscribe to `nipas/+/robot` to see all active missions, or `nipas/+/telemetry` for all sensor data — again, one wildcard, no per-robot config. |
+| **Cloud broker scaling** | HiveMQ Cloud's free tier supports 100 devices per cluster. Paid tiers scale to thousands without firmware changes. |
+| **Multi-transport support** | The firmware is structured to swap WiFi for 4G (A7670C / SIM7600) or LoRaWAN without touching the MQTT layer. Same topics, same payloads, different physical link. |
+| **Low-bandwidth efficiency** | MQTT packets are ~100 bytes. Works over 2G (Grameenphone rural coverage). 30-second telemetry intervals use ~2 MB/month per robot. |
+
+**Topic structure for scaling:**
 
 - **Low bandwidth** (~100 bytes per packet vs ~500 for HTTP) → ideal for 2G/3G rural networks
 - **QoS 1 delivery** → messages survive spotty connectivity
@@ -410,15 +426,23 @@ Tab 1's dashboard should now update live with the fake data.
 
 ### 🌐 Offline-First Design (Rural Bangladesh)
 
-WiFi in Bangladeshi fields is rare. Even 4G is patchy. So NIPAS is designed to work **without any network at all**. Three modes:
+## 🌐 Connectivity — What Works Where
 
-| Mode | When it runs | Behavior |
-|---|---|---|
-| **📴 Fully Offline** (default) | No network | Robot drives, scans, sprays autonomously. Every reading buffers to ESP32 flash memory — up to **45 days of data**. |
-| **🔄 Local Sync** (auto) | Any network available | When robot reaches home WiFi, phone hotspot, or 4G, the buffer auto-flushes. ~1,000 readings upload in 3 seconds. |
-| **📡 Live Stream** (bonus) | Network stable | Real-time dashboard updates. Bonus feature — not required for core operation. |
+NIPAS is designed for three connectivity scenarios. The robot always works — the dashboard adapts to what's available.
 
-**Architectural principle:** the network is a nice-to-have, not a dependency.
+### Scenario 1 — Farmer with a phone hotspot (live view)
+
+The robot streams telemetry over MQTT to the farmer's phone in real time. The farmer stands at the edge of the field, watches the mission progress, and can intervene manually if needed. **This is the ideal case.**
+
+### Scenario 2 — Home WiFi (daily review)
+
+The robot runs autonomously. Telemetry buffers to flash. When the robot reaches home WiFi, the buffer flushes in seconds. The farmer reviews the day's mission — every plant, every spray, every dose. **This is the common case.**
+
+### Scenario 3 — No network at all (local AP + autonomy)
+
+The robot broadcasts its own WiFi hotspot (`NIPAS-Field`). The farmer connects their phone directly to the robot. The dashboard runs locally — no internet required. The robot still drives, scans, and sprays autonomously. **The 45-day buffer only matters if the farmer is never within range — an unlikely scenario.**
+
+**Key point:** The dashboard is not a live monitor the farmer watches all day. It is a review and control interface — for exceptions, for end-of-day review, and for manual intervention. The robot never needs it to function.
 ---
 
 ## 🔌 Wiring Diagrams
