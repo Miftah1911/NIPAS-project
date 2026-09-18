@@ -66,7 +66,7 @@ Beyond reviewing AI output, the team independently:
 - **Compiled every firmware sketch** in Arduino IDE 2.x and confirmed no errors
 - **Cross-checked pin assignments** against the ESP32 datasheet and the L298N motor driver datasheet
 - **Drafted the presentation narrative** — the story arc from problem to solution to roadmap
-- **Practiced the live pitch** multiple times
+- **Practiced the live pitch** several times
 
 ---
 
